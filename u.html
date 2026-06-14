@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SA-CU</title>
+
+<style>
+/* لایه پس‌زمینه پری‌لودر */
+.preloader{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(18px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+transition:.8s;
+}
+
+.preloader-logo{
+position:relative;
+padding:22px 34px;
+border-radius:120px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+}
+
+.preloader-logo::before{
+content:"";
+position:absolute;
+inset:-6px;
+border-radius:140px;
+background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);
+filter:blur(10px);
+opacity:.7;
+animation:spin 5s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+.preloader-sign{
+position:relative;
+font-size:26px;
+font-weight:700;
+color:#fff;
+}
+
+.preloader.hide{
+opacity:0;
+pointer-events:none;
+}
+
+
+:root{
+  --bg:#0b1220;
+  --card:#111a2e;
+  --text:#e8eefc;
+  --muted:#a9b6d6;
+  --accent:#6ea8fe;
+  --accent2:#8b5cf6;
+  --border: rgba(255,255,255,.08);
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  --danger:#ff5c7a;
+  --ok:#2dd4bf;
+}
+
+/* تم روشن (گزینه A: نسخه روشن همین پالت) */
+body.light{
+  --bg:#e7ecff;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --accent:#4f8bff;
+  --accent2:#7c3aed;
+  --border: rgba(15,23,42,.08);
+  --shadow: 0 18px 40px rgba(15,23,42,.10);
+}
+
+/* ریست و پایه */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(110,168,254,.18), transparent 55%),
+    radial-gradient(1000px 500px at 80% 0%, rgba(139,92,246,.16), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  transition: background .35s ease, color .35s ease;
+}
+.container{width:min(1000px, 100%)}
+header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+.title{
+  display:flex;flex-direction:column;gap:6px;
+}
+.title h1{
+  margin:0;
+  font-size: clamp(20px, 3vw, 30px);
+  letter-spacing:-.02em;
+}
+.title p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.6;
+  font-size:14px;
+}
+.badge{
+  padding:10px 14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  border-radius:14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  color:var(--muted);
+  font-size:13px;
+  white-space:nowrap;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* دکمه تم */
+.theme-toggle{
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.10);
+  color:var(--text);
+  font-size:16px;
+  cursor:pointer;
+  transition:.2s ease;
+}
+body.light .theme-toggle{
+  background:rgba(255,255,255,.9);
+}
+.theme-toggle:active{
+  transform:translateY(1px) scale(.97);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap:16px;
+}
+@media (max-width: 900px){
+  .grid{grid-template-columns:1fr}
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  transition: background .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.card .inner{padding:18px}
+.card h2{
+  margin:0 0 10px 0;
+  font-size:16px;
+  color:var(--text);
+  display:flex;align-items:center;gap:10px;
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 0 6px rgba(110,168,254,.12);
+}
+
+.row{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.field{
+  flex:1;
+  min-width: 180px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+label{
+  color:var(--muted);
+  font-size:13px;
+}
+input[type="text"], input[type="number"], select{
+  width:100%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background: rgba(0,0,0,.18);
+  color:var(--text);
+  outline:none;
+  transition: .15s ease;
+}
+body.light input[type="text"],
+body.light input[type="number"],
+body.light select{
+  background: rgba(255,255,255,.9);
+}
+input::placeholder{color:rgba(233,238,252,.35)}
+input:focus, select:focus{
+  border-color: rgba(110,168,254,.55);
+  box-shadow: 0 0 0 4px rgba(110,168,254,.15);
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+button{
+  cursor:pointer;
+  border:none;
+  padding:12px 14px;
+  border-radius:14px;
+  font-weight:700;
+  color:#071022;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 10px 24px rgba(110,168,254,.22);
+  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+}
+button:hover{
+  filter:brightness(1.05);
+}
+button:active{
+  transform: translateY(1px) scale(.98);
+  box-shadow: 0 4px 14px rgba(110,168,254,.28);
+}
+.ghost{
+  background: rgba(255,255,255,.04);
+  color:var(--text);
+  border:1px solid var(--border);
+  box-shadow:none;
+}
+body.light .ghost{
+  background: rgba(255,255,255,.9);
+}
+
+.resultBox{
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  height:100%;
+}
+.resultTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.resultBig{
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing:-.02em;
+  font-weight:900;
+  line-height:1.1;
+  /* انیمیشن A: scale + fade */
+  transform:scale(.96) translateY(4px);
+  opacity:.0;
+  transition:transform .28s cubic-bezier(.16,1,.3,1),
+             opacity .24s ease;
+}
+.resultBig.show{
+  transform:scale(1) translateY(0);
+  opacity:1;
+}
+.resultMeta{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+  /* انیمیشن B: fade + slight move */
+  opacity:0;
+  transform:translateY(4px);
+  transition:transform .25s ease, opacity .2s ease;
+}
+.resultMeta.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.miniCards{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+  margin-top:6px;
+}
+@media (max-width: 500px){
+  .miniCards{grid-template-columns:1fr}
+}
+.mini{
+  border-radius:16px;
+  border:1px solid var(--border);
+  padding:12px;
+  background: rgba(0,0,0,.12);
+  transition:background .3s ease, border-color .3s ease, transform .18s ease;
+}
+body.light .mini{
+  background: rgba(255,255,255,.9);
+}
+.mini .k{
+  font-size:12px;color:var(--muted);
+  margin-bottom:6px;
+}
+.mini .v{
+  font-weight:800;
+  color:var(--text);
+  display:flex;align-items:center;gap:8px;
+}
+.mini.active{
+  /* انیمیشن C: pulse */
+  transform:translateY(-1px);
+  box-shadow:0 0 0 1px rgba(110,168,254,.18);
+}
+
+.pill{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  color:var(--muted);
+  background: rgba(255,255,255,.03);
+  transition:background .2s ease, color .2s ease, border-color .2s ease;
+}
+.error{
+  color: var(--danger);
+  font-size:13px;
+  display:none;
+  margin-top:8px;
+}
+.show-error{display:block}
+footer{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+}
+.swap{
+  display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:14px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.03);
+  color:var(--text);
+  font-size:18px;
+  user-select:none;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.swap:hover{
+  background: rgba(255,255,255,.06);
+}
+.swap:active{
+  transform: translateY(1px) scale(.95);
+}
+.tag{
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:999px;
+  background: rgba(255,255,255,.05);
+  color:var(--muted);
+}
+
+/* سِلِکت دسته‌بندی */
+.category-row{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.category-row select{
+  min-width:150px;
+}
+
+/* برای حالت اسکرول روی موبایل */
+@media (max-width:600px){
+  body{
+    padding:16px;
+  }
+  header {
+    flex-direction: column; /* Stack header items vertically on small screens */
+    align-items: flex-start; /* Align items to the start */
+  }
+  .title, .badge, .sa-logo-center {
+    width: 100%; /* Take full width */
+    justify-content: space-between; /* Distribute space */
+    margin-bottom: 10px; /* Add some spacing */
+  }
+  .sa-logo-center {
+    margin-top: 10px; /* Add space above logo */
+  }
+}
+
+/* باکس اصلی */
+.credit{
+position:fixed;
+bottom:18px;
+left:50%;
+transform:translateX(-50%) translateY(40px);
+padding:10px 22px;
+border-radius:999px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.06);
+color:var(--muted);
+font-size:12px;
+backdrop-filter:blur(12px);
+cursor:pointer;
+overflow:hidden;
+transition:.45s ease;
+opacity:0;
+animation:creditReveal 1.2s ease forwards 0.3s;
+z-index:999;
+}
+
+
+/* موج نور داخل متن */
+.signature::after{
+content:"";
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,.85),
+transparent
+);
+transform:translateX(-120%);
+animation:shineMove 3.5s infinite 2.2s;
+}
+
+@keyframes shineMove{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(120%)}
+}
+
+/* فلش نور از پایین صفحه */
+.flash{
+position:fixed;
+bottom:-50px;
+left:50%;
+transform:translateX(-50%);
+width:180px;
+height:80px;
+background:radial-gradient(circle, rgba(255,255,255,.4), transparent 70%);
+filter:blur(18px);
+opacity:0;
+animation:flashUp 1.2s ease-out forwards;
+pointer-events:none;
+}
+
+@keyframes flashUp{
+0%{opacity:0; transform:translateX(-50%) translateY(80px);}
+60%{opacity:.9;}
+100%{opacity:0; transform:translateX(-50%) translateY(-6px);}
+}
+/* مرکز چین */
+.sa-logo-center{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:10px 0 20px 0;
+}
+
+/* بخش اصلی لوگو */
+.sa-logo{
+  width:80px;
+  height:80px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  user-select:none;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
+    radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+    linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
+
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.55),
+    0 5px 12px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -12px 18px rgba(0,0,0,.55),
+    inset 10px 0 16px rgba(0,0,0,.20),
+    inset -10px 0 16px rgba(0,0,0,.20);
+}
+
+.sa-logo::before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    inset 0 0 18px rgba(255,255,255,.03);
+  pointer-events:none;
+}
+
+/* نوشته SA */
+.sa-text{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-42%);
+  font-family:"Arial Black", Arial, sans-serif;
+  font-size:46px;
+  font-weight:900;
+  letter-spacing:-7px;
+  color:#289CFF; /* رنگ دقیق مثل عکس */
+
+  text-shadow:
+    0 7px 12px rgba(0,0,0,.44),
+    0 2px 4px rgba(0,0,0,.30),
+    0 0 14px rgba(40,156,255,.25),
+    0 0 28px rgba(40,156,255,.12),
+    0 -1px 3px rgba(255,255,255,.08);
+}
+
+/* برچسب CB */
+.sa-badge{
+  position:absolute;
+  top:-3px;
+  right:10px;
+  padding:4px 10px;
+  font-size:13px;
+  font-weight:900;
+  border-radius:0 0 12px 12px;
+
+  color:#289CFF;
+  font-family:"Arial Black", Arial, sans-serif;
+
+  background:
+    linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
+  border:1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.50),
+    inset 0 -6px 9px rgba(0,0,0,.55),
+    inset 0 4px 6px rgba(255,255,255,.07),
+    0 3px 10px rgba(0,0,0,.35);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.35),
+    0 0 10px rgba(40,156,255,.18);
+}
+.fade-out{
+
+opacity:0;
+
+transition:.4s ease;
+}
+</style>
+
+</head>
+
+
+<body>
+<div class="preloader">
+<div class="preloader-logo">
+<div class="preloader-sign">✦Saleh✦</div>
+</div>
+</div>
+<div class="container">
+    
+  <header>
+    <div class="title">
+      <h1>SA-Unit Converter</h1>
+      <!-- Updated to 26 categories -->
+      <p>
+        تبدیل واحد هوشمند بین ده ها واحد و ۲۶ دسته
+      </p>
+    </div>
+
+    <!-- Logo Moved to be aligned properly -->
+    <div class="sa-logo-center">
+      <div class="sa-logo">
+        <div class="sa-text">SA</div>
+        <div class="sa-badge">UC</div>
+      </div>
+    </div>
+
+    <div class="badge">
+      <span id="themeLabel">حالت تیره</span>
+      <div class="theme-toggle" id="themeToggle" title="تغییر تم">🌙</div>
+    </div>
+
+    <div class="badge">صالح عمو</div>
+  </header>
+
+  <div class="grid">
+    <!-- کارت ورودی‌ها -->
+    <div class="card">
+      <div class="inner">
+        <h2>
+          <span class="dot"></span>
+          تنظیمات تبدیل
+        </h2>
+
+        <!-- دسته واحد -->
+        <div class="category-row">
+          <label for="categorySelect">دسته واحد:</label>
+          <select id="categorySelect">
+            <!-- پر می‌شود از JS -->
+          </select>
+          <!-- Updated to 26 categories -->
+          <span class="tag">۲۶ دسته متنوع</span>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>مقدار</label>
+            <input
+            id="valueInput"
+            type="text"
+            inputmode="decimal"
+            placeholder="مثلاً -180 یا +3.5"
+            />
+
+          </div>
+
+          <div class="field">
+            <label>از واحد</label>
+            <select id="fromUnit"></select>
+          </div>
+
+          <div class="swap" id="swapBtn" title="جایگزینی واحدها">↔</div>
+
+          <div class="field">
+            <label>به واحد</label>
+            <select id="toUnit"></select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="convertBtn">محاسبه تبدیل</button>
+          <button class="ghost" id="resetBtn">پاک کردن</button>
+          <button class="ghost" id="copyBtn">کپی نتیجه</button>
+          <span class="tag">محاسبه خودکار در هنگام تایپ</span>
+        </div>
+
+        <div id="errorBox" class="error">لطفاً مقدار معتبر وارد کنید.</div>
+      </div>
+    </div>
+
+    <!-- کارت نتیجه -->
+    <div class="card">
+      <div class="resultBox">
+        <div class="resultTop">
+          <div>
+            <div class="resultBig" id="resultValue">—</div>
+            <div class="resultMeta" id="resultMeta">
+              ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.
+            </div>
+          </div>
+          <div class="pill" id="statusPill">
+            آماده برای تبدیل
+          </div>
+        </div>
+
+        <div class="miniCards">
+          <div class="mini" id="miniInput">
+            <div class="k">مقدار ورودی</div>
+            <div class="v">
+              <span id="inputPreview">—</span>
+            </div>
+          </div>
+          <div class="mini" id="miniRatio">
+            <div class="k">نسبت تقریبی</div>
+            <div class="v">
+              <span id="ratioPreview">—</span>
+            </div>
+          </div>
+        </div>
+
+        <footer>
+            Powerd By Saleh Amoo
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+function goHome(){
+
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+<script>
+function creditClick(){
+  if(navigator.vibrate){
+    navigator.vibrate(40);
+  }
+}
+</script>
+
+<script>
+window.onload=()=>{
+  setTimeout(()=>{
+    document.querySelector(".preloader").classList.add("hide")
+  },2000)
+}
+
+// المان‌ها
+const valueInput   = document.getElementById('valueInput');
+const fromUnitSel  = document.getElementById('fromUnit');
+const toUnitSel    = document.getElementById('toUnit');
+const convertBtn   = document.getElementById('convertBtn');
+const resetBtn     = document.getElementById('resetBtn');
+const swapBtn      = document.getElementById('swapBtn');
+const categorySel  = document.getElementById('categorySelect');
+const copyBtn = document.getElementById('copyBtn');
+const errorBox     = document.getElementById('errorBox');
+const resultValue  = document.getElementById('resultValue');
+const resultMeta   = document.getElementById('resultMeta');
+const statusPill   = document.getElementById('statusPill');
+const inputPreview = document.getElementById('inputPreview');
+const ratioPreview = document.getElementById('ratioPreview');
+const miniInput    = document.getElementById('miniInput');
+const miniRatio    = document.getElementById('miniRatio');
+
+// لیست دسته‌هایی که مقدار منفی مجاز دارند
+const categoriesAllowNegative = ['temperature']; // فعلاً فقط دما
+
+// ساختار ۲۶ دسته واحد
+// هر دسته: factor نسبت به "واحد پایه"
+const unitCategories = {
+  length: {
+    title: 'طول', baseLabel: 'متر', allowNegative: false,
+    units: {
+      nm:  { label:'نانومتر (nm)',   factor:1e-9 },
+      um:  { label:'میکرومتر (µm)', factor:1e-6 },
+      mm:  { label:'میلی‌متر (mm)', factor:1e-3 },
+      cm:  { label:'سانتی‌متر (cm)',factor:1e-2 },
+      m:   { label:'متر (m)',        factor:1    },
+      km:  { label:'کیلومتر (km)',  factor:1e3  },
+      in:  { label:'اینچ (inch)',    factor:0.0254 },
+      ft:  { label:'فوت (ft)',       factor:0.3048 },
+      yd:  { label:'یارد (yd)',      factor:0.9144 },
+      mi:  { label:'مایل (mile)',    factor:1609.34 }
+    }
+  },
+  area: {
+    title:'مساحت', baseLabel:'متر مربع', allowNegative: false,
+    units:{
+      "mm2": {label:'میلی‌متر مربع (mm²)', factor:1e-6},
+      "cm2": {label:'سانتی‌متر مربع (cm²)',factor:1e-4},
+      "m2":  {label:'متر مربع (m²)',       factor:1},
+      "ha":  {label:'هکتار (ha)',          factor:10000},
+      "km2": {label:'کیلومتر مربع (km²)',  factor:1e6},
+      "ft2": {label:'فوت مربع (ft²)',      factor:0.092903},
+      "yd2": {label:'یارد مربع (yd²)',     factor:0.836127},
+      "acre":{label:'آکر (acre)',          factor:4046.856}
+    }
+  },
+  volume:{
+    title:'حجم', baseLabel:'متر مکعب', allowNegative: false,
+    units:{
+      "ml":  {label:'میلی‌لیتر (mL)',  factor:1e-6},
+      "l":   {label:'لیتر (L)',        factor:1e-3},
+      "m3":  {label:'متر مکعب (m³)',   factor:1},
+      "cm3": {label:'سانتی‌متر مکعب (cm³)',factor:1e-6},
+      "ft3": {label:'فوت مکعب (ft³)',  factor:0.0283168},
+      "in3": {label:'اینچ مکعب (in³)', factor:1.6387e-5},
+      "gal": {label:'گالن (US gal)',   factor:0.00378541}
+    }
+  },
+  mass:{
+    title:'جرم/وزن', baseLabel:'کیلوگرم', allowNegative: false,
+    units:{
+      "mg": {label:'میلی‌گرم (mg)', factor:1e-6},
+      "g":  {label:'گرم (g)',       factor:1e-3},
+      "kg": {label:'کیلوگرم (kg)',  factor:1},
+      "t":  {label:'تن (t)',        factor:1000},
+      "lb": {label:'پوند (lb)',     factor:0.453592},
+      "oz": {label:'اونس (oz)',     factor:0.0283495}
+    }
+  },
+  time:{
+    title:'زمان', baseLabel:'ثانیه', allowNegative: false,
+    units:{
+      "ms": {label:'میلی‌ثانیه (ms)', factor:1e-3},
+      "s":  {label:'ثانیه (s)',       factor:1},
+      "min":{label:'دقیقه (min)',     factor:60},
+      "h":  {label:'ساعت (h)',        factor:3600},
+      "day":{label:'روز',            factor:86400},
+      "week":{label:'هفته',          factor:604800}
+    }
+  },
+  speed:{
+    title:'سرعت', baseLabel:'متر بر ثانیه', allowNegative: false,
+    units:{
+      "mps":{label:'متر بر ثانیه (m/s)', factor:1},
+      "kmh":{label:'کیلومتر بر ساعت (km/h)',factor:1/3.6},
+      "mph":{label:'مایل بر ساعت (mph)',factor:0.44704},
+      "kn": {label:'گره دریایی (kn)', factor:0.514444}
+    }
+  },
+  temperature:{
+    title:'دما', baseLabel:'سلسیوس', allowNegative: true,
+    units:{
+      "C": {label:'درجه سلسیوس (°C)', custom:true},
+      "F": {label:'درجه فارنهایت (°F)', custom:true},
+      "K": {label:'کلوین (K)', custom:true}
+    }
+  },
+  pressure:{
+    title:'فشار', baseLabel:'پاسکال', allowNegative: false,
+    units:{
+      "Pa":  {label:'پاسکال (Pa)', factor:1},
+      "kPa": {label:'کیلوپاسکال (kPa)', factor:1000},
+      "bar": {label:'بار (bar)', factor:100000},
+      "atm": {label:'اتمسفر (atm)', factor:101325},
+      "psi": {label:'پوند بر اینچ مربع (psi)', factor:6894.76}
+    }
+  },
+  energy:{
+    title:'انرژی', baseLabel:'ژول', allowNegative: false,
+    units:{
+      "J":  {label:'ژول (J)', factor:1},
+      "kJ": {label:'کیلوژول (kJ)', factor:1000},
+      "cal":{label:'کالری (cal)', factor:4.184},
+      "kcal":{label:'کیلوکالری (kcal)', factor:4184},
+      "Wh": {label:'وات‌ساعت (Wh)', factor:3600},
+      "kWh":{label:'کیلووات‌ساعت (kWh)', factor:3.6e6}
+    }
+  },
+  power:{
+    title:'توان', baseLabel:'وات', allowNegative: false,
+    units:{
+      "W": {label:'وات (W)', factor:1},
+      "kW":{label:'کیلووات (kW)', factor:1000},
+      "hp":{label:'اسب بخار (hp)', factor:745.7}
+    }
+  },
+  data:{
+    title:'حجم داده', baseLabel:'بیت', allowNegative: false,
+    units:{
+      "bit": {label:'بیت (bit)', factor:1},
+      "B":   {label:'بایت (B)', factor:8},
+      "KB":  {label:'کیلوبایت (KB)', factor:8*1024},
+      "MB":  {label:'مگابایت (MB)', factor:8*1024**2},
+      "GB":  {label:'گیگابایت (GB)', factor:8*1024**3},
+      "TB":  {label:'ترابایت (TB)', factor:8*1024**4}
+    }
+  },
+  frequency:{
+    title:'فرکانس', baseLabel:'هرتز', allowNegative: false,
+    units:{
+      "Hz": {label:'هرتز (Hz)', factor:1},
+      "kHz":{label:'کیلوهرتز (kHz)', factor:1000},
+      "MHz":{label:'مگاهرتز (MHz)', factor:1e6},
+      "GHz":{label:'گیگاهرتز (GHz)', factor:1e9}
+    }
+  },
+  angle:{
+    title:'زاویه', baseLabel:'درجه', allowNegative: true,
+    units:{
+      "deg":{label:'درجه (°)', factor:1},
+      "rad":{label:'رادیان (rad)', factor:180/Math.PI},
+      "grad":{label:'گراد (gon)', factor:0.9}
+    }
+  },
+  force:{
+    title:'نیرو', baseLabel:'نیوتن', allowNegative: false,
+    units:{
+      "N": {label:'نیوتن (N)', factor:1},
+      "kN":{label:'کیلونیوتن (kN)', factor:1000},
+      "kgf":{label:'کیلوگرم-نیرو (kgf)', factor:9.80665},
+      "lbf":{label:'پوند-نیرو (lbf)', factor:4.44822}
+    }
+  },
+  torque:{
+    title:'گشتاور', baseLabel:'نیوتن متر', allowNegative: false,
+    units:{
+      "Nm": {label:'نیوتن‌متر (N·m)', factor:1},
+      "kNm":{label:'کیلونیوتن‌متر (kN·m)', factor:1000},
+      "lbf_ft":{label:'پوند-فوت (lbf·ft)', factor:1.35582}
+    }
+  },
+  density:{
+    title:'چگالی', baseLabel:'کیلوگرم بر متر مکعب', allowNegative: false,
+    units:{
+      "kg_m3":{label:'kg/m³', factor:1},
+      "g_cm3":{label:'g/cm³', factor:1000},
+      "lb_ft3":{label:'lb/ft³', factor:16.0185}
+    }
+  },
+  flow:{
+    title:'دبی حجمی', baseLabel:'متر مکعب بر ثانیه', allowNegative: false,
+    units:{
+      "m3_s":{label:'m³/s', factor:1},
+      "L_s": {label:'L/s', factor:1e-3},
+      "L_min":{label:'L/min', factor:1e-3/60},
+      "m3_h":{label:'m³/h', factor:1/3600}
+    }
+  },
+  viscosity:{
+    title:'ویسکوزیته دینامیکی', baseLabel:'پاسکال-ثانیه', allowNegative: false,
+    units:{
+      "Pa_s": {label:'Pa·s', factor:1},
+      "cP":   {label:'سانتی‌پواز (cP)', factor:0.001}
+    }
+  },
+  charge:{
+    title:'بار الکتریکی', baseLabel:'کولن', allowNegative: true,
+    units:{
+      "C": {label:'کولن (C)', factor:1},
+      "mC":{label:'میلی‌کولن (mC)', factor:1e-3},
+      "uC":{label:'میکروکولن (µC)', factor:1e-6},
+      "Ah":{label:'آمپر ساعت (Ah)', factor:3600}
+    }
+  },
+  voltage:{
+    title:'ولتاژ', baseLabel:'ولت', allowNegative: true,
+    units:{
+      "V": {label:'ولت (V)', factor:1},
+      "kV":{label:'کیلوولت (kV)', factor:1000},
+      "mV":{label:'میلی‌ولت (mV)', factor:1e-3}
+    }
+  },
+  current:{
+    title:'جریان الکتریکی', baseLabel:'آمپر', allowNegative: true,
+    units:{
+      "A": {label:'آمپر (A)', factor:1},
+      "mA":{label:'میلی‌آمپر (mA)', factor:1e-3},
+      "uA":{label:'میکروآمپر (µA)', factor:1e-6}
+    }
+  },
+  resistance:{
+    title:'مقاومت الکتریکی', baseLabel:'اهم', allowNegative: false,
+    units:{
+      "ohm": {label:'اهم (Ω)', factor:1},
+      "kOhm":{label:'کیلو‌اهم (kΩ)', factor:1000},
+      "MOhm":{label:'مگا‌اهم (MΩ)', factor:1e6}
+    }
+  },
+  capacitance:{
+    title:'ظرفیت خازنی', baseLabel:'فاراد', allowNegative: false,
+    units:{
+      "F": {label:'فاراد (F)', factor:1},
+      "mF":{label:'میلی‌فاراد (mF)', factor:1e-3},
+      "uF":{label:'میکرو‌فاراد (µF)', factor:1e-6},
+      "nF":{label:'نانوفاراد (nF)', factor:1e-9}
+    }
+  },
+  inductance:{
+    title:'اندوکتانس', baseLabel:'هنری', allowNegative: false,
+    units:{
+      "H": {label:'هنری (H)', factor:1},
+      "mH":{label:'میلی‌هنری (mH)', factor:1e-3},
+      "uH":{label:'میکروهنری (µH)', factor:1e-6}
+    }
+  },
+  illuminance:{
+    title:'روشنایی (تابندگی سطحی)', baseLabel:'لوکس', allowNegative: false,
+    units:{
+      "lx": {label:'لوکس (lx)', factor:1},
+      "fc": {label:'فوت-کندل (fc)', factor:10.7639}
+    }
+  },
+  radioactivity:{
+    title:'پرتوزایی', baseLabel:'بکرل', allowNegative: false,
+    units:{
+      "Bq": {label:'بکرل (Bq)', factor:1},
+      "kBq":{label:'کیلوبکرل (kBq)', factor:1000},
+      "MBq":{label:'مگابکرل (MBq)', factor:1e6},
+      "Ci": {label:'کوری (Ci)', factor:3.7e10}
+    }
+  }
+};
+
+// لیست دسته‌ها برای کامبوی بالا
+const categoryOrder = [
+  'length','area','volume','mass','time','speed','temperature','pressure',
+  'energy','power','data','frequency','angle','force','torque','density',
+  'flow','viscosity','charge','voltage','current','resistance',
+  'capacitance','inductance','illuminance','radioactivity'
+];
+
+// رویداد کلیک روی اعتبار سازنده
+function creditClick(){
+  if(navigator.vibrate){
+    navigator.vibrate(40);
+  }
+}
+
+// کپی کردن نتیجه
+copyBtn.onclick = ()=>{
+  navigator.clipboard.writeText(resultValue.textContent);
+  const oldText = statusPill.textContent;
+  const oldColor = statusPill.style.color;
+  statusPill.textContent = "کپی شد!";
+  statusPill.style.color = 'var(--ok)'; // Use success color
+  setTimeout(()=>{
+    statusPill.textContent = oldText;
+    statusPill.style.color = oldColor;
+  },1500);
+};
+
+// فرمت عدد برای نمایش فارسی
+function formatNumber(num){
+  if (!isFinite(num)) return 'نامعتبر';
+  const abs = Math.abs(num);
+  if (abs === 0) return '۰';
+  // Use scientific notation for very large or small numbers
+  if (abs >= 1e9 || abs <= 1e-7) { // Adjusted threshold for small numbers
+    return num.toLocaleString('fa-IR', {
+      notation: 'scientific',
+      maximumFractionDigits: 3,
+      minimumExponentDigits: 2
+    }).replace(/e\+?(-?\d+)/, '×10^$1');
+  }
+  // Standard formatting for other numbers
+  return num.toLocaleString('fa-IR', {
+    maximumFractionDigits: 4, // Default precision
+    useGrouping: true // Use thousand separators
+  });
+}
+
+// لرزش کوتاه
+function vibrate(ms=15){
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+
+// پرکردن دسته‌ها در سلکت بالا
+function populateCategories(){
+  categorySel.innerHTML = '';
+  categoryOrder.forEach(key=>{
+    if (!unitCategories[key]) return;
+    const opt=document.createElement('option');
+    opt.value=key;
+    opt.textContent=unitCategories[key].title;
+    categorySel.appendChild(opt);
+  });
+  // پیش‌فرض: طول
+  categorySel.value='length';
+  populateUnitsForCategory('length');
+}
+
+// پر کردن واحدها در select های از/به
+function populateUnitsForCategory(catKey){
+  const cat = unitCategories[catKey];
+  if (!cat) return;
+  fromUnitSel.innerHTML='';
+  toUnitSel.innerHTML='';
+  let firstUnit = null;
+  let secondUnit = null;
+
+  Object.entries(cat.units).forEach(([value, info])=>{
+    const o1=document.createElement('option');
+    o1.value=value;
+    o1.textContent=info.label;
+    const o2=o1.cloneNode(true);
+    fromUnitSel.appendChild(o1);
+    toUnitSel.appendChild(o2);
+    if (firstUnit === null) firstUnit = value;
+    else if (secondUnit === null) secondUnit = value;
+  });
+
+  // تنظیم پیش‌فرض: اولین و دومین واحد موجود
+  if (firstUnit) fromUnitSel.value = firstUnit;
+  if (secondUnit) toUnitSel.value = secondUnit;
+  else if (firstUnit) toUnitSel.value = firstUnit; // If only one unit exists
+}
+
+// تبدیل دما (ویژه)
+function convertTemperature(value, from, to){
+  let C; // Convert to Celsius first
+  if (from==='C') C = value;
+  else if (from==='F') C = (value - 32) * 5/9;
+  else if (from==='K') C = value - 273.15;
+  else return NaN; // Invalid 'from' unit
+
+  let out;
+  if (to==='C') out = C;
+  else if (to==='F') out = C * 9/5 + 32;
+  else if (to==='K') out = C + 273.15;
+  else return NaN; // Invalid 'to' unit
+
+  return out;
+}
+
+// تابع اصلی تبدیل
+function convert(){
+  const raw = valueInput.value.trim();
+  // Allow digits, decimal point, plus, minus, and scientific notation (e/E)
+  const normalized = raw
+    .replace(',', '.') // Replace comma with decimal point
+    .replace(/[^\d\.\-\+eE]/g, ''); // Remove invalid characters
+
+  const val = Number(normalized);
+
+  const catKey = categorySel.value;
+  const cat = unitCategories[catKey]; // Get category data
+
+  // --- Input Validation ---
+  if (!raw || isNaN(val)){
+    showError('لطفاً عدد معتبری وارد کنید.');
+    return;
+  }
+
+  // Check if negative values are allowed for this category
+  if (val < 0 && cat.allowNegative === false) {
+    showError(`برای دسته «${cat.title}»، مقدار منفی مجاز نیست.`);
+    return;
+  }
+
+  const from = fromUnitSel.value;
+  const to   = toUnitSel.value;
+
+  // Check if selected units are valid within the category
+  if (!cat || !cat.units[from] || !cat.units[to]){
+    showError('واحد انتخاب شده در این دسته پشتیبانی نمی‌شود.');
+    return;
+  }
+
+  // --- Conversion Logic ---
+  let converted;
+  if (catKey === 'temperature' || cat.units[from].custom || cat.units[to].custom){
+    // Special handling for temperature or any custom conversion logic
+    converted = convertTemperature(val, from, to);
+  } else {
+    // Standard conversion using factors
+    const baseFrom = val * cat.units[from].factor;
+    converted = baseFrom / cat.units[to].factor;
+  }
+
+  // --- Display Results ---
+  if (!isFinite(converted)){
+    showError('خطا در محاسبه: نتیجه نامعتبر است.');
+    return;
+  }
+
+  const fromLabel = cat.units[from].label;
+  const toLabel   = cat.units[to].label;
+
+  resultValue.textContent = `${formatNumber(converted)} ${toLabel}`;
+  resultMeta.textContent  = `${formatNumber(val)} ${fromLabel} ≈ ${formatNumber(converted)} ${toLabel}`;
+  setStatus('تبدیل انجام شد', 'var(--ok)');
+
+  inputPreview.textContent = `${formatNumber(val)} ${fromLabel}`;
+
+  // Calculate and display approximate ratio
+  let ratioText = '—';
+  if (val !== 0) {
+    const ratio = converted / val; // Calculate the conversion ratio
+    if (isFinite(ratio)) {
+      // Format ratio: "1 fromUnit ≈ X toUnit"
+      ratioText = `۱ ${fromLabel} ≈ ${formatNumber(ratio)} ${toLabel}`;
+    }
+  }
+  ratioPreview.textContent = ratioText;
+
+  // Apply animations
+  resultValue.classList.remove('show');
+  resultMeta.classList.remove('show');
+  miniInput.classList.add('active'); // Show input mini-card
+  miniRatio.classList.add('active'); // Show ratio mini-card
+  void resultValue.offsetWidth; // Trigger reflow for animation
+
+  setTimeout(()=>{
+    resultValue.classList.add('show');
+    resultMeta.classList.add('show');
+  },10);
+
+  vibrate(12); // Vibrate on successful conversion
+}
+
+// Helper function to display errors
+function showError(message){
+  errorBox.classList.add('show-error');
+  errorBox.textContent = message;
+  resultValue.textContent='—';
+  resultMeta.textContent='لطفاً ورودی و تنظیمات را بررسی کنید.';
+  setStatus('خطا', 'var(--danger)');
+  inputPreview.textContent='—';
+  ratioPreview.textContent='—';
+  resultValue.classList.remove('show');
+  resultMeta.classList.remove('show');
+  miniInput.classList.remove('active');
+  miniRatio.classList.remove('active');
+}
+
+// Helper function to set status pill
+function setStatus(text, color=''){
+  statusPill.textContent = text;
+  statusPill.style.color = color;
+}
+
+// Reset all inputs and results
+function resetAll(){
+  valueInput.value='';
+  errorBox.classList.remove('show-error');
+  resultValue.textContent='—';
+  resultMeta.textContent='ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.';
+  setStatus('آماده برای تبدیل');
+  inputPreview.textContent='—';
+  ratioPreview.textContent='—';
+  resultValue.classList.remove('show');
+  resultMeta.classList.remove('show');
+  miniInput.classList.remove('active');
+  miniRatio.classList.remove('active');
+  vibrate(8);
+}
+
+// Swap units from and to
+function swapUnits(){
+  const from = fromUnitSel.value;
+  const to   = toUnitSel.value;
+  fromUnitSel.value = to;
+  toUnitSel.value   = from;
+  convert(); // Re-calculate after swapping
+  vibrate(10);
+}
+
+// Apply theme (dark or light)
+function applyTheme(theme){
+  if (theme === 'light'){
+    document.body.classList.add('light');
+    themeToggle.innerHTML = '☀️'; // Sun icon for light mode
+    themeLabel.textContent='حالت روشن';
+  } else {
+    document.body.classList.remove('light');
+    themeToggle.innerHTML = '🌙'; // Moon icon for dark mode
+    themeLabel.textContent='حالت تیره';
+  }
+}
+
+// Initialize theme from local storage or default to dark
+function initTheme(){
+  const saved = localStorage.getItem('unitConverterTheme') || 'dark';
+  applyTheme(saved);
+}
+
+// Event listener for theme toggle button
+themeToggle.addEventListener('click', ()=>{
+  const isLight = document.body.classList.toggle('light');
+  const theme = isLight ? 'light' : 'dark';
+  localStorage.setItem('unitConverterTheme', theme);
+  applyTheme(theme);
+  vibrate(15);
+});
+
+// --- Event Listeners ---
+convertBtn.addEventListener('click', convert);
+resetBtn.addEventListener('click', resetAll);
+swapBtn.addEventListener('click', swapUnits);
+
+// Input event for valueInput: clean input and trigger conversion
+valueInput.addEventListener('input', ()=>{
+  // This part now ensures only valid characters for numbers (including signs) are kept
+  const currentValue = valueInput.value;
+  const cleanedValue = currentValue
+    .replace(',', '.') // Always replace comma with dot
+    // Regex to keep digits, dot, minus, plus, and e/E for scientific notation
+    .replace(/[^0-9.\-+\eE]/g, '');
+
+  // Update the input value only if it has changed to avoid cursor jumping
+  if (valueInput.value !== cleanedValue) {
+    valueInput.value = cleanedValue;
+  }
+
+  // Trigger conversion if input is not empty
+  if (valueInput.value.trim() !== '') {
+    convert();
+  } else {
+    // If input becomes empty, reset the display
+    resetAll();
+  }
+});
+
+// Re-convert when units or category change
+fromUnitSel.addEventListener('change', convert);
+toUnitSel.addEventListener('change', convert);
+categorySel.addEventListener('change', ()=>{
+  const catKey = categorySel.value;
+  populateUnitsForCategory(catKey);
+  // Re-convert if there's already a value
+  if (valueInput.value.trim() !== '') {
+    convert();
+  } else {
+    resetAll(); // Reset if input is empty
+  }
+});
+
+// Initialize on DOM content loaded
+window.addEventListener('DOMContentLoaded', ()=>{
+  populateCategories();
+  initTheme();
+});
+</script>
+<div class="flash"></div>
+
+<div class="credit" onclick="creditClick()">
+ساخته شده توسط<span class="signature">صالح عمو✦</span>
+</div>
+
+</body>
+</html>

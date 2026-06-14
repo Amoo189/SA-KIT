@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SA Engineering Toolkit</title>
+
+<style>
+:root{
+--bg:#0b1220;
+--card:#111a2e;
+--text:#e8eefc;
+--muted:#a9b6d6;
+--accent:#6ea8fe;
+--accent2:#8b5cf6;
+--border:rgba(255,255,255,.08);
+--shadow:0 18px 60px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+
+body{
+margin:0;
+font-family:system-ui, -apple-system, sans-serif;
+background:var(--bg);
+color:var(--text);
+display:flex;
+justify-content:center;
+padding:15px;
+}
+
+.container{width:100%; max-width:550px;}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+}
+
+.title{font-size:18px; font-weight:800; color:var(--accent);}
+
+.controls{display:flex; gap:6px;}
+
+.control{
+padding:5px 10px;
+border-radius:8px;
+border:1px solid var(--border);
+cursor:pointer;
+font-size:11px;
+color:var(--muted);
+background: rgba(255,255,255,0.02);
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+box-shadow:var(--shadow);
+padding:15px;
+margin-bottom:12px;
+}
+
+.display{
+width:100%;
+height:65px;
+font-size:24px;
+border:none;
+outline:none;
+background:rgba(0,0,0,.3);
+color:var(--text);
+border-radius:12px;
+padding:12px;
+margin-bottom:12px;
+direction:ltr;
+text-align:left;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:6px;
+}
+
+button{
+padding:12px 2px;
+border-radius:10px;
+border:none;
+font-weight:700;
+cursor:pointer;
+font-size:13px;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:#071022;
+}
+
+button.op{
+background:rgba(255,255,255,.07);
+color:white;
+border:1px solid var(--border);
+}
+
+.history{
+margin-top:12px;
+font-size:11px;
+max-height:100px;
+overflow-y:auto;
+color:var(--muted);
+border-top: 1px solid var(--border);
+padding-top:8px;
+}
+
+.history div{direction:ltr; cursor:pointer; margin-bottom:5px;}
+
+/* ریسپانسیو بخش ضرایب */
+.quadRow{
+display:grid;
+grid-template-columns: repeat(3, 1fr);
+gap:8px;
+margin-bottom:10px;
+}
+
+.quadRow input{
+width:100%;
+height:40px;
+padding:8px;
+border-radius:8px;
+border:1px solid var(--border);
+background:#0a1324;
+color:white;
+text-align:center;
+font-size:14px;
+min-width: 0;
+}
+
+.eqInput{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid var(--border);
+background:#0a1324;
+color:white;
+font-size:14px;
+}
+
+.result{
+margin-top:12px;
+font-size:16px;
+direction:ltr;
+white-space:pre-line;
+color: #22c55e;
+}
+
+/* موبایل ریسپانسیو */
+@media (max-width:480px){
+    body{padding:10px;}
+    .grid{gap:4px;}
+    button{font-size:11px; padding:10px 0;}
+    .display{font-size:20px; height:55px;}
+    .title{font-size:15px;}
+    .quadRow input{height:35px; font-size:12px;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<div class="title">SA Engineering Toolkit</div>
+<div class="controls">
+<div class="control" onclick="toggleAngle()" id="angleBtn">DEG</div>
+<div class="control" onclick="toggleMode()" id="modeBtn">NORM</div>
+<div class="control" onclick="toggleSymbolic()" id="symBtn">SYM</div>
+</div>
+</header>
+
+<div class="card">
+<input id="display" class="display" value="0" readonly>
+
+<div class="grid">
+<button onclick="clearDisplay()">C</button>
+<button onclick="backspace()">⌫</button>
+<button onclick="factorial()">n!</button>
+<button onclick="press('(')" class="op">(</button>
+<button onclick="press(')')" class="op">)</button>
+<button onclick="press('/')" class="op">÷</button>
+
+<button onclick="press('7')">7</button>
+<button onclick="press('8')">8</button>
+<button onclick="press('9')">9</button>
+<button onclick="press('*')" class="op">×</button>
+<button onclick="press('sin(')" class="op">sin</button>
+<button onclick="press('cos(')" class="op">cos</button>
+
+<button onclick="press('4')">4</button>
+<button onclick="press('5')">5</button>
+<button onclick="press('6')">6</button>
+<button onclick="press('-')" class="op">−</button>
+<button onclick="press('tan(')" class="op">tan</button>
+<button onclick="press('log(')" class="op">log</button>
+
+<button onclick="press('1')">1</button>
+<button onclick="press('2')">2</button>
+<button onclick="press('3')">3</button>
+<button onclick="press('+')" class="op">+</button>
+<button onclick="press('ln(')" class="op">ln</button>
+<button onclick="press('sqrt(')" class="op">√</button>
+
+<button onclick="press('0')">0</button>
+<button onclick="press('.')">.</button>
+<button onclick="press('^')" class="op">^</button>
+<button onclick="press('pi')" class="op">π</button>
+<button onclick="press('e')" class="op">e</button>
+<button style="background:#22c55e" onclick="calculate()">=</button>
+</div>
+
+<div class="history" id="history"></div>
+</div>
+
+<div class="card">
+<h3 style="font-size:14px; margin-top:0;">حل معادله درجه ۲</h3>
+<input id="equation" class="eqInput" placeholder="x^2-5x+6=0">
+<div class="quadRow">
+<input id="qa" placeholder="a">
+<input id="qb" placeholder="b">
+<input id="qc" placeholder="c">
+</div>
+<button style="width:100%; background:var(--accent2); color:white;" onclick="solveQuadratic()">Solve</button>
+<div id="quadResult" class="result"></div>
+</div>
+
+</div>
+
+<script>
+const display=document.getElementById("display");
+const historyDiv=document.getElementById("history");
+
+let angleMode="DEG";
+let displayMode="NORM";
+let symbolic=false;
+
+function press(v){
+if(display.value==="0" && v !== '.') display.value=v;
+else display.value+=v;
+}
+
+function clearDisplay(){display.value="0"}
+
+function backspace(){
+display.value=display.value.slice(0,-1);
+if(display.value==="") display.value="0";
+}
+
+function toggleAngle(){
+angleMode=angleMode==="DEG"?"RAD":"DEG";
+angleBtn.innerText=angleMode;
+}
+
+function toggleMode(){
+const modes=["NORM","FIX","SCI","ENG"];
+let i=modes.indexOf(displayMode);
+displayMode=modes[(i+1)%modes.length];
+modeBtn.innerText=displayMode;
+}
+
+function toggleSymbolic(){
+symbolic=!symbolic;
+symBtn.innerText=symbolic?"SYM ON":"SYM";
+}
+
+function toRad(x){return angleMode==="DEG"?x*Math.PI/180:x}
+
+function cleanNumber(x){
+return Math.abs(x) < 1e-12 ? 0 : x;
+}
+
+function decimalToFraction(x){
+if(Number.isInteger(x)) return x.toString();
+let tolerance=1e-10;
+let h1=1, h2=0, k1=0, k2=1;
+let b=x;
+do{
+let a=Math.floor(b);
+let aux=h1; h1=a*h1+h2; h2=aux;
+aux=k1; k1=a*k1+k2; k2=aux;
+if (b-a === 0) break;
+b=1/(b-a);
+}while(Math.abs(x-h1/k1)>tolerance);
+return h1+"/"+k1;
+}
+
+function symbolicTrig(func, val){
+if(angleMode!=="DEG") return null;
+let v = Math.round(val % 360);
+let table={
+sin:{30:"1/2", 45:"√2/2", 60:"√3/2", 90:"1", 180:"0", 270:"-1"},
+cos:{30:"√3/2", 45:"√2/2", 60:"1/2", 90:"0", 180:"-1", 270:"0"},
+tan:{45:"1", 60:"√3", 0:"0"}
+};
+return (table[func] && table[func][v]) ? table[func][v] : null;
+}
+
+function evaluate(expr){
+expr=expr.replace(/π|pi/g,"Math.PI").replace(/\be\b/g,"Math.E").replace(/\^/g,"**");
+const sin = (x) => cleanNumber(Math.sin(toRad(x)));
+const cos = (x) => cleanNumber(Math.cos(toRad(x)));
+const tan = (x) => cleanNumber(Math.tan(toRad(x)));
+const log = (x) => Math.log10(x);
+const ln = (x) => Math.log(x);
+const sqrt = (x) => Math.sqrt(x);
+
+return cleanNumber(Function("sin","cos","tan","log","ln","sqrt", "return "+expr)(sin,cos,tan,log,ln,sqrt));
+}
+
+function calculate(){
+try{
+let exp=display.value;
+let match=exp.match(/(sin|cos|tan)\(([^)]+)\)/);
+
+if(symbolic && match){
+let func=match[1];
+let val=evaluate(match[2]);
+let sym=symbolicTrig(func,val);
+if(sym){ display.value=sym; addHistory(exp,sym); return; }
+}
+
+let res=evaluate(exp);
+let finalRes = symbolic ? decimalToFraction(res) : res.toString();
+display.value=finalRes;
+addHistory(exp,finalRes);
+}catch{ display.value="Error"; }
+}
+
+function factorial(){
+let n=parseInt(display.value);
+if(n<0)return;
+let r=1; for(let i=2;i<=n;i++)r*=i;
+display.value=r;
+}
+
+function addHistory(exp,res){
+let div=document.createElement("div");
+div.textContent=exp+" = "+res;
+div.onclick=()=>display.value=res;
+historyDiv.prepend(div);
+}
+
+function solveQuadratic(){
+let a=parseFloat(qa.value);
+let b=parseFloat(qb.value);
+let c=parseFloat(qc.value);
+let eq=document.getElementById("equation").value;
+
+if(eq && (isNaN(a) || isNaN(b) || isNaN(c))){
+eq=eq.replace(/\s+/g,'').replace("=0","");
+let matchA=eq.match(/(-?\d*)x\^2/);
+a=matchA?(matchA[1]===""||matchA[1]==="+"?1:matchA[1]==="-"?-1:parseFloat(matchA[1])):0;
+let matchB=eq.match(/([+-]?\d*)x([^^]|$)/);
+b=matchB?(matchB[1]===""||matchB[1]==="+"?1:matchB[1]==="-"?-1:parseFloat(matchB[1])):0;
+let matchC=eq.replace(/(-?\d*)x\^2/,"").replace(/([+-]?\d*)x/,"").match(/[+-]?\d+/);
+c=matchC?parseFloat(matchC[0]):0;
+}
+
+if(isNaN(a) || a===0){ quadResult.innerText="Error: a cannot be 0"; return; }
+let D=b*b-4*a*c;
+if(D>0){
+let x1=((-b+Math.sqrt(D))/(2*a)).toFixed(4);
+let x2=((-b-Math.sqrt(D))/(2*a)).toFixed(4);
+quadResult.innerText=`x1 = ${x1}\nx2 = ${x2}`;
+} else if(D===0){
+quadResult.innerText=`x = ${(-b/(2*a)).toFixed(4)}`;
+} else {
+let real=(-b/(2*a)).toFixed(4);
+let imag=(Math.sqrt(-D)/(2*a)).toFixed(4);
+quadResult.innerText=`x1 = ${real} + ${imag}i\nx2 = ${real} - ${imag}i`;
+}
+}
+</script>
+</body>
+</html>

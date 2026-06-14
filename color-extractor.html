@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>قطره‌چکان تصویر | SA-APPS</title>
+  <style>
+    @font-face{ font-family:"VazirmatnLocal"; src:url("fonts/Vazirmatn-Regular.woff2") format("woff2"); }
+    
+    :root{
+      --bg:#0b1220; --text:#e8eefc; --muted:#9fb0d0;
+      --accent:#6ea8fe; --accent2:#8b5cf6; --border:rgba(255,255,255,.08);
+      --glass:blur(14px); --shadow:0 18px 50px rgba(0,0,0,.45);
+    }
+
+    body{
+      margin:0; font-family:"VazirmatnLocal", sans-serif; background:var(--bg); color:var(--text);
+      background-image: radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 30%);
+      display:flex; justify-content:center; align-items: flex-start; padding:15px; min-height:100vh;
+      box-sizing: border-box;
+    }
+
+    .panel{
+      width: 100%; max-width: 800px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid var(--border); backdrop-filter: var(--glass);
+      border-radius: 24px; padding: 20px; box-shadow: var(--shadow);
+    }
+
+    /* Header Responsive */
+    .header{ display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .badge{ width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: grid; place-items: center; flex-shrink: 0; }
+    
+    .upload-box{
+      border: 2px dashed var(--border); border-radius: 18px; padding: 30px 15px;
+      text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02);
+      display: block;
+    }
+    
+    #canvasContainer { 
+      position: relative; margin-top: 15px; display: none; 
+      width: 100%; overflow: hidden; border-radius: 15px;
+    }
+    
+    canvas { 
+      max-width: 100%; height: auto; /* ریسپانسیو کردن عکس */
+      display: block; margin: 0 auto; cursor: crosshair; 
+      border-radius: 12px;
+    }
+    
+    /* Result Row Responsive */
+    .result-row{
+      display: flex; flex-direction: column; align-items: center; gap: 15px;
+      margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.04); 
+      border-radius: 18px; text-align: center;
+    }
+
+    /* تغییر چیدمان در دسکتاپ */
+    @media (min-width: 600px) {
+      .panel { padding: 30px; }
+      .result-row { flex-direction: row; text-align: right; justify-content: space-between; }
+      .header h1 { font-size: 24px; }
+    }
+
+    .color-preview{ width: 50px; height: 50px; border-radius: 10px; border: 2px solid var(--border); flex-shrink: 0; }
+    .color-codes{ flex: 1; }
+    .code-item{ font-family: monospace; font-size: 20px; color: var(--accent); margin-bottom: 4px; }
+
+    .btn-copy {
+      background: var(--accent); color: #000; border: none; font-weight: bold;
+      padding: 10px 20px; border-radius: 10px; cursor: pointer; width: 100%;
+    }
+    @media (min-width: 600px) { .btn-copy { width: auto; } }
+
+    .footer-name { text-align: center; margin-top: 25px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 15px; }
+    input[type="file"] { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="panel">
+    <div class="header">
+      <div class="badge">SA</div>
+      <div>
+        <h1 style="margin:0; font-size:18px;">قطره‌چکان تصویر</h1>
+        <p style="margin:0; font-size:12px; color:var(--muted);">رنگ‌ها را از تصاویر استخراج کنید</p>
+      </div>
+    </div>
+
+    <label class="upload-box" id="dropZone">
+      <input type="file" id="imageInput" accept="image/*">
+      <div style="font-size: 32px; margin-bottom: 10px;">🖼️</div>
+      <p style="margin:0; font-size: 14px;">برای انتخاب تصویر ضربه بزنید</p>
+    </label>
+
+    <div id="canvasContainer">
+      <canvas id="canvas"></canvas>
+      <p style="font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center;">روی هر قسمت از تصویر کلیک کنید</p>
+    </div>
+
+    <div class="result-row" id="resultRow" style="display: none;">
+      <div class="color-preview" id="colorPreview"></div>
+      <div class="color-codes">
+        <div class="code-item" id="hexCode">#000000</div>
+        <div id="rgbCode" style="font-size: 12px; color: var(--muted);">rgb(0, 0, 0)</div>
+      </div>
+      <button class="btn-copy" onclick="copyText()">کپی کد</button>
+    </div>
+
+    <div class="footer-name">
+       SA‑APPS | ساخته شده توسط صالح عمو
+    </div>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const canvasContainer = document.getElementById('canvasContainer');
+    const resultRow = document.getElementById('resultRow');
+    const colorPreview = document.getElementById('colorPreview');
+    const hexCode = document.getElementById('hexCode');
+    const rgbCode = document.getElementById('rgbCode');
+
+    imageInput.addEventListener('change', function(e) {
+      if(!e.target.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          // تنظیم ابعاد بوم بر اساس تصویر اصلی
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          canvasContainer.style.display = 'block';
+          document.getElementById('dropZone').style.display = 'none';
+          
+          // اسکرول نرم به سمت تصویر در موبایل
+          canvasContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        img.src = event.target.result;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+    canvas.addEventListener('click', function(e) {
+      const rect = canvas.getBoundingClientRect();
+      
+      // محاسبه نسبت اندازه واقعی تصویر به اندازه نمایش داده شده (برای ریسپانسیو بودن)
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+      
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const r = pixel[0], g = pixel[1], b = pixel[2];
+      const hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+      
+      resultRow.style.display = 'flex';
+      colorPreview.style.background = hex;
+      hexCode.innerText = hex;
+      rgbCode.innerText = `rgb(${r}, ${g}, ${b})`;
+    });
+
+    function copyText() {
+      const text = hexCode.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        const originalText = btn.innerText;
+        btn.innerText = "کپی شد! ✅";
+        btn.style.background = "#4ade80";
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = "var(--accent)";
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

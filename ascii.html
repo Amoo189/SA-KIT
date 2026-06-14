@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SA-Text Art & Divider Generator</title>
+    <style>
+        /* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #282c34; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #3a3f47; /* Slightly lighter dark */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+h1, h2 {
+    color: #61dafb; /* React blue for headings */
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 30px;
+    border-top: 1px solid #4a4f57;
+    padding-top: 20px;
+}
+
+/* Controls */
+.controls, .divider-options {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #282c34;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 180px;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #4a4f57;
+    border-radius: 5px;
+    background-color: #3a3f47;
+    color: #e0e0e0;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+    color: #888;
+}
+
+button {
+    background-color: #61dafb;
+    color: #282c34;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px; /* Adjust margin for buttons below controls */
+}
+
+button:hover {
+    background-color: #21a1f1; /* Darker blue on hover */
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background-color: #4a4f57;
+    cursor: not-allowed;
+    color: #aaa;
+}
+
+/* Output Area */
+.output-area, .divider-generator .output-area { /* Ensure styles apply to both */
+    margin-top: 20px;
+    text-align: center;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: 'Courier New', Courier, monospace; /* Monospaced font for code/art */
+    font-size: 1.1rem;
+    text-align: right; /* Align text to the right for Persian */
+    white-space: pre; /* Preserve whitespace and line breaks */
+    direction: ltr; /* Force LTR for the textarea content itself */
+}
+
+#preview-area {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #3a3f47;
+    border-radius: 8px;
+    min-height: 50px;
+    font-size: 1.2rem;
+    white-space: pre-wrap; /* Wrap long lines */
+    word-break: break-all; /* Break long words */
+    text-align: center;
+    direction: ltr; /* Force LTR for preview content */
+}
+
+/* Divider Specific Styles */
+.divider-generator {
+    margin-top: 40px;
+}
+
+#divider-output-textarea {
+    font-size: 1.3rem; /* Larger font for dividers */
+    min-height: 60px;
+}
+
+/* Info Section */
+.info-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #282c34;
+    border-radius: 8px;
+    text-align: justify;
+    font-size: 0.95rem;
+    border: 1px solid #4a4f57;
+}
+
+.info-section h2 {
+    color: #e0e0e0;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    .controls, .divider-options {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .control-group {
+        width: 100%;
+        min-width: auto;
+    }
+    button {
+        width: 100%;
+    }
+}
+.fade-out{
+
+opacity:0;
+
+transition:.4s ease;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>ژنراتور Text Art و Divider</h1>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="text-input">متن خود را وارد کنید:</label>
+                <input type="text" id="text-input" placeholder="مثال: Hello World">
+            </div>
+
+            <div class="control-group">
+                <label for="style-select">سبک فونت:</label>
+                <select id="style-select">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <button id="generate-btn">تولید طرح</button>
+            <button id="copy-btn" disabled>کپی طرح</button>
+        </div>
+
+        <div class="output-area">
+            <label>طرح تولید شده:</label>
+            <textarea id="output-textarea" readonly placeholder="طرح شما اینجا نمایش داده می‌شود..."></textarea>
+            <div id="preview-area"></div>
+        </div>
+
+        <div class="divider-generator">
+            <h2>ساخت Divider</h2>
+            <div class="divider-options">
+                <div class="control-group">
+                    <label for="divider-char-select">کاراکتر اصلی:</label>
+                    <select id="divider-char-select">
+                        <option value="┄">┄ (خط)</option>
+                        <option value="═">═ (خط ضخیم)</option>
+                        <option value="•">• (نقطه)</option>
+                        <option value="*">★ (ستاره)</option>
+                        <option value="✦">✦ (الماس)</option>
+                        <option value="✧">✧ (الماس کوچک)</option>
+                        <option value="❉">❉ (گل)</option>
+                        <option value="▓">▓ (بلوک)</option>
+                        <option value="░">░ (نقطه کمرنگ)</option>
+                        <option value="━">━ (خط)</option>
+                        <option value="┅">┅ (خط چین)</option>
+                        <option value="⋮">⋮ (سه نقطه)</option>
+                        <option value="►">► (مثلث)</option>
+                        <option value="█">█ (بلوک)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="divider-length">طول (کاراکتر):</label>
+                    <input type="number" id="divider-length" value="40" min="10" max="100">
+                </div>
+                <div class="control-group">
+                    <label for="divider-center-char">کاراکتر مرکزی (اختیاری):</label>
+                    <input type="text" id="divider-center-char" placeholder="مثال: ✦">
+                </div>
+            </div>
+            <button id="generate-divider-btn">ساخت Divider</button>
+            <textarea id="divider-output-textarea" readonly placeholder="Divider شما اینجا نمایش داده می‌شود..."></textarea>
+            <button id="copy-divider-btn" disabled>کپی Divider</button>
+        </div>
+
+        <div class="info-section">
+            <h2>درباره</h2>
+            <p>این ابزار به شما کمک می‌کند تا Text Art های فانتزی و Dividerهای گرافیکی با استفاده از کاراکترهای یونیکد بسازید. استایل‌های مختلفی برای نام یا متن شما وجود دارد و می‌توانید Dividerهای سفارشی با طول و کاراکترهای دلخواه ایجاد کنید.</p>
+        </div>
+    </div>
+    <script>
+
+function goHome(){
+
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const textInput = document.getElementById('text-input');
+    const styleSelect = document.getElementById('style-select');
+    const generateBtn = document.getElementById('generate-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const outputTextarea = document.getElementById('output-textarea');
+    const previewArea = document.getElementById('preview-area');
+
+    const dividerCharSelect = document.getElementById('divider-char-select');
+    const dividerLengthInput = document.getElementById('divider-length');
+    const dividerCenterCharInput = document.getElementById('divider-center-char');
+    const generateDividerBtn = document.getElementById('generate-divider-btn');
+    const dividerOutputTextarea = document.getElementById('divider-output-textarea');
+    const copyDividerBtn = document.getElementById('copy-divider-btn');
+
+    // Text Art Styles (Unicode based)
+    const styles = {
+        "Fancy": (text) => `✦ ${text.split('').join(' ')} ✦`,
+        "Bold Fancy": (text) => `🌟 ${text.split('').join(' ')} 🌟`,
+        "Outline": (text) => `▓▓▓▓▓▓ ${text} ▓▓▓▓▓▓`,
+        "Boxed": (text) => `╭─── ${text} ───╮\n│              │\n╰──────────────╯`,
+        "Double Box": (text) => `╔═══ ${text} ═══╗\n║             ║\n╚═════════════╝`,
+        "Minimalist": (text) => `─── ${text} ───`,
+        "Elegant": (text) => `┄┄┄┅┅ ${text} ┅┅┄┄┄`,
+        "Diamond": (text) => `✧･ﾟ: *✧･ﾟ:${text}:･ﾟ✧*:･ﾟ✧`,
+        "Flower": (text) => `✿*:･ﾟ✿*:･ﾟ ${text} ﾟ･:*✿ﾟ･:*✿`,
+        "Long Divider": (text) => `════════════════ ${text} ════════════════`,
+        "Awesome": (text) => `⋘ ──── ✦ ❉ ✦ ──── ⋙ ${text} ⋘ ──── ✦ ❉ ✦ ──── ⋙`,
+        "Minimal Dash": (text) => ` - ${text} - `,
+        "Dotted Line": (text) => `••••• ${text} •••••`,
+        "Arrow Divider": (text) => `►►► ${text} ◄◄◄`,
+        "Blocky": (text) => `████ ${text} ████`,
+    };
+
+    // Populate style select dropdown
+    Object.keys(styles).forEach(styleName => {
+        const option = document.createElement('option');
+        option.value = styleName;
+        option.textContent = styleName;
+        styleSelect.appendChild(option);
+    });
+
+    // Generate Text Art
+    generateBtn.addEventListener('click', () => {
+        const text = textInput.value.trim();
+        const selectedStyle = styleSelect.value;
+
+        if (!text) {
+            alert("لطفا متنی را برای تبدیل وارد کنید.");
+            return;
+        }
+        if (!styles[selectedStyle]) {
+            alert("سبک انتخاب شده معتبر نیست.");
+            return;
+        }
+
+        const generatedArt = styles[selectedStyle](text);
+        outputTextarea.value = generatedArt;
+        previewArea.textContent = generatedArt; // Show in preview too
+        copyBtn.disabled = false;
+    });
+
+    // Copy Text Art
+    copyBtn.addEventListener('click', () => {
+        if (!outputTextarea.value) return;
+        outputTextarea.select();
+        document.execCommand('copy');
+        alert('طرح کپی شد!');
+    });
+
+    // Generate Divider
+    generateDividerBtn.addEventListener('click', () => {
+        const char = dividerCharSelect.value;
+        const length = parseInt(dividerLengthInput.value, 10);
+        const centerChar = dividerCenterCharInput.value.trim();
+
+        if (isNaN(length) || length < 10 || length > 100) {
+            alert("طول Divider باید بین ۱۰ تا ۱۰۰ باشد.");
+            return;
+        }
+
+        let divider = '';
+        const numChars = centerChar ? length - centerChar.length : length;
+        const sideLength = Math.floor(numChars / 2);
+
+        // Construct the divider string
+        if (centerChar) {
+            // Ensure remaining characters are distributed if odd total length
+            const leftSideLength = Math.floor((numChars) / 2);
+            const rightSideLength = numChars - leftSideLength;
+
+            divider = char.repeat(leftSideLength) + centerChar + char.repeat(rightSideLength);
+        } else {
+            divider = char.repeat(length);
+        }
+
+        // Add surrounding characters if center is not used, or to make it a divider
+        // Example: ┄┄┄┄┄ [TEXT] ┄┄┄┄┄
+        // Here we just generate the divider line itself, no text within.
+        // If you want text INSIDE the divider, you'd need a different logic,
+        // similar to the Text Art section.
+        // This part generates a LINE divider.
+        dividerOutputTextarea.value = divider;
+        copyDividerBtn.disabled = false;
+    });
+
+    // Copy Divider
+    copyDividerBtn.addEventListener('click', () => {
+        if (!dividerOutputTextarea.value) return;
+        dividerOutputTextarea.select();
+        document.execCommand('copy');
+        alert('Divider کپی شد!');
+    });
+
+    // Initial setup: Generate a default Text Art and Divider on load
+    if (textInput.value) {
+        generateBtn.click(); // Simulate click to generate default
+    }
+    generateDividerBtn.click(); // Simulate click to generate default divider
+});
+
+    </script>
+</body>
+</html>

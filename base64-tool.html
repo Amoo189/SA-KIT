@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base64 Encoder/Decoder - SA-APPS</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+      --bg-light:#f0f4f9;
+      --text-light:#1a202c;
+      --muted-light:#6b7280;
+      --border-light:rgba(0,0,0,.12);
+      --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+
+    body.light-mode{
+      --bg:var(--bg-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+      --border:var(--border-light);
+      --shadow:var(--shadow-light);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+        linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"VazirmatnLocal", sans-serif;
+      background:#0b1220;
+      background-image:
+        radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      color:var(--text);
+      transition:.3s ease;
+    }
+
+    .container{
+      width:min(1100px,100%);
+      margin:auto;
+      padding:20px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .light-mode .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+
+    h1{ margin:0; font-size:24px; }
+    .sub{ margin-top:6px; color:var(--muted); font-size:14px; }
+
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:14px;
+      cursor:pointer;
+      font-family:inherit;
+      padding:11px 16px;
+      text-decoration:none;
+      transition:.25s ease;
+    }
+
+    .light-mode .btn{
+      background:rgba(0,0,0,.05);
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .box{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:18px;
+    }
+
+    .light-mode .box{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .box h2{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:240px;
+      resize:vertical;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      border-radius:18px;
+      padding:14px;
+      outline:none;
+      font-family:inherit;
+      line-height:1.9;
+      font-size:14px;
+    }
+
+    .light-mode textarea{
+      background:rgba(0,0,0,.04);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .status{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:14px;
+      min-height:24px;
+    }
+
+    @media (max-width:780px){
+      .grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel">
+      <div class="topbar">
+        <div>
+          <h1>رمزگذار / رمزگشای Base64</h1>
+          <div class="sub">تبدیل متن به Base64 و بازگردانی آن با پشتیبانی از متن فارسی</div>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn" onclick="toggleTheme()">تغییر تم</button>
+          <a class="btn" href="index.html">بازگشت</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="box">
+          <h2>ورودی</h2>
+          <textarea id="inputText" placeholder="متن یا Base64 را اینجا وارد کنید..."></textarea>
+          <div class="actions">
+            <button class="btn" onclick="encodeText()">Encode</button>
+            <button class="btn" onclick="decodeText()">Decode</button>
+            <button class="btn" onclick="clearAll()">پاک کردن</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <h2>خروجی</h2>
+          <textarea id="outputText" readonly placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+          <div class="actions">
+            <button class="btn" onclick="copyOutput()">کپی خروجی</button>
+            <button class="btn" onclick="swapTexts()">جابه‌جایی ورودی و خروجی</button>
+          </div>
+          <div class="status" id="status"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const themeKey = "sa-apps-theme";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme(localStorage.getItem(themeKey) || "dark");
+    });
+
+    function applyTheme(theme){
+      document.body.classList.remove("dark-mode","light-mode");
+      document.body.classList.add(`${theme}-mode`);
+      localStorage.setItem(themeKey, theme);
+    }
+
+    function toggleTheme(){
+      const isDark = document.body.classList.contains("dark-mode");
+      applyTheme(isDark ? "light" : "dark");
+    }
+
+    function setStatus(text){
+      document.getElementById("status").textContent = text;
+    }
+
+    function encodeText(){
+      const input = document.getElementById("inputText").value;
+      try{
+        const encoded = btoa(unescape(encodeURIComponent(input)));
+        document.getElementById("outputText").value = encoded;
+        setStatus("متن با موفقیت به Base64 تبدیل شد.");
+      }catch{
+        setStatus("خطا در تبدیل متن.");
+      }
+    }
+
+    function decodeText(){
+      const input = document.getElementById("inputText").value.trim();
+      try{
+        const decoded = decodeURIComponent(escape(atob(input)));
+        document.getElementById("outputText").value = decoded;
+        setStatus("Base64 با موفقیت Decode شد.");
+      }catch{
+        setStatus("ورودی Base64 معتبر نیست.");
+      }
+    }
+
+    function copyOutput(){
+      const output = document.getElementById("outputText").value;
+      if(!output.trim()){
+        setStatus("خروجی خالی است.");
+        return;
+      }
+      navigator.clipboard.writeText(output)
+        .then(() => setStatus("خروجی کپی شد."))
+        .catch(() => setStatus("خطا در کپی کردن."));
+    }
+
+    function clearAll(){
+      document.getElementById("inputText").value = "";
+      document.getElementById("outputText").value = "";
+      setStatus("");
+    }
+
+    function swapTexts(){
+      const input = document.getElementById("inputText");
+      const output = document.getElementById("outputText");
+      const temp = input.value;
+      input.value = output.value;
+      output.value = temp;
+      setStatus("ورودی و خروجی جابه‌جا شدند.");
+    }
+  </script>
+</body>
+</html>

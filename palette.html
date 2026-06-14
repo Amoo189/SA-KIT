@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>رنگ‌شناس و پالت‌ساز | SA-APPS</title>
+  <style>
+    :root {
+      --bg-1: #0f172a;
+      --bg-2: #1e293b;
+      --glass-bg: rgba(255,255,255,0.08);
+      --glass-strong: rgba(255,255,255,0.12);
+      --glass-border: rgba(255,255,255,0.16);
+      --text: #ffffff;
+      --muted: #cbd5e1;
+      --primary: #6366f1;
+      --primary-2: #8b5cf6;
+      --success: #22c55e;
+      --shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Tahoma, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(99,102,241,0.20), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(139,92,246,0.18), transparent 30%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      padding: 18px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .app-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 30px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.25));
+      border: 1px solid var(--glass-border);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .color-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .color-preview {
+      height: 90px;
+      width: 100%;
+    }
+
+    .color-info {
+      padding: 14px;
+    }
+
+    .color-code {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .rgb-code {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      color: white;
+      transition: 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    .btn-copy {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
+      flex: 1;
+    }
+
+    .btn-copy.copied {
+      background: rgba(34,197,94,0.18);
+      border-color: rgba(34,197,94,0.35);
+      color: #bbf7d0;
+    }
+
+    .status {
+      text-align: center;
+      min-height: 20px;
+      margin-top: 14px;
+      color: #93c5fd;
+      font-size: 13px;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      text-decoration: none;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .palette {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app-card">
+      <div class="header">
+        <div class="icon">🎨</div>
+        <h1>رنگ‌شناس و پالت‌ساز</h1>
+        <div class="subtitle">
+          تولید پالت رنگی تصادفی، مشاهده کد رنگ و کپی سریع برای طراحی و برنامه‌نویسی
+        </div>
+      </div>
+
+      <div class="palette" id="palette"></div>
+
+      <button class="btn-main" onclick="generatePalette()">ساخت پالت جدید</button>
+      <div class="status" id="statusText"></div>
+
+      <a class="back-link" href="index.html">← بازگشت به لانچر</a>
+    </div>
+  </div>
+
+  <script>
+    const paletteEl = document.getElementById("palette");
+    const statusText = document.getElementById("statusText");
+
+    function randomColor() {
+      const hex = "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
+      return hex.toUpperCase();
+    }
+
+    function hexToRgb(hex) {
+      const clean = hex.replace("#", "");
+      const bigint = parseInt(clean, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `RGB(${r}, ${g}, ${b})`;
+    }
+
+    function setStatus(message, color = "#93c5fd") {
+      statusText.textContent = message;
+      statusText.style.color = color;
+    }
+
+    async function copyText(text, button) {
+      try {
+        await navigator.clipboard.writeText(text);
+        const oldText = button.textContent;
+        button.textContent = "کپی شد";
+        button.classList.add("copied");
+        setStatus(`${text} کپی شد`, "#86efac");
+
+        setTimeout(() => {
+          button.textContent = oldText;
+          button.classList.remove("copied");
+        }, 1200);
+      } catch (e) {
+        setStatus("کپی انجام نشد", "#fca5a5");
+      }
+    }
+
+    function createColorCard(hex) {
+      const rgb = hexToRgb(hex);
+
+      const card = document.createElement("div");
+      card.className = "color-card";
+
+      card.innerHTML = `
+        <div class="color-preview" style="background:${hex}"></div>
+        <div class="color-info">
+          <div class="color-code">${hex}</div>
+          <div class="rgb-code">${rgb}</div>
+          <div class="btn-row">
+            <button class="btn-copy">کپی Hex</button>
+            <button class="btn-copy">کپی RGB</button>
+          </div>
+        </div>
+      `;
+
+      const buttons = card.querySelectorAll(".btn-copy");
+      buttons[0].addEventListener("click", () => copyText(hex, buttons[0]));
+      buttons[1].addEventListener("click", () => copyText(rgb, buttons[1]));
+
+      return card;
+    }
+
+    function generatePalette() {
+      paletteEl.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        const hex = randomColor();
+        paletteEl.appendChild(createColorCard(hex));
+      }
+      setStatus("پالت جدید ساخته شد", "#93c5fd");
+    }
+
+    generatePalette();
+  </script>
+</body>
+</html>

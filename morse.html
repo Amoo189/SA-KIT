@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مترجم مورس دو زبانه - SA</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400; font-style:normal; font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220; --bg2:#0f172a; --text:#e8eefc; --muted:#9fb0d0;
+      --accent:#6ea8fe; --accent2:#8b5cf6; --border:rgba(255,255,255,.08);
+      --glass:blur(14px); --radius:24px; --shadow:0 18px 50px rgba(0,0,0,.45);
+    }
+
+    body.light-mode {
+      --bg:#f0f4f9; --text:#1a202c; --muted:#6b7280; --border:rgba(0,0,0,.12);
+    }
+
+    body {
+      margin:0; padding:20px; font-family:"VazirmatnLocal", sans-serif;
+      background:var(--bg); color:var(--text); min-height:100vh;
+      background-image: radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 30%);
+      transition: 0.3s;
+    }
+
+    .container { width:min(850px, 100%); margin:auto; }
+
+    .back-btn {
+      display:inline-flex; align-items:center; gap:8px; color:var(--accent);
+      text-decoration:none; margin-bottom:20px; font-weight:bold;
+    }
+
+    .panel {
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border); backdrop-filter:var(--glass);
+      border-radius:32px; padding:30px; box-shadow:var(--shadow);
+    }
+
+    .grid-io { display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px; }
+    @media (max-width: 650px) { .grid-io { grid-template-columns: 1fr; } }
+
+    .io-box { display:flex; flex-direction:column; gap:8px; }
+    label { font-size:13px; color:var(--muted); font-weight:bold; }
+
+    textarea {
+      width:100%; min-height:140px; background:rgba(255,255,255,0.05);
+      border:1px solid var(--border); border-radius:18px; padding:15px;
+      color:var(--text); font-family:inherit; font-size:18px; resize:none;
+      outline:none; transition: 0.3s; box-sizing: border-box;
+    }
+    textarea:focus { border-color:var(--accent); background:rgba(255,255,255,0.08); }
+
+    .visualizer-container {
+      display:flex; justify-content:center; align-items:center; margin:20px 0; gap:15px;
+      background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px;
+    }
+    .signal-lamp {
+      width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.1);
+      border:2px solid var(--border); transition: 0.05s;
+    }
+    .signal-lamp.active {
+      background:var(--accent); box-shadow: 0 0 25px var(--accent);
+    }
+
+    .settings-panel {
+      display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:25px;
+    }
+
+    .btn {
+      flex:1; padding:15px; border-radius:16px; border:1px solid var(--border);
+      background:rgba(255,255,255,.05); color:var(--text); cursor:pointer;
+      font-family:inherit; font-weight:bold; transition:0.3s; display:flex;
+      align-items:center; justify-content:center; gap:8px;
+    }
+    .btn.primary { background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; border:none; }
+    .btn:hover:not(:disabled) { transform:translateY(-2px); border-color:var(--accent); }
+    
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+  </style>
+</head>
+<body class="dark-mode">
+  <div class="container">
+    <a href="index.html" class="back-btn"> ← بازگشت به برنامه‌ها</a>
+
+    <div class="panel">
+      <h1><span>📟</span> مترجم مورس (فارسی + انگلیسی)</h1>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">
+        متن را به هر زبانی (فارسی یا انگلیسی) بنویسید، سیستم به‌طور خودکار آن را به کد مورس تبدیل می‌کند.
+      </p>
+
+      <div class="grid-io">
+        <div class="io-box">
+          <label>متن (فارسی یا انگلیسی)</label>
+          <textarea id="textInput" placeholder="سلام / Hello" oninput="translateToMorse()"></textarea>
+        </div>
+        <div class="io-box">
+          <label>کد مورس</label>
+          <textarea id="morseInput" dir="ltr" placeholder=".... . .-.. .-.. ---" oninput="translateToText()"></textarea>
+        </div>
+      </div>
+
+      <div class="settings-panel">
+        <div>
+          <label>سرعت پخش (WPM)</label>
+          <input type="range" id="wpmRate" min="5" max="40" value="18">
+        </div>
+        <div>
+          <label>فرکانس (Hz)</label>
+          <input type="range" id="freqRate" min="400" max="1000" step="50" value="700">
+        </div>
+      </div>
+
+      <div class="visualizer-container">
+        <div class="signal-lamp" id="lamp"></div>
+        <span id="charDisplay" style="font-size:24px; font-weight:bold; color:var(--accent)">-</span>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="btn primary" id="playBtn" onclick="playMorse()">🔊 پخش آفلاین</button>
+        <button class="btn" id="stopBtn" onclick="stopMorse()" disabled>⏹️ توقف</button>
+        <button class="btn" onclick="copyMorse()">📋 کپی کد</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if(localStorage.getItem("sa-apps-theme") === "light") document.body.classList.replace("dark-mode", "light-mode");
+
+    const morseDict = {
+      // انگلیسی
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
+      'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
+      'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+      'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
+      '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/',
+      // فارسی
+      'ا': '.-', 'آ': '.-', 'ب': '-...', 'پ': '.--.', 'ت': '-', 'ث': '-.-.', 'ج': '.---', 'چ': '---.',
+      'ح': '....', 'خ': '---', 'د': '-..', 'ذ': '...-', 'ر': '.-.', 'ز': '--..', 'ژ': '--.-', 'س': '...',
+      'ش': '----', 'ص': '-..-', 'ض': '...-..', 'ط': '..-', 'ظ': '-.--', 'ع': '---...', 'غ': '--.',
+      'ف': '..-.', 'ق': '--.-', 'ک': '-.-', 'گ': '--.', 'ل': '.-..', 'م': '--', 'ن': '-.', 'و': '.--',
+      'ه': '..', 'ی': '..', 'ئ': '..', ' ': '/'
+    };
+
+    const reverseDict = Object.fromEntries(Object.entries(morseDict).map(([k, v]) => [v, k]));
+
+    const textInput = document.getElementById('textInput');
+    const morseInput = document.getElementById('morseInput');
+    const lamp = document.getElementById('lamp');
+    const charDisplay = document.getElementById('charDisplay');
+
+    function translateToMorse() {
+      const text = textInput.value.toUpperCase();
+      let output = [];
+      for (let char of text) {
+        output.push(morseDict[char] || '?');
+      }
+      morseInput.value = output.join(' ');
+    }
+
+    function translateToText() {
+      const codes = morseInput.value.trim().split(/\s+/);
+      let output = codes.map(code => reverseDict[code] || '?');
+      textInput.value = output.join('');
+    }
+
+    let audioCtx = null;
+    let timeouts = [];
+
+    function playMorse() {
+      stopMorse();
+      const code = morseInput.value;
+      if(!code) return;
+
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      const wpm = parseInt(document.getElementById('wpmRate').value);
+      const dotTime = 1200 / wpm;
+      let time = 0;
+
+      document.getElementById('playBtn').disabled = true;
+      document.getElementById('stopBtn').disabled = false;
+
+      code.split('').forEach((symbol, index) => {
+        let duration = 0;
+        if (symbol === '.') duration = dotTime;
+        else if (symbol === '-') duration = dotTime * 3;
+        else if (symbol === ' ') time += dotTime * 2;
+        else if (symbol === '/') time += dotTime * 4;
+
+        if (duration > 0) {
+          const t1 = setTimeout(() => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.frequency.value = document.getElementById('freqRate').value;
+            osc.connect(g); g.connect(audioCtx.destination);
+            g.gain.value = 0.2;
+            osc.start();
+            lamp.classList.add('active');
+            setTimeout(() => { osc.stop(); lamp.classList.remove('active'); }, duration);
+          }, time);
+          timeouts.push(t1);
+          time += duration + dotTime;
+        }
+      });
+
+      timeouts.push(setTimeout(stopMorse, time));
+    }
+
+    function stopMorse() {
+      timeouts.forEach(clearTimeout);
+      timeouts = [];
+      lamp.classList.remove('active');
+      document.getElementById('playBtn').disabled = false;
+      document.getElementById('stopBtn').disabled = true;
+    }
+
+    function copyMorse() {
+      morseInput.select();
+      document.execCommand('copy');
+    }
+  </script>
+</body>
+</html>

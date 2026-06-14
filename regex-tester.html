@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Tester - SA-APPS</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+
+      --bg-light:#f0f4f9;
+      --text-light:#1a202c;
+      --muted-light:#6b7280;
+      --border-light:rgba(0,0,0,.12);
+      --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+
+    body.light-mode{
+      --bg:var(--bg-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+      --border:var(--border-light);
+      --shadow:var(--shadow-light);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+        linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"VazirmatnLocal", sans-serif;
+      background:#0b1220;
+      background-image:
+        radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      color:var(--text);
+    }
+
+    .container{
+      width:min(1120px,100%);
+      margin:auto;
+      padding:20px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .light-mode .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+
+    .topbar h1{
+      margin:0;
+      font-size:24px;
+    }
+
+    .topbar p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:14px;
+      cursor:pointer;
+      font-family:inherit;
+      padding:11px 16px;
+      text-decoration:none;
+      transition:.25s ease;
+    }
+
+    .light-mode .btn{
+      background:rgba(0,0,0,.05);
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .box{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:18px;
+    }
+
+    .light-mode .box{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .box h2{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+
+    input[type="text"], textarea{
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      border-radius:16px;
+      padding:12px 14px;
+      outline:none;
+      font-family:inherit;
+      font-size:14px;
+    }
+
+    .light-mode input[type="text"], .light-mode textarea{
+      background:rgba(0,0,0,.04);
+    }
+
+    textarea{
+      min-height:220px;
+      resize:vertical;
+      line-height:1.9;
+      margin-top:12px;
+    }
+
+    .flags{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .flags label{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .results{
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      min-height:80px;
+      white-space:pre-wrap;
+      line-height:1.9;
+      font-size:14px;
+    }
+
+    .light-mode .results{
+      background:rgba(0,0,0,.03);
+    }
+
+    @media (max-width:850px){
+      .grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel">
+      <div class="topbar">
+        <div>
+          <h1>تست‌کننده Regex</h1>
+          <p>بررسی الگوهای Regular Expression و نمایش نتایج تطبیق</p>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn" onclick="toggleTheme()">تغییر تم</button>
+          <a class="btn" href="index.html">بازگشت</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="box">
+          <h2>ورودی</h2>
+          <input type="text" id="pattern" placeholder="الگو را وارد کنید. مثال: \\d+" />
+          <div class="flags">
+            <label><input type="checkbox" id="flagG" checked> g</label>
+            <label><input type="checkbox" id="flagI"> i</label>
+            <label><input type="checkbox" id="flagM"> m</label>
+          </div>
+          <textarea id="testText" placeholder="متن مورد بررسی را اینجا وارد کنید..."></textarea>
+
+          <div class="actions">
+            <button class="btn" onclick="runRegex()">اجرای Regex</button>
+            <button class="btn" onclick="loadExample()">مثال</button>
+            <button class="btn" onclick="clearAll()">پاک کردن</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <h2>نتیجه</h2>
+          <div class="results" id="results">هنوز چیزی بررسی نشده است.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const themeKey = "sa-apps-theme";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme(localStorage.getItem(themeKey) || "dark");
+    });
+
+    function applyTheme(theme){
+      document.body.classList.remove("dark-mode","light-mode");
+      document.body.classList.add(`${theme}-mode`);
+      localStorage.setItem(themeKey, theme);
+    }
+
+    function toggleTheme(){
+      const isDark = document.body.classList.contains("dark-mode");
+      applyTheme(isDark ? "light" : "dark");
+    }
+
+    function getFlags(){
+      let flags = "";
+      if(document.getElementById("flagG").checked) flags += "g";
+      if(document.getElementById("flagI").checked) flags += "i";
+      if(document.getElementById("flagM").checked) flags += "m";
+      return flags;
+    }
+
+    function runRegex(){
+      const pattern = document.getElementById("pattern").value;
+      const text = document.getElementById("testText").value;
+      const results = document.getElementById("results");
+
+      if(!pattern.trim()){
+        results.textContent = "لطفاً یک الگو وارد کنید.";
+        return;
+      }
+
+      try{
+        const regex = new RegExp(pattern, getFlags());
+        const matches = [...text.matchAll(regex)];
+
+        if(matches.length === 0){
+          results.textContent = "هیچ تطبیقی پیدا نشد.";
+          return;
+        }
+
+        let output = `تعداد تطبیق‌ها: ${matches.length}\n\n`;
+        matches.forEach((match, index) => {
+          output += `#${index + 1}\n`;
+          output += `مقدار: ${match[0]}\n`;
+          output += `اندیس: ${match.index}\n\n`;
+        });
+
+        results.textContent = output;
+      }catch(error){
+        results.textContent = "Regex نامعتبر است:\n" + error.message;
+      }
+    }
+
+    function loadExample(){
+      document.getElementById("pattern").value = "\\d+";
+      document.getElementById("testText").value = "شماره سفارش 1258 و کد پیگیری 90231 ثبت شد.";
+      document.getElementById("flagG").checked = true;
+      document.getElementById("flagI").checked = false;
+      document.getElementById("flagM").checked = false;
+      runRegex();
+    }
+
+    function clearAll(){
+      document.getElementById("pattern").value = "";
+      document.getElementById("testText").value = "";
+      document.getElementById("results").textContent = "هنوز چیزی بررسی نشده است.";
+    }
+  </script>
+</body>
+</html>

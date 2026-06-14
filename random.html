@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تولید عدد تصادفی | SA‑APPS</title>
+
+<style>
+
+:root{
+--bg:#0b1220;
+--text:#e8eefc;
+--muted:#9fb0d0;
+--accent:#6ea8fe;
+--accent2:#8b5cf6;
+--border:rgba(255,255,255,.08);
+--glass:blur(14px);
+}
+
+body{
+margin:0;
+font-family:tahoma, sans-serif;
+background:linear-gradient(180deg,#09111d,#0b1220);
+color:var(--text);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.app{
+width:100%;
+max-width:430px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+border-radius:28px;
+padding:20px;
+backdrop-filter:var(--glass);
+}
+
+.header{
+text-align:center;
+margin-bottom:20px;
+}
+
+.header .icon{
+font-size:38px;
+margin-bottom:8px;
+}
+
+.header h1{
+margin:0;
+font-size:22px;
+}
+
+.header p{
+color:var(--muted);
+font-size:14px;
+margin-top:6px;
+}
+
+.input-row{
+display:flex;
+gap:10px;
+margin-bottom:16px;
+}
+
+.input-field{
+flex:1;
+background:rgba(255,255,255,.06);
+border:1px solid var(--border);
+color:var(--text);
+border-radius:14px;
+padding:12px;
+text-align:center;
+font-size:10px;
+outline:none;
+}
+
+.generate-btn{
+width:100%;
+padding:13px;
+border:none;
+border-radius:16px;
+background:linear-gradient(135deg,#6ea8fe,#8b5cf6);
+color:#fff;
+font-weight:bold;
+margin-top:10px;
+cursor:pointer;
+font-size:14px;
+}
+
+.result-box{
+margin-top:22px;
+text-align:center;
+display:none;
+}
+
+.result{
+font-size:34px;
+font-weight:bold;
+margin-bottom:10px;
+color:#fff;
+transition:.2s ease;
+}
+
+.copy-btn{
+padding:8px 16px;
+border-radius:12px;
+font-size:13px;
+cursor:pointer;
+border:none;
+background:rgba(255,255,255,.08);
+color:var(--accent);
+}
+
+.history{
+margin-top:20px;
+padding:14px;
+background:rgba(255,255,255,.04);
+border-radius:16px;
+border:1px solid var(--border);
+max-height:160px;
+overflow-y:auto;
+display:none;
+}
+
+.history-title{
+font-size:13px;
+color:var(--muted);
+margin-bottom:8px;
+}
+
+.history-item{
+font-size:14px;
+padding:6px 0;
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.back{
+display:block;
+text-align:center;
+margin-top:20px;
+color:var(--muted);
+text-decoration:none;
+font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+<div class="icon">🎲</div>
+<h1>تولید عدد تصادفی</h1>
+<p>عدد تصادفی بین یک بازه دلخواه بسازید</p>
+</div>
+
+<div class="input-row">
+<input type="number" id="minVal" class="input-field" placeholder="از">
+<input type="number" id="maxVal" class="input-field" placeholder="تا">
+</div>
+
+<button class="generate-btn" onclick="generateRandom()">تولید عدد</button>
+
+<div class="result-box" id="resultBox">
+<div class="result" id="resultValue">0</div>
+<button class="copy-btn" onclick="copyResult()">کپی</button>
+</div>
+
+<div class="history" id="historyBox">
+<div class="history-title">تاریخچه:</div>
+<div id="historyList"></div>
+</div>
+
+<a href="index.html" class="back">← بازگشت</a>
+
+</div>
+
+<script>
+
+const resultBox = document.getElementById("resultBox");
+const resultValue = document.getElementById("resultValue");
+const historyBox = document.getElementById("historyBox");
+const historyList = document.getElementById("historyList");
+
+function generateRandom(){
+    
+let min = parseInt(document.getElementById("minVal").value);
+let max = parseInt(document.getElementById("maxVal").value);
+
+if(isNaN(min) || isNaN(max)){
+alert("لطفاً مقدار بازه را درست وارد کنید.");
+return;
+}
+
+if(min > max){
+alert("عدد پایین‌تر نباید بزرگ‌تر از عدد بالا باشد.");
+return;
+}
+
+let random = Math.floor(Math.random() * (max - min + 1)) + min;
+
+resultValue.textContent = random;
+resultBox.style.display = "block";
+
+// انیمیشن کوچک
+resultValue.style.transform = "scale(1.25)";
+setTimeout(()=> resultValue.style.transform = "scale(1)", 150);
+
+// ذخیره در تاریخچه
+let item = document.createElement("div");
+item.className = "history-item";
+item.textContent = random;
+historyList.prepend(item);
+
+historyBox.style.display = "block";
+}
+
+function copyResult(){
+navigator.clipboard.writeText(resultValue.textContent).then(()=>{
+document.querySelector(".copy-btn").textContent = "کپی شد!";
+setTimeout(()=> document.querySelector(".copy-btn").textContent = "کپی", 1200);
+});
+}
+
+</script>
+
+</body>
+</html>

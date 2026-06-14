@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SA-Shamsi-Calendar</title>
+  <style>
+    :root{
+  --bg:#07111f; --bg2:#0b1730; --card:rgba(255,255,255,.08); --card-strong:rgba(255,255,255,.12);
+  --text:#ecf4ff; --muted:#aab8d6; --accent:#6ea8fe; --accent2:#8b5cf6; --danger:#ff6b6b;
+  --success:#31d0aa; --warning:#ffd166; --border:rgba(255,255,255,.12); --shadow:0 10px 35px rgba(0,0,0,.28);
+  --glass:blur(18px); --holiday-bg:rgba(255,107,107,.12);
+  --today-ring:0 0 0 2px rgba(110,168,254,.45), 0 10px 30px rgba(110,168,254,.15);
+  --day-hover:rgba(255,255,255,.1); --popup-bg:rgba(10,17,31,.96);
+  --input-bg:rgba(255,255,255,.08); --chip:rgba(255,255,255,.08);
+}
+
+body.light{
+  --bg:#eef4fb; --bg2:#dfeaf8; --card:rgba(255,255,255,.52); --card-strong:rgba(255,255,255,.72);
+  --text:#17304f; --muted:#56708f; --accent:#3f8cff; --accent2:#6d5dfc; --danger:#df4c4c;
+  --success:#12b886; --warning:#d89a1d; --border:rgba(255,255,255,0.65);
+  --shadow:0 12px 35px rgba(75,104,145,.16); --holiday-bg:rgba(223,76,76,.09);
+  --today-ring:0 0 0 2px rgba(63,140,255,.35), 0 10px 25px rgba(63,140,255,.12);
+  --day-hover:rgba(255,255,255,.5); --popup-bg:rgba(255,255,255,.88);
+  --input-bg:rgba(255,255,255,.62); --chip:rgba(255,255,255,.55);
+}
+*{
+  box-sizing:border-box;
+  transition: background 0.3s, color 0.3s;
+}
+html,body{
+  margin:0; padding:0;
+  font-family:Tahoma,sans-serif;
+  background: radial-gradient(circle at top right, rgba(110,168,254,.1), transparent 30%),
+              linear-gradient(180deg,var(--bg),var(--bg2));
+  color:var(--text);
+  min-height:100%;
+}
+body{
+  padding:15px;
+  overflow-x:hidden;
+}
+.app{
+  width:min(1200px, 100%);
+  margin:0 auto;
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:15px;
+  align-items:start;
+}
+.panel{
+  background:var(--card);
+  border:1px solid var(--border);
+  backdrop-filter:var(--glass);
+  -webkit-backdrop-filter:var(--glass);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.brand{
+  font-size:1.2rem;
+  font-weight:bold;
+  color:var(--accent);
+}
+.btn{
+  border:1px solid var(--border);
+  background:var(--card-strong);
+  color:var(--text);
+  padding:10px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:0.9rem;
+}
+.btn.primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white; border:none;
+}
+.month-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.month-title{ font-size:1.6rem; font-weight:800; text-align:center; }
+.month-subtitle{ color:var(--muted); font-size:0.9rem; text-align:center; }
+.nav-btn{
+  width:45px; height:45px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--card-strong);
+  color:var(--text);
+  cursor:pointer;
+  font-size:1.2rem;
+}
+.weekdays, .days{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:10px;
+}
+.weekday{
+  text-align:center;
+  color:var(--muted);
+  font-size:0.85rem;
+  padding:10px 0;
+  font-weight:bold;
+}
+.day{
+  min-height:100px;
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
+  border:1px solid transparent;
+  padding:8px;
+  position:relative;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  transition:0.2s;
+  animation:fadeIn 0.4s ease forwards;
+}
+@keyframes fadeIn {
+  from{opacity:0; transform:scale(0.95)}
+  to{opacity:1; transform:scale(1)}
+}
+.day:hover{ background:var(--day-hover); transform:translateY(-3px); }
+.day.today{ box-shadow:var(--today-ring); border-color:var(--accent); }
+.day.holiday{ background:var(--holiday-bg); }
+.day.holiday .day-num{ color:var(--danger); }
+.day.selected{ border:2px solid var(--accent); }
+.day-num{ font-size:1.2rem; font-weight:bold; }
+.day-info{ font-size:0.7rem; color:var(--muted); display:flex; justify-content:space-between; }
+.event-label{
+  font-size:0.6rem;
+  color:var(--danger);
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  line-height:1.2;
+}
+.note-dot{
+  width:6px; height:6px;
+  background:var(--success);
+  border-radius:50%;
+  position:absolute;
+  top:8px; left:8px;
+}
+.side-panel{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+.clock-box{ text-align:center; }
+.clock{
+  width:150px; height:150px;
+  border:5px solid var(--border);
+  border-radius:50%;
+  margin:0 auto 10px;
+  position:relative;
+  background:rgba(0,0,0,0.1);
+}
+.hand{
+  position:absolute;
+  bottom:50%; left:50%;
+  transform-origin:bottom;
+  border-radius:10px;
+  transform:translateX(-50%);
+}
+.hour{ width:4px; height:35px; background:var(--text); }
+.minute{ width:3px; height:50px; background:var(--accent); }
+.second{ width:1.5px; height:60px; background:var(--danger); }
+
+.digital-time{
+  font-size:1.4rem;
+  font-weight:bold;
+  margin-top:5px;
+}
+.search-box input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--input-bg);
+  color:var(--text);
+}
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(5px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:20px;
+}
+.modal.show{ display:flex; }
+.modal-content{
+  background:var(--popup-bg);
+  border:1px solid var(--border);
+  border-radius:24px;
+  width:100%;
+  max-width:500px;
+  padding:25px;
+  animation:slideUp 0.3s ease;
+}
+@keyframes slideUp {
+  from{transform:translateY(50px); opacity:0}
+  to{transform:translateY(0); opacity:1}
+}
+textarea{
+  width:100%; height:100px;
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--input-bg);
+  color:var(--text);
+  border:1px solid var(--border);
+  resize:none;
+}
+@media (max-width:900px){
+  .app{ grid-template-columns:1fr; gap:12px; }
+  .side-panel{ order:2; }
+  main.panel{ order:1; }
+}
+@media (max-width:600px){
+  html,body{ padding:5px; }
+  .topbar{
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+  }
+  .brand{ font-size:1rem; }
+  .btn, .nav-btn{
+    padding:8px 12px;
+    font-size:0.8rem;
+  }
+  .nav-btn{
+    width:40px; height:40px;
+    font-size:1rem;
+  }
+  .month-title{ font-size:1.3rem; }
+  .month-subtitle{ font-size:0.75rem; }
+  .weekdays{ gap:4px; }
+  .weekday{
+    padding:6px 0;
+    font-size:0.7rem;
+  }
+  .days{ gap:6px; }
+  .day{
+    min-height:65px;
+    padding:4px;
+    border-radius:12px;
+  }
+  .day-num{ font-size:0.95rem; }
+  .day-info{ font-size:0.6rem; }
+  .event-label{ font-size:0.55rem; }
+  .note-dot{
+    width:5px; height:5px;
+    top:6px; left:6px;
+  }
+  .clock{
+    width:120px;
+    height:120px;
+  }
+  .digital-time{
+    font-size:1.2rem;
+  }
+  .search-box input{
+    padding:10px;
+    font-size:0.85rem;
+  }
+  .modal-content{
+    max-width:95%;
+    padding:20px;
+    border-radius:18px;
+  }
+  textarea{
+    height:90px;
+    font-size:0.85rem;
+  }
+  .modal-content .btn{
+    padding:8px 10px;
+    font-size:0.8rem;
+  }
+}
+@media (max-width:400px){
+  .day{
+    min-height:55px;
+    padding:3px;
+  }
+  .day-num{ font-size:0.85rem; }
+  .weekday{ font-size:0.6rem; }
+  .month-title{ font-size:1.1rem; }
+  .nav-btn{
+    width:34px; height:34px;
+    font-size:0.9rem;
+  }
+}
+.preloader{
+position:fixed;
+inset:0;
+background:radial-gradient(circle at top right, rgba(110,168,254,.1), transparent 30%),
+           linear-gradient(180deg,var(--bg),var(--bg2));
+backdrop-filter:blur(18px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+transition:.8s;
+}
+.preloader-logo{
+position:relative;
+padding:22px 34px;
+border-radius:120px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+}
+.preloader-logo::before{
+content:"";
+position:absolute;
+inset:-6px;
+border-radius:140px;
+background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);
+filter:blur(10px);
+opacity:.7;
+animation:spin 5s linear infinite;
+}
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+.preloader-sign{
+position:relative;
+font-size:26px;
+font-weight:700;
+color:#fff;
+}
+.preloader.hide{
+opacity:0;
+pointer-events:none;
+}
+.fade-out{
+opacity:0;
+transition:.4s ease;
+}
+  </style>
+</head>
+<body>
+<div class="preloader">
+<div class="preloader-logo">
+<div class="preloader-sign">✦Saleh✦</div>
+</div>
+</div>
+  <div class="app">
+
+    <main class="panel">
+      <div class="topbar">
+        <div class="brand">SA-Shamsi Calender</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" onclick="goToday()">امروز</button>
+          <button class="btn" id="themeToggle" onclick="toggleTheme()">حالت روشن</button>
+        </div>
+      </div>
+       <div class="month-header">
+        <button class="nav-btn" onclick="changeMonth(1)">❮</button>
+        <div>
+          <div class="month-title" id="mTitle">فروردین ۱۴۰۳</div>
+          <div class="month-subtitle" id="mSubTitle">Mar - Apr 2024</div>
+        </div>
+        <button class="nav-btn" onclick="changeMonth(-1)">❯</button>
+      </div>
+      <div class="weekdays">
+        <div class="weekday">شنبه</div><div class="weekday">یکشنبه</div><div class="weekday">دوشنبه</div>
+        <div class="weekday">سه شنبه</div><div class="weekday">چهارشنبه</div><div class="weekday">پنجشنبه</div>
+        <div class="weekday">جمعه</div>
+      </div>
+      <div class="days" id="daysGrid"></div>
+    </main>
+    <aside class="side-panel">
+      <div class="panel clock-box">
+        <div class="clock">
+          <div class="hand hour" id="hHand"></div>
+          <div class="hand minute" id="mHand"></div>
+          <div class="hand second" id="sHand"></div>
+          <div style="position:absolute; top:50%; left:50%; width:8px; height:8px; background:var(--text); border-radius:50%; transform:translate(-50%,-50%)"></div>
+        </div>
+        <div class="digital-time" id="dTime">00:00:00</div>
+        <div id="sideDate" style="color:var(--muted); font-size:0.9rem; margin-top:5px;"></div>
+      </div>
+      <div class="panel search-box">
+        <div style="margin-bottom:10px; font-weight:bold;">جستجوی هوشمند</div>
+        <input type="text" id="searchInput" placeholder="جستجو در مناسبت‌ها یا یادداشت..." oninput="handleSearch()">
+        <div id="searchResults" style="margin-top:10px; max-height:200px; overflow-y:auto; font-size:0.8rem;"></div>
+      </div>
+      <div class="panel" id="upcomingEvents">
+        <div style="margin-bottom:10px; font-weight:bold;">مناسبت‌های پیش رو</div>
+        <div id="eventList" style="font-size:0.8rem; color:var(--muted); line-height:1.6;"></div>
+      </div>
+    </aside>
+  </div>
+  <div class="modal" id="dayModal">
+    <div class="modal-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 id="modalDate" style="margin:0;"></h3>
+        <button class="btn" onclick="closeModal()">بستن</button>
+      </div>
+      <div id="modalHolidays" style="color:var(--danger); font-size:0.9rem; margin-bottom:10px; font-weight:bold;"></div>
+      <div id="modalMeta" style="font-size:0.8rem; color:var(--muted);"></div>
+      <label style="display:block; margin-top:20px; font-weight:bold;">یادداشت روزانه:</label>
+      <textarea id="noteText" placeholder="مثلاً: جلسه ساعت ۱۰، تولد  و..."></textarea>
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <button class="btn primary" style="flex:1;" onclick="saveNote()">ذخیره تغییرات</button>
+        <button class="btn" onclick="deleteNote()" style="color:var(--danger)">حذف</button>
+      </div>
+    </div>
+  </div>
+<script>
+function goHome(){
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+<script>
+window.onload=()=>setTimeout(()=>document.querySelector(".preloader").classList.add("hide"),2000);
+const J_MONTHS = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+const G_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SOLAR_EVENTS = {
+"1-1":{t:"آغاز نوروز",h:true},
+"1-2":{t:"عید نوروز",h:true},
+"1-3":{t:"عید نوروز",h:true},
+"1-4":{t:"عید نوروز",h:true},
+"1-12":{t:"روز جمهوری اسلامی ایران",h:true},
+"1-13":{t:"روز طبیعت",h:true},
+"1-18":{t:"روز جهانی بناها و محوطه‌های تاریخی",h:false},
+"1-20":{t:"روز ملی فناوری هسته‌ای",h:false},
+"1-25":{t:"روز بزرگداشت عطار نیشابوری",h:false},
+"2-1":{t:"روز بزرگداشت سعدی",h:false},
+"2-3":{t:"روز معلم",h:false},
+"2-9":{t:"روز شوراها",h:false},
+"2-10":{t:"روز ملی خلیج فارس",h:false},
+"2-25":{t:"روز فردوسی",h:false},
+"3-1":{t:"روز بهره‌وری و بهینه‌سازی مصرف",h:false},
+"3-3":{t:"فتح خرمشهر",h:false},
+"3-14":{t:"رحلت امام خمینی (ره)",h:true},
+"3-15":{t:"قیام ۱۵ خرداد",h:true},
+"4-7":{t:"روز قوه قضائیه",h:false},
+"4-12":{t:"روز صنعت و معدن",h:false},
+"4-14":{t:"روز قلم",h:false},
+"5-14":{t:"روز حقوق بشر اسلامی",h:false},
+"5-17":{t:"روز خبرنگار",h:false},
+"6-1":{t:"روز پزشک",h:false},
+"6-8":{t:"روز بزرگداشت شهریار",h:false},
+"6-31":{t:"آغاز هفته دفاع مقدس",h:false},
+"7-5":{t:"روز جهانی معلم",h:false},
+"7-13":{t:"روز نیروی انتظامی",h:false},
+"7-24":{t:"روز ملی پارالمپیک",h:false},
+"8-13":{t:"روز دانش‌آموز",h:false},
+"8-24":{t:"روز کتاب و کتابخوانی",h:false},
+"9-16":{t:"روز دانشجو",h:false},
+"9-27":{t:"روز وحدت حوزه و دانشگاه",h:false},
+"10-5":{t:"روز ایمنی در برابر زلزله",h:false},
+"10-20":{t:"روز هوای پاک",h:false},
+"11-12":{t:"بازگشت امام خمینی به ایران",h:false},
+"11-22":{t:"پیروزی انقلاب اسلامی",h:true},
+"12-5":{t:"روز درختکاری",h:false},
+"12-15":{t:"روز درختکاری و منابع طبیعی",h:false},
+"12-29":{t:"ملی شدن صنعت نفت ایران",h:true}
+};
+const lunarDB = {
+1405:{
+"4-15":{t:"تاسوعای حسینی",h:true},
+"4-16":{t:"عاشورای حسینی",h:true},
+"5-23":{t:"اربعین حسینی",h:true},
+"6-1":{t:"رحلت پیامبر اکرم (ص) و شهادت امام حسن مجتبی (ع)",h:true},
+"6-3":{t:"شهادت امام رضا (ع)",h:true},
+"8-14":{t:"شهادت حضرت فاطمه زهرا (س)",h:true},
+"10-13":{t:"ولادت امام علی (ع) و روز پدر",h:false},
+"10-27":{t:"مبعث پیامبر اکرم (ص)",h:true},
+"12-11":{t:"شهادت امام علی (ع)",h:true},
+"1-1":{t:"عید سعید فطر",h:true},
+"1-2":{t:"تعطیل عید فطر",h:true},
+"3-17":{t:"عید سعید قربان",h:true},
+"3-25":{t:"عید غدیر خم",h:true}
+}
+}
+function toJalali(gy,gm,gd){
+  let gdm=[0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy=(gy<=1600)?0:979;gy-=(gy<=1600)?621:1600;
+  let gy2=(gm>2)?(gy+1):gy;
+  let days=365*gy+~~((gy2+3)/4)-~~((gy2+99)/100)+~~((gy2+399)/400)-80+gd+gdm[gm-1];
+  jy+=33*~~(days/12053);days%=12053;
+  jy+=4*~~(days/1461);days%=1461;
+  jy+=~~((days-1)/365);if(days>365)days=(days-1)%365;
+  let jm=(days<186)?1+~~(days/31):7+~~((days-186)/30);
+  let jd=1+((days<186)?(days%31):((days-186)%30));
+  return {y:jy,m:jm,d:jd};
+}
+function toGregorian(jy,jm,jd){
+  jy-=979;let days=365*jy+~~(jy/33)*8+~~(((jy%33)+3)/4)+79+jd+((jm<7)?(jm-1)*31:((jm-7)*30+186));
+  let gy=1600+400*~~(days/146097);days%=146097;
+  if(days>36524){gy+=100*~~(--days/36524);days%=36524;if(days>=365)days++;}
+  gy+=4*~~(days/1461);days%=1461;
+  if(days>365){gy+=~~((days-1)/365);days=(days-1)%365;}
+  let gd=days+1,gm;
+  let sal=[0,31,(gy%4==0&&gy%100!=0)||gy%400==0?29:28,31,30,31,30,31,31,30,31,30,31];
+  for(gm=1;gm<=12&&gd>sal[gm];gm++)gd-=sal[gm];
+  return {y:gy,m:gm,d:gd};
+}
+let todayJ,currentYear,currentMonth,activeDay=0;
+let notes=JSON.parse(localStorage.getItem("cal_notes")||"{}");
+function init(){
+  const n=new Date();
+  todayJ=toJalali(n.getFullYear(),n.getMonth()+1,n.getDate());
+  currentYear=todayJ.y;
+  currentMonth=todayJ.m;
+  render();
+  updateClock();
+  setInterval(updateClock,1000);
+}
+function render(){
+  const grid=document.getElementById("daysGrid");
+  grid.innerHTML="";
+  document.getElementById("mTitle").innerText =
+    J_MONTHS[currentMonth-1]+" "+currentYear;
+  let len = currentMonth <= 6 ? 31 :
+           (currentMonth <= 11 ? 30 :
+           (isLeap(currentYear) ? 30 : 29));
+  let g1 = toGregorian(currentYear, currentMonth, 1);
+  let g2 = toGregorian(currentYear, currentMonth, len);
+  document.getElementById("mSubTitle").innerText =
+    `${G_MONTHS[g1.m-1]} ${g1.y} - ${G_MONTHS[g2.m-1]} ${g2.y}`;
+  let start = new Date(g1.y, g1.m - 1, g1.d).getDay();
+  for(let i=0; i<start; i++){
+    grid.innerHTML += `<div class="day" style="visibility:hidden"></div>`;
+  }
+  for(let d=1; d<=len; d++){
+    const key = `${currentMonth}-${d}`;
+    const full = `${currentYear}-${currentMonth}-${d}`;
+    const solar = SOLAR_EVENTS[key];
+    const lunar = lunarDB[currentYear]?.[key];
+    const isHoliday = (solar?.h || lunar?.h || ((start+d-1)%7===6));
+    const isToday = currentYear===todayJ.y && currentMonth===todayJ.m && d===todayJ.d;
+    grid.innerHTML += `
+      <div class="day ${isHoliday?"holiday":""} ${isToday?"today":""}"
+           onclick="openModal(${d})">
+        <div class="day-num">${d}</div>
+        <div class="day-info">
+          <span>${toGregorian(currentYear,currentMonth,d).d}</span>
+        </div>
+        <div class="event-label">
+          ${solar?.t || lunar?.t || ""}
+        </div>
+        ${notes[full] ? '<div class="note-dot"></div>' : ""}
+      </div>`;
+  }
+  updateUpcoming();
+}
+function openModal(d){
+  activeDay=d;
+  const key=`${currentMonth}-${d}`;
+  const full=`${currentYear}-${currentMonth}-${d}`;
+  const g=toGregorian(currentYear,currentMonth,d);
+  const solar=SOLAR_EVENTS[key];
+  const lunar=lunarDB[currentYear]?.[key];
+  modalDate.innerText =
+    `${d} ${J_MONTHS[currentMonth-1]} ${currentYear}`;
+  modalHolidays.innerText =
+    solar?.t || lunar?.t || "مناسبتی ندارد";
+  modalMeta.innerText =
+    `میلادی: ${g.y}/${g.m}/${g.d-1}`;
+  noteText.value = notes[full] || "";
+  dayModal.classList.add("show");
+}
+function changeMonth(d){
+  currentMonth -= d;
+  if(currentMonth>12){currentMonth=1;currentYear++;}
+  if(currentMonth<1){currentMonth=12;currentYear--;}
+  render();
+}
+function goToday(){
+  currentYear=todayJ.y;
+  currentMonth=todayJ.m;
+  render();
+}
+function isLeap(y){ return [1,5,9,13,17,22,26,30].includes(y%33); }
+function updateClock(){
+  const n=new Date();
+  const s=n.getSeconds(),m=n.getMinutes(),h=n.getHours();
+  sHand.style.transform=`translateX(-50%) rotate(${s*6}deg)`;
+  mHand.style.transform=`translateX(-50%) rotate(${m*6}deg)`;
+  hHand.style.transform=`translateX(-50%) rotate(${h*30 + m/2}deg)`;
+  dTime.innerText = 
+    `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  const j = toJalali(n.getFullYear(), n.getMonth()+1, n.getDate());
+  sideDate.innerText = `${j.d} ${J_MONTHS[j.m-1]} ${j.y}`;
+}
+function handleSearch(){
+  const q = searchInput.value.trim();
+  const box = searchResults;
+  if(!q){
+    box.innerHTML="";
+    return;
+  }
+  let results=[];
+  for(const k in SOLAR_EVENTS){
+    if(SOLAR_EVENTS[k].t.includes(q)){
+      results.push(
+        `🇮🇷 ${SOLAR_EVENTS[k].t} — (${k.replace("-", "/")})`
+      );
+    }
+  }
+  if(lunarDB[currentYear]){
+    for(const k in lunarDB[currentYear]){
+      if(lunarDB[currentYear][k].t.includes(q)){
+        results.push(
+          `🌙 ${lunarDB[currentYear][k].t} — (${k.replace("-", "/")})`
+        );
+      }
+    }
+  }
+  for(const date in notes){
+    if(notes[date].includes(q)){
+      let [y,m,d]=date.split("-");
+      results.push(
+        `📝 یادداشت ${d}/${m}/${y}: ${notes[date]}`
+      );
+    }
+  }
+  if(results.length){
+    box.innerHTML = results.map(r=>`
+      <div style="
+        margin:6px 0;
+        padding:6px;
+        background:var(--card);
+        border-radius:10px;
+      ">
+        ${r}
+      </div>
+    `).join("");
+  }else{
+    box.innerHTML = `
+      <div style="
+        color:var(--muted);
+        font-size:0.8rem;
+      ">
+        چیزی پیدا نشد…
+      </div>
+    `;
+  }
+}
+function updateUpcoming(){
+  const out = eventList;
+  out.innerHTML = "";
+  let upcoming = [];
+  const now = new Date();
+  for(let add=0; add < 60; add++){
+    const g = new Date();
+    g.setDate(g.getDate() + add);
+    const j = toJalali(g.getFullYear(), g.getMonth()+1, g.getDate());
+    const key = `${j.m}-${j.d}`;
+    const solar = SOLAR_EVENTS[key];
+    const lunar = lunarDB[j.y]?.[key];
+    const note = notes[`${j.y}-${j.m}-${j.d}`];
+    if(solar || lunar || note){
+      upcoming.push({
+        date: `${j.d} ${J_MONTHS[j.m-1]} ${j.y}`,
+        title: solar?.t || lunar?.t || "یادداشت شخصی",
+        isHoliday: solar?.h || lunar?.h,
+        diff: add  
+      });
+    }
+  }
+  if (!upcoming.length){
+    out.innerHTML = "<div style='color:var(--muted);'>هیچ رویدادی در آینده نزدیک نیست.</div>";
+    return;
+  }
+  const next = upcoming[0];
+  const countdownBox = `
+    <div style="
+      background:var(--card-strong);
+      border-radius:12px;
+      padding:10px;
+      margin-bottom:8px;
+      text-align:center;
+      font-weight:bold;
+      color:var(--accent);
+    ">
+      ⏳ ${next.diff} روز تا ${next.title}
+    </div>
+  `;
+  const listHtml = upcoming.slice(0,3).map(ev => `
+    <div style="
+      padding:8px;
+      background:var(--card);
+      border-radius:10px;
+      margin-bottom:6px;
+      color:${ev.isHoliday ? 'var(--danger)' : 'var(--text)'};
+    ">
+      <b>${ev.date}</b><br>
+      <span style="font-size:0.85rem;">${ev.title}</span>
+    </div>
+  `).join("");
+  out.innerHTML = countdownBox + listHtml;
+}
+function toggleTheme(){
+  document.body.classList.toggle("light");
+  themeToggle.innerText=document.body.classList.contains("light")?"حالت تیره":"حالت روشن";
+}
+function closeModal(){
+  document.getElementById("dayModal").classList.remove("show");
+}
+function saveNote(){
+  const full = `${currentYear}-${currentMonth}-${activeDay}`;
+  const val = document.getElementById("noteText").value.trim();
+  if(val){
+    notes[full] = val;
+  } else {
+    delete notes[full];
+  }
+  localStorage.setItem("cal_notes", JSON.stringify(notes));
+  closeModal();
+  render();     
+}
+function deleteNote(){
+  const full = `${currentYear}-${currentMonth}-${activeDay}`;
+  if(confirm("آیا از حذف این یادداشت اطمینان دارید؟")){
+    delete notes[full];
+    localStorage.setItem("cal_notes", JSON.stringify(notes));
+    closeModal();
+    render();
+  }
+}
+window.onclick = (e) => {
+  if(e.target == document.getElementById("dayModal")) closeModal();
+};
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>رمزساز | SA‑APPS</title>
+
+<style>
+
+@font-face{
+font-family:"VazirmatnLocal";
+src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+}
+
+:root{
+--bg:#0b1220;
+--bg2:#0f172a;
+--text:#e8eefc;
+--muted:#9fb0d0;
+--accent:#6ea8fe;
+--accent2:#8b5cf6;
+--border:rgba(255,255,255,.08);
+--shadow:0 18px 50px rgba(0,0,0,.45);
+--glass:blur(14px);
+--radius:24px;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:"VazirmatnLocal",sans-serif;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+color:var(--text);
+
+background:#0b1220;
+background-image:
+radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+background-attachment:fixed;
+}
+
+.container{
+width:min(420px,92%);
+position:relative;
+}
+
+.panel{
+background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+border:1px solid var(--border);
+backdrop-filter:var(--glass);
+border-radius:32px;
+box-shadow:var(--shadow);
+padding:24px;
+}
+
+.title{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:18px;
+}
+
+.logo{
+width:44px;
+height:44px;
+border-radius:14px;
+display:grid;
+place-items:center;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+font-weight:700;
+}
+
+h1{
+margin:0;
+font-size:18px;
+}
+
+.password-box{
+display:flex;
+gap:8px;
+margin-bottom:12px;
+}
+
+.password-box input{
+flex:1;
+padding:10px;
+border-radius:14px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.05);
+color:var(--text);
+font-size:14px;
+}
+
+.icon-btn{
+border:1px solid var(--border);
+background:rgba(255,255,255,.05);
+color:var(--text);
+border-radius:12px;
+padding:8px 10px;
+cursor:pointer;
+}
+
+.icon-btn:hover{
+border-color:var(--accent);
+}
+
+.strength{
+height:8px;
+background:rgba(255,255,255,.08);
+border-radius:10px;
+overflow:hidden;
+margin:8px 0;
+}
+
+.strength-bar{
+height:100%;
+width:0;
+transition:.35s;
+}
+
+.strength-text{
+font-size:12px;
+color:var(--muted);
+margin-bottom:12px;
+}
+
+.controls label{
+display:block;
+margin:6px 0;
+font-size:14px;
+color:var(--muted);
+}
+
+.range{
+margin:10px 0;
+}
+
+.range input{
+width:100%;
+}
+
+.generate{
+width:100%;
+padding:11px;
+border:none;
+border-radius:14px;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:white;
+font-size:14px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.back{
+margin-top:10px;
+width:100%;
+padding:10px;
+border-radius:14px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.05);
+color:var(--text);
+cursor:pointer;
+}
+
+.toast{
+position:fixed;
+bottom:30px;
+left:50%;
+transform:translateX(-50%) translateY(20px);
+background:#111;
+padding:10px 16px;
+border-radius:20px;
+font-size:13px;
+opacity:0;
+transition:.3s;
+}
+
+.toast.show{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="panel">
+
+<div class="title">
+<div class="logo">🔐</div>
+<h1>رمزساز حرفه‌ای</h1>
+</div>
+
+<div class="password-box">
+<input id="password" readonly placeholder="رمز ساخته می‌شود...">
+<button class="icon-btn" onclick="generate()">⟳</button>
+<button class="icon-btn" onclick="copy()">📋</button>
+</div>
+
+<div class="strength">
+<div id="strengthBar" class="strength-bar"></div>
+</div>
+
+<div id="strengthText" class="strength-text">قدرت رمز: —</div>
+
+<div class="range">
+طول رمز: <span id="lenLabel">12</span>
+<input type="range" id="length" min="6" max="40" value="12">
+</div>
+
+<div class="controls">
+<label><input type="checkbox" id="upper" checked> حروف بزرگ</label>
+<label><input type="checkbox" id="lower" checked> حروف کوچک</label>
+<label><input type="checkbox" id="numbers" checked> اعداد</label>
+<label><input type="checkbox" id="symbols"> کاراکتر خاص</label>
+</div>
+
+<button class="generate" onclick="generate()">ساخت رمز</button>
+<button class="back" onclick="history.back()">بازگشت</button>
+
+</div>
+</div>
+
+<div id="toast" class="toast">کپی شد ✅</div>
+
+<script>
+
+const slider=document.getElementById("length");
+const label=document.getElementById("lenLabel");
+
+slider.oninput=()=>label.textContent=slider.value;
+
+function generate(){
+
+let chars="";
+if(upper.checked) chars+="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+if(lower.checked) chars+="abcdefghijklmnopqrstuvwxyz";
+if(numbers.checked) chars+="0123456789";
+if(symbols.checked) chars+="!@#$%^&*()_+";
+
+if(!chars) return;
+
+let pass="";
+for(let i=0;i<slider.value;i++){
+pass+=chars[Math.floor(Math.random()*chars.length)];
+}
+
+password.value=pass;
+strength(pass);
+
+}
+
+function strength(p){
+
+let s=0;
+
+if(p.length>=8)s++;
+if(p.length>=12)s++;
+if(/[A-Z]/.test(p))s++;
+if(/[0-9]/.test(p))s++;
+if(/[^A-Za-z0-9]/.test(p))s++;
+
+let bar=document.getElementById("strengthBar");
+let text=document.getElementById("strengthText");
+
+let percent=(s/5)*100;
+bar.style.width=percent+"%";
+
+if(s<=2){
+bar.style.background="#ff4d4d";
+text.textContent="قدرت رمز: ضعیف";
+}
+else if(s==3){
+bar.style.background="#ffb84d";
+text.textContent="قدرت رمز: متوسط";
+}
+else{
+bar.style.background="#4dff88";
+text.textContent="قدرت رمز: قوی";
+}
+
+}
+
+function copy(){
+
+if(!password.value) return;
+
+navigator.clipboard.writeText(password.value);
+
+const toast=document.getElementById("toast");
+toast.classList.add("show");
+
+setTimeout(()=>toast.classList.remove("show"),1600);
+
+}
+
+generate();
+
+</script>
+
+</body>
+</html>

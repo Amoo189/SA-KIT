@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>گرادینت‌ساز CSS | SA-APPS</title>
+  <style>
+    @font-face {
+      font-family: "VazirmatnLocal";
+      src: url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #07111f;
+      --bg-2: #0d1b2f;
+      --panel: rgba(255,255,255,.08);
+      --panel-border: rgba(255,255,255,.14);
+      --text: #ecf3ff;
+      --muted: #adc3df;
+      --primary: #5eead4;
+      --secondary: #60a5fa;
+      --accent: #c084fc;
+      --danger: #fb7185;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --input: rgba(255,255,255,.07);
+    }
+
+    body.light {
+      --bg: #eef6ff;
+      --bg-2: #dfefff;
+      --panel: rgba(255,255,255,.65);
+      --panel-border: rgba(255,255,255,.75);
+      --text: #102033;
+      --muted: #4e647d;
+      --primary: #0ea5e9;
+      --secondary: #2563eb;
+      --accent: #9333ea;
+      --danger: #e11d48;
+      --shadow: 0 10px 30px rgba(31,41,55,.12);
+      --input: rgba(255,255,255,.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "VazirmatnLocal", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(192,132,252,.16), transparent 30%),
+        linear-gradient(135deg, var(--bg), var(--bg-2));
+      overflow-x: hidden;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(40px);
+      pointer-events: none;
+      opacity: .35;
+      z-index: 0;
+    }
+    .orb.one {
+      width: 220px; height: 220px;
+      background: var(--primary);
+      top: 40px; right: 40px;
+    }
+    .orb.two {
+      width: 260px; height: 260px;
+      background: var(--accent);
+      bottom: 50px; left: 40px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, calc(100% - 24px));
+      margin: 24px auto;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .title-box {
+      padding: 18px 20px;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      flex: 1;
+      min-width: 280px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: .96rem;
+      line-height: 1.8;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, select, input[type="color"] {
+      font-family: inherit;
+    }
+
+    .btn {
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 16px;
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      transition: .2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.28);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 1.08rem;
+    }
+
+    .fields {
+      display: grid;
+      gap: 14px;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .input, .select {
+      width: 100%;
+      background: var(--input);
+      color: var(--text);
+      border: 1px solid transparent;
+      border-radius: 16px;
+      padding: 12px 14px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    .input:focus, .select:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(96,165,250,.14);
+    }
+
+    .color-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="color"] {
+      width: 58px;
+      height: 46px;
+      border-radius: 14px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .preview {
+      min-height: 320px;
+      border-radius: 26px;
+      border: 1px solid var(--panel-border);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview::after {
+      content: "پیش‌نمایش زنده";
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font-size: .78rem;
+      padding: 8px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+    }
+
+    .code-box {
+      margin-top: 16px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 14px;
+      font-size: .92rem;
+      line-height: 1.9;
+      overflow: auto;
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .small-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      .row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+
+  <div class="container">
+    <div class="topbar">
+      <div class="title-box">
+        <h1>🌈 گرادینت‌ساز CSS</h1>
+        <p class="subtitle">ساخت گرادینت خطی و شعاعی با پیش‌نمایش زنده، انتخاب رنگ و کپی مستقیم کد CSS</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="themeToggle">تغییر تم</button>
+        <a class="btn" href="index.html">بازگشت به لانچر</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>تنظیمات گرادینت</h2>
+        <div class="fields">
+          <div class="row-2">
+            <div class="field">
+              <label for="type">نوع گرادینت</label>
+              <select id="type" class="select">
+                <option value="linear">خطی (Linear)</option>
+                <option value="radial">شعاعی (Radial)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="angle">زاویه / جهت</label>
+              <input id="angle" class="input" type="text" value="135deg" placeholder="مثلاً 90deg" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="color1">رنگ اول</label>
+              <div class="color-wrap">
+                <input id="color1" type="color" value="#5eead4" />
+                <input id="color1Text" class="input" type="text" value="#5eead4" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="stop1">موقعیت رنگ اول</label>
+              <input id="stop1" class="input" type="text" value="0%" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="color2">رنگ دوم</label>
+              <div class="color-wrap">
+                <input id="color2" type="color" value="#60a5fa" />
+                <input id="color2Text" class="input" type="text" value="#60a5fa" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="stop2">موقعیت رنگ دوم</label>
+              <input id="stop2" class="input" type="text" value="100%" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="color3">رنگ سوم (اختیاری)</label>
+              <div class="color-wrap">
+                <input id="color3" type="color" value="#c084fc" />
+                <input id="color3Text" class="input" type="text" value="#c084fc" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="stop3">موقعیت رنگ سوم</label>
+              <input id="stop3" class="input" type="text" value="70%" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>پیش‌نمایش و کد CSS</h2>
+        <div class="preview" id="preview"></div>
+        <div class="code-box" id="cssCode"></div>
+        <div class="small-actions">
+          <button class="btn" id="copyCss">کپی کد CSS</button>
+          <button class="btn" id="randomize">رنگ تصادفی</button>
+        </div>
+        <p class="hint">می‌توانی برای رنگ سوم موقعیت دلخواه بدهی یا اگر نخواستی، باز هم گرادینت به‌درستی نمایش داده می‌شود.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const themeKey = "sa-apps-theme";
+    const body = document.body;
+    const savedTheme = localStorage.getItem(themeKey);
+    if (savedTheme === "light") body.classList.add("light");
+
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      body.classList.toggle("light");
+      localStorage.setItem(themeKey, body.classList.contains("light") ? "light" : "dark");
+    });
+
+    const els = {
+      type: document.getElementById("type"),
+      angle: document.getElementById("angle"),
+      color1: document.getElementById("color1"),
+      color2: document.getElementById("color2"),
+      color3: document.getElementById("color3"),
+      color1Text: document.getElementById("color1Text"),
+      color2Text: document.getElementById("color2Text"),
+      color3Text: document.getElementById("color3Text"),
+      stop1: document.getElementById("stop1"),
+      stop2: document.getElementById("stop2"),
+      stop3: document.getElementById("stop3"),
+      preview: document.getElementById("preview"),
+      cssCode: document.getElementById("cssCode"),
+      copyCss: document.getElementById("copyCss"),
+      randomize: document.getElementById("randomize")
+    };
+
+    function syncColorPicker(textEl, colorEl) {
+      textEl.addEventListener("input", () => {
+        if (/^#([0-9A-F]{3}){1,2}$/i.test(textEl.value.trim())) {
+          colorEl.value = textEl.value.trim();
+          updateGradient();
+        }
+      });
+      colorEl.addEventListener("input", () => {
+        textEl.value = colorEl.value;
+        updateGradient();
+      });
+    }
+
+    syncColorPicker(els.color1Text, els.color1);
+    syncColorPicker(els.color2Text, els.color2);
+    syncColorPicker(els.color3Text, els.color3);
+
+    [els.type, els.angle, els.stop1, els.stop2, els.stop3].forEach(el => {
+      el.addEventListener("input", updateGradient);
+    });
+
+    function updateGradient() {
+      const type = els.type.value;
+      const angle = els.angle.value.trim() || "135deg";
+      const c1 = els.color1Text.value.trim();
+      const c2 = els.color2Text.value.trim();
+      const c3 = els.color3Text.value.trim();
+      const s1 = els.stop1.value.trim() || "0%";
+      const s2 = els.stop2.value.trim() || "100%";
+      const s3 = els.stop3.value.trim() || "70%";
+
+      let gradient;
+      if (type === "linear") {
+        gradient = `linear-gradient(${angle}, ${c1} ${s1}, ${c3} ${s3}, ${c2} ${s2})`;
+      } else {
+        gradient = `radial-gradient(circle, ${c1} ${s1}, ${c3} ${s3}, ${c2} ${s2})`;
+      }
+
+      els.preview.style.background = gradient;
+      els.cssCode.textContent = `background: ${gradient};`;
+    }
+
+    function randomColor() {
+      const chars = "0123456789ABCDEF";
+      let color = "#";
+      for (let i = 0; i < 6; i++) color += chars[Math.floor(Math.random() * 16)];
+      return color;
+    }
+
+    els.randomize.addEventListener("click", () => {
+      const r1 = randomColor();
+      const r2 = randomColor();
+      const r3 = randomColor();
+
+      els.color1.value = r1;
+      els.color2.value = r2;
+      els.color3.value = r3;
+      els.color1Text.value = r1;
+      els.color2Text.value = r2;
+      els.color3Text.value = r3;
+
+      updateGradient();
+    });
+
+    els.copyCss.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(els.cssCode.textContent);
+        const old = els.copyCss.textContent;
+        els.copyCss.textContent = "کپی شد!";
+        setTimeout(() => els.copyCss.textContent = old, 1200);
+      } catch {
+        alert("کپی انجام نشد.");
+      }
+    });
+
+    updateGradient();
+  </script>
+</body>
+</html>

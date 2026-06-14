@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0b1220"/>
+  <title>SA-CB</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --success:#35d07f;
+      --danger:#ff6b6b;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+    body.light-mode{
+  --bg:#f2f6ff;
+  --card:#ffffff;
+  --text:#0b1220;
+  --muted:#445;
+  --accent:#3b82f6;
+  --accent2:#8b5cf6;
+  --border:rgba(0,0,0,.12);
+  --success:#059669;
+  --danger:#dc2626;
+  --shadow:0 18px 45px rgba(0,0,0,.12);
+    background:
+    radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 35%),
+    linear-gradient(180deg, #f8fbff, #eef3ff 55%, #e7ecff);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      min-height:100%;
+      height:auto;
+    }
+
+    body{
+      margin:0;
+      font-family:Tahoma, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.14), transparent 35%),
+        linear-gradient(180deg, #09111d, #0b1220 55%, #08101a);
+      overflow-x:hidden;
+    }
+
+    #preloader{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      background:linear-gradient(180deg, #09111d, #0b1220);
+    }
+
+    .loaderText{
+      font-size:2.1rem;
+      font-weight:900;
+      letter-spacing:1px;
+      background:linear-gradient(90deg, #fff, var(--accent), var(--accent2), #fff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      animation:pulse 1.3s ease-in-out infinite;
+      text-shadow:0 0 18px rgba(110,168,254,.18);
+    }
+
+    .loaderBar{
+      width:min(320px, 72vw);
+      height:6px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      overflow:hidden;
+      position:relative;
+    }
+    .loaderBar::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      width:40%;
+      border-radius:inherit;
+      background:linear-gradient(90deg, var(--accent), var(--accent2));
+      animation:load 1.2s ease-in-out infinite;
+      box-shadow:0 0 18px rgba(110,168,254,.35);
+    }
+
+    @keyframes load{
+      0%{transform:translateX(-120%)}
+      50%{transform:translateX(80%)}
+      100%{transform:translateX(280%)}
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.9}
+      50%{transform:scale(1.05); opacity:1}
+    }
+
+    .container{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px 40px;
+    }
+
+    .wrap{
+      width:min(760px, 100%);
+    }
+
+    header{
+      text-align:center;
+      margin-bottom:18px;
+      user-select:none;
+    }
+
+    header h1{
+      margin:0;
+      font-size:clamp(2rem, 4vw, 3rem);
+      line-height:1.1;
+      letter-spacing:.5px;
+      text-shadow:0 0 18px rgba(110,168,254,.18);
+    }
+
+    header .brand{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+
+    .card{
+      position:relative;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(14px);
+      padding:22px;
+      overflow:hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:24px;
+      padding:1px;
+      background:linear-gradient(135deg, rgba(110,168,254,.35), rgba(139,92,246,.25), rgba(110,168,254,.12));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events:none;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.6;
+    }
+
+    .samples{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+    }
+
+    .chip{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.86rem;
+      cursor:pointer;
+      transition:.2s ease;
+      user-select:none;
+    }
+    .chip:hover{
+      transform:translateY(-1px);
+      border-color:rgba(110,168,254,.35);
+      background:rgba(110,168,254,.08);
+    }
+
+    .inputRow{
+      display:grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    input{
+      width:100%;
+      border:none;
+      outline:none;
+      background:rgba(6,12,22,.72);
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:15px 16px;
+      font-size:1rem;
+      direction:ltr;
+      text-align:left;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      transition:.2s ease;
+    }
+
+    input:focus{
+      border-color:rgba(110,168,254,.45);
+      box-shadow:0 0 0 4px rgba(110,168,254,.08);
+    }
+
+    button{
+      border:none;
+      outline:none;
+      border-radius:16px;
+      padding:14px 16px;
+      cursor:pointer;
+      font-weight:700;
+      color:#fff;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 10px 24px rgba(110,168,254,.18);
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+
+    button:hover{ transform: translateY(-1px); }
+    button:active{ transform: translateY(0); }
+
+    .btnSecondary{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      box-shadow:none;
+      color:var(--text);
+    }
+    .btnSecondary:hover{
+      background:rgba(255,255,255,.08);
+    }
+
+    .resultBox{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+    }
+
+    .resultLabel{
+      font-size:.9rem;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+
+    .result{
+      font-size:1.25rem;
+      line-height:1.9;
+      font-weight:800;
+      word-break:break-word;
+    }
+
+    .error{
+      margin-top:10px;
+      color:var(--danger);
+      font-size:.95rem;
+      min-height:1.4em;
+      line-height:1.6;
+    }
+
+    .metaRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .history{
+      margin-top:18px;
+      display:none;
+    }
+
+    .historyTitle{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:10px;
+    }
+
+    .historyList{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .historyItem{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      cursor:pointer;
+      color:var(--text);
+      font-size:.85rem;
+      transition:.2s ease;
+    }
+    .historyItem:hover{
+      background:rgba(110,168,254,.09);
+      border-color:rgba(110,168,254,.35);
+    }
+
+    @media (max-width: 700px){
+      .card{ padding:16px; border-radius:20px; }
+      .inputRow{
+        grid-template-columns:1fr 1fr;
+      }
+      .inputRow input{
+        grid-column:1 / -1;
+      }
+      .topbar{
+        align-items:flex-start;
+      }
+      .result{ font-size:1.08rem; }
+    }
+    
+    
+  footer{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+   }
+/* مرکز چین */
+.sa-logo-center{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:10px 0 20px 0;
+}
+
+/* بخش اصلی لوگو */
+.sa-logo{
+  width:80px;
+  height:80px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  user-select:none;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
+    radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+    linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
+
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.55),
+    0 5px 12px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -12px 18px rgba(0,0,0,.55),
+    inset 10px 0 16px rgba(0,0,0,.20),
+    inset -10px 0 16px rgba(0,0,0,.20);
+}
+
+.sa-logo::before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    inset 0 0 18px rgba(255,255,255,.03);
+  pointer-events:none;
+}
+
+/* نوشته SA */
+.sa-text{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-42%);
+  font-family:"Arial Black", Arial, sans-serif;
+  font-size:46px;
+  font-weight:900;
+  letter-spacing:-7px;
+  color:#289CFF; /* رنگ دقیق مثل عکس */
+
+  text-shadow:
+    0 7px 12px rgba(0,0,0,.44),
+    0 2px 4px rgba(0,0,0,.30),
+    0 0 14px rgba(40,156,255,.25),
+    0 0 28px rgba(40,156,255,.12),
+    0 -1px 3px rgba(255,255,255,.08);
+}
+
+/* برچسب CB */
+.sa-badge{
+  position:absolute;
+  top:-3px;
+  right:10px;
+  padding:4px 10px;
+  font-size:13px;
+  font-weight:900;
+  border-radius:0 0 12px 12px;
+
+  color:#289CFF;
+  font-family:"Arial Black", Arial, sans-serif;
+
+  background:
+    linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
+  border:1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.50),
+    inset 0 -6px 9px rgba(0,0,0,.55),
+    inset 0 4px 6px rgba(255,255,255,.07),
+    0 3px 10px rgba(0,0,0,.35);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.35),
+    0 0 10px rgba(40,156,255,.18);
+}
+.fade-out{
+opacity:0;
+transition:.4s ease;
+}
+
+  </style>
+
+</head>
+<body>
+
+
+<div class="sa-logo-center">
+  <div class="sa-logo">
+    <div class="sa-text">SA</div>
+    <div class="sa-badge">CB</div>
+  </div>
+</div>
+
+
+
+  <div id="preloader">
+    <div class="loaderText">Saleh</div>
+    <div class="loaderBar"></div>
+  </div>
+
+  <div class="container">
+    <div class="wrap">
+      <header>
+ 
+  <h1>SA-Chemical Balancer</h1>
+  <div class="brand">✦Saleh✦</div>
+</header>
+
+      <div class="card">
+        <div class="topbar">
+          <div class="hint">
+            <b>معادله را مانند H2+O2=H2O وارد کنید میتوانید علاوه بر استفاده از = از ترکیب -> نیز استفاده کنید</b>
+            
+          </div>
+          <div class="samples">
+            <div class="chip" onclick="setSample('Fe2(SO4)3 + KOH -> K2SO4 + Fe(OH)3')">نمونه ۱</div>
+            <div class="chip" onclick="setSample('C2H6 + O2 -> CO2 + H2O')">نمونه ۲</div>
+            <div class="chip" onclick="setSample('Al + HCl -> AlCl3 + H2')">نمونه ۳</div>
+            <button id="themeToggle" class="btnSecondary" style="padding:10px 14px; font-size:.9rem;">
+            ☀/🌙
+            </button>
+          </div>
+        </div>
+
+        <div class="inputRow">
+          <input id="eq" type="text" placeholder="Fe2(SO4)3 + KOH = K2SO4 + Fe(OH)3" autocomplete="off" spellcheck="false"/>
+          <button onclick="balance()">موازنه</button>
+          <button class="btnSecondary" onclick="copyResult()">کپی</button>
+          <button class="btnSecondary" onclick="clearAll()">پاک کردن</button>
+        </div>
+
+        <div class="resultBox">
+          <div class="resultLabel">نتیجه</div>
+          <div class="result" id="result">—</div>
+          <div class="error" id="error"></div>
+        </div>
+
+        <div class="metaRow">
+          <div id="status">آماده</div>
+          <div id="copyStatus"></div>
+        </div>
+
+        <div class="history" id="historyBox">
+          <div class="historyTitle">تاریخچه‌ی معادلات اخیر</div>
+          <div class="historyList" id="historyList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    Powerd By Saleh Amoo
+    </footer>
+<script>
+function goHome(){
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+  <script>
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const p = document.getElementById("preloader");
+        p.style.opacity = "0";
+        p.style.transition = "opacity .4s ease";
+        setTimeout(() => p.remove(), 420);
+      }, 1200);
+    });
+
+    function gcd(a, b) {
+      a = Math.abs(a); b = Math.abs(b);
+      return b ? gcd(b, a % b) : a;
+    }
+    function lcm(a, b) {
+      return Math.abs(a * b) / gcd(a, b);
+    }
+
+    class Frac {
+      constructor(n, d = 1) {
+        if (d === 0) throw new Error("division by zero");
+        if (d < 0) n = -n, d = -d;
+        const g = gcd(Math.abs(n), Math.abs(d)) || 1;
+        this.n = n / g;
+        this.d = d / g;
+      }
+      add(f) { return new Frac(this.n * f.d + f.n * this.d, this.d * f.d); }
+      sub(f) { return new Frac(this.n * f.d - f.n * this.d, this.d * f.d); }
+      mul(f) { return new Frac(this.n * f.n, this.d * f.d); }
+      div(f) { return new Frac(this.n * f.d, this.d * f.n); }
+      value() { return this.n / this.d; }
+    }
+
+    function parseFormula(formula) {
+      formula = formula.trim()
+        .replace(/\(aq\)|\(s\)|\(l\)|\(g\)/g, "")
+        .replace(/\s+/g, "");
+
+      if (!formula) throw new Error("فرمول خالی است");
+
+      const tokens = formula.match(/[A-Z][a-z]?|\d+|[\(\)\[\]\{\}]/g);
+      if (!tokens) throw new Error("فرمول نامعتبر است");
+
+      const stack = [Object.create(null)];
+      const openers = new Set(["(", "[", "{"]);
+      const closers = {")":"(", "]":"[", "}":"{"};
+
+      for (let i = 0; i < tokens.length; i++) {
+        const t = tokens[i];
+
+        if (openers.has(t)) {
+          stack.push(Object.create(null));
+        } else if (closers[t]) {
+          if (stack.length === 1) throw new Error("پرانتز نامتوازن");
+          const group = stack.pop();
+          let mul = 1;
+          if (i + 1 < tokens.length && /^\d+$/.test(tokens[i + 1])) {
+            mul = parseInt(tokens[++i], 10);
+          }
+          for (const k in group) {
+            stack[stack.length - 1][k] = (stack[stack.length - 1][k] || 0) + group[k] * mul;
+          }
+        } else if (/^[A-Z][a-z]?$/.test(t)) {
+          let count = 1;
+          if (i + 1 < tokens.length && /^\d+$/.test(tokens[i + 1])) {
+            count = parseInt(tokens[++i], 10);
+          }
+          stack[stack.length - 1][t] = (stack[stack.length - 1][t] || 0) + count;
+        } else if (/^\d+$/.test(t)) {
+          throw new Error("عدد در جای نامعتبر");
+        } else {
+          throw new Error("توکن نامعتبر");
+        }
+      }
+
+      if (stack.length !== 1) throw new Error("پرانتز باز مانده");
+      return stack[0];
+    }
+
+    function nullspace(A) {
+      const m = A.length, n = A[0].length;
+      const M = A.map(row => row.map(x => new Frac(x, 1)));
+      let r = 0, pivots = [];
+
+      for (let c = 0; c < n && r < m; c++) {
+        let pivot = -1;
+        for (let i = r; i < m; i++) {
+          if (M[i][c].n !== 0) { pivot = i; break; }
+        }
+        if (pivot === -1) continue;
+
+        [M[r], M[pivot]] = [M[pivot], M[r]];
+        const pv = M[r][c];
+        for (let j = c; j < n; j++) M[r][j] = M[r][j].div(pv);
+
+        for (let i = 0; i < m; i++) {
+          if (i !== r && M[i][c].n !== 0) {
+            const factor = M[i][c];
+            for (let j = c; j < n; j++) {
+              M[i][j] = M[i][j].sub(factor.mul(M[r][j]));
+            }
+          }
+        }
+
+        pivots.push(c);
+        r++;
+      }
+
+      const sol = Array(n).fill(null).map(() => new Frac(0, 1));
+      sol[n - 1] = new Frac(1, 1);
+
+      for (let i = pivots.length - 1; i >= 0; i--) {
+        const c = pivots[i];
+        let sum = new Frac(0, 1);
+        for (let j = c + 1; j < n; j++) {
+          if (M[i][j].n !== 0) sum = sum.add(M[i][j].mul(sol[j]));
+        }
+        sol[c] = sum.n === 0 ? new Frac(0, 1) : sum.mul(new Frac(-1, 1));
+      }
+
+      return sol;
+    }
+
+    function splitEquation(eq) {
+      eq = eq.replace(/→/g, "->").replace(/=/g, "->");
+      const parts = eq.split("->");
+      if (parts.length !== 2) throw new Error("معادله باید یک فلش داشته باشد");
+      const left = parts[0].split("+").map(s => s.trim()).filter(Boolean);
+      const right = parts[1].split("+").map(s => s.trim()).filter(Boolean);
+      if (!left.length || !right.length) throw new Error("طرفین معادله ناقص هستند");
+      return { left, right };
+    }
+
+    function fmtFormula(f) {
+      return f.replace(/(\d+)/g, "<sub>$1</sub>");
+    }
+
+    function simplifyCoefficients(ints) {
+      let g = 0;
+      for (const x of ints) g = gcd(g, Math.abs(x));
+      if (g > 1) ints = ints.map(x => x / g);
+      if (ints.some(x => x < 0)) ints = ints.map(x => -x);
+      return ints;
+    }
+
+    function balance() {
+      const input = document.getElementById("eq").value.trim();
+      const resultEl = document.getElementById("result");
+      const errorEl = document.getElementById("error");
+      const statusEl = document.getElementById("status");
+      const copyStatus = document.getElementById("copyStatus");
+
+      errorEl.textContent = "";
+      copyStatus.textContent = "";
+
+      if (!input) {
+        resultEl.textContent = "—";
+        statusEl.textContent = "آماده";
+        return;
+      }
+
+      try {
+        const { left, right } = splitEquation(input);
+        const mols = [...left, ...right];
+        const parsed = mols.map(parseFormula);
+
+        const elements = [...new Set(parsed.flatMap(obj => Object.keys(obj)))];
+        const matrix = elements.map(el =>
+          mols.map((_, i) => (i < left.length ? 1 : -1) * (parsed[i][el] || 0))
+        );
+
+        if (!matrix.length) throw new Error("فرمول‌ها قابل پردازش نیستند");
+
+        let sol = nullspace(matrix);
+
+        let den = 1;
+        for (const f of sol) den = lcm(den, f.d);
+
+        let ints = sol.map(f => f.n * (den / f.d));
+        ints = simplifyCoefficients(ints);
+
+        const lmax = left.length;
+        const outLeft = left.map((m, i) => {
+          const c = ints[i];
+          return (c !== 1 ? c : "") + fmtFormula(m);
+        }).join(" + ");
+
+        const outRight = right.map((m, i) => {
+          const c = ints[lmax + i];
+          return (c !== 1 ? c : "") + fmtFormula(m);
+        }).join(" + ");
+
+        const balanced = `${outLeft} → ${outRight}`;
+        resultEl.innerHTML = balanced;
+        statusEl.textContent = "موازنه شد";
+        addToHistory(input, balanced);
+      } catch (err) {
+        resultEl.textContent = "—";
+        errorEl.textContent = "خطا: " + (err.message || "ورودی نامعتبر است");
+        statusEl.textContent = "خطا در پردازش";
+      }
+    }
+
+    function setSample(sample) {
+      document.getElementById("eq").value = sample;
+      balance();
+    }
+
+    function clearAll() {
+      document.getElementById("eq").value = "";
+      document.getElementById("result").textContent = "—";
+      document.getElementById("error").textContent = "";
+      document.getElementById("status").textContent = "آماده";
+      document.getElementById("copyStatus").textContent = "";
+      document.getElementById("eq").focus();
+    }
+
+    function copyResult() {
+      const text = document.getElementById("result").innerText.trim();
+      const copyStatus = document.getElementById("copyStatus");
+      if (!text || text === "—") {
+        copyStatus.textContent = "چیزی برای کپی نیست";
+        return;
+      }
+      navigator.clipboard.writeText(text)
+        .then(() => copyStatus.textContent = "نتیجه کپی شد")
+        .catch(() => copyStatus.textContent = "کپی ناموفق بود");
+      setTimeout(() => copyStatus.textContent = "", 1800);
+    }
+
+    function addToHistory(input, output) {
+      let history = JSON.parse(localStorage.getItem("sa_cb_history") || "[]");
+      const item = { input, output, time: Date.now() };
+      history = [item, ...history.filter(x => x.input !== input)].slice(0, 8);
+      localStorage.setItem("sa_cb_history", JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const box = document.getElementById("historyBox");
+      const list = document.getElementById("historyList");
+      const history = JSON.parse(localStorage.getItem("sa_cb_history") || "[]");
+
+      list.innerHTML = "";
+      if (!history.length) {
+        box.style.display = "none";
+        return;
+      }
+
+      box.style.display = "block";
+      history.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "historyItem";
+        div.textContent = item.input;
+        div.title = item.output;
+        div.onclick = () => {
+          document.getElementById("eq").value = item.input;
+          balance();
+        };
+        list.appendChild(div);
+      });
+    }
+
+    
+
+    document.getElementById("eq").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") balance();
+      if (e.key === "Escape") clearAll();
+    });
+
+    renderHistory();
+    // Theme Switcher
+const themeBtn = document.getElementById("themeToggle");
+
+themeBtn.addEventListener("click", ()=>{
+  document.body.classList.toggle("light-mode");
+  localStorage.setItem("sa_theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+});
+
+if(localStorage.getItem("sa_theme") === "light"){
+  document.body.classList.add("light-mode");
+}
+  </script>
+</body>
+</html>

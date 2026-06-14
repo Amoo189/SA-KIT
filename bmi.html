@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محاسبه‌گر BMI | SA-APPS</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --bg2:#0f172a;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --success:#22c55e;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+      --radius:24px;
+    }
+
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Tahoma, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.16), transparent 34%),
+        linear-gradient(180deg,#09111d,#0b1220);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .app{
+      width:100%;
+      max-width:430px;
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:28px;
+      padding:20px;
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      box-shadow:var(--shadow);
+    }
+
+    .header{
+      text-align:center;
+      margin-bottom:18px;
+    }
+
+    .icon{
+      width:68px;
+      height:68px;
+      margin:0 auto 12px;
+      border-radius:20px;
+      display:grid;
+      place-items:center;
+      font-size:30px;
+      background:linear-gradient(135deg, rgba(239,68,68,.22), rgba(139,92,246,.22));
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    h1{
+      margin:0;
+      font-size:24px;
+    }
+
+    .subtitle{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:16px;
+      margin-top:16px;
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .label{
+      display:block;
+      margin-bottom:8px;
+      color:#dbe7ff;
+      font-size:14px;
+    }
+
+    .input{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:14px;
+      padding:14px 14px;
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.06);
+      font-size:15px;
+      font-family:inherit;
+    }
+
+    .input::placeholder{
+      color:#8da2c7;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:14px 10px;
+      font-family:inherit;
+      font-size:14px;
+      font-weight:bold;
+      cursor:pointer;
+      color:#fff;
+      transition:.2s ease;
+    }
+
+    .btn:active{
+      transform:scale(.98);
+    }
+
+    .btn-calc{
+      background:linear-gradient(135deg, #ef4444, #8b5cf6);
+    }
+
+    .btn-reset{
+      background:linear-gradient(135deg, #334155, #475569);
+    }
+
+    .result{
+      margin-top:18px;
+      padding:18px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      text-align:center;
+      display:none;
+    }
+
+    .result.show{
+      display:block;
+    }
+
+    .bmi-number{
+      font-size:38px;
+      font-weight:bold;
+      margin-bottom:8px;
+    }
+
+    .bmi-status{
+      font-size:18px;
+      font-weight:bold;
+      margin-bottom:8px;
+    }
+
+    .bmi-desc{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.9;
+    }
+
+    .range-box{
+      margin-top:16px;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      font-size:13px;
+      color:var(--muted);
+      line-height:2;
+    }
+
+    .back-link{
+      display:block;
+      text-align:center;
+      margin-top:18px;
+      color:#cbd5e1;
+      text-decoration:none;
+      font-size:14px;
+    }
+
+    @media (max-width:420px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .actions{
+        grid-template-columns:1fr;
+      }
+
+      .bmi-number{
+        font-size:32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="icon">❤️</div>
+      <h1>محاسبه‌گر BMI</h1>
+      <div class="subtitle">
+        شاخص توده بدنی خود را با وارد کردن قد و وزن محاسبه کنید.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div class="field">
+          <label class="label">قد (سانتی‌متر)</label>
+          <input id="height" class="input" type="number" placeholder="مثلاً 175">
+        </div>
+
+        <div class="field">
+          <label class="label">وزن (کیلوگرم)</label>
+          <input id="weight" class="input" type="number" placeholder="مثلاً 70">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-calc" onclick="calculateBMI()">محاسبه</button>
+        <button class="btn btn-reset" onclick="resetBMI()">پاک کردن</button>
+      </div>
+    </div>
+
+    <div class="result" id="resultBox">
+      <div class="bmi-number" id="bmiNumber">0</div>
+      <div class="bmi-status" id="bmiStatus">-</div>
+      <div class="bmi-desc" id="bmiDesc">نتیجه شما اینجا نمایش داده می‌شود.</div>
+    </div>
+
+    <div class="range-box">
+      <strong>بازه‌های BMI:</strong><br>
+      کمتر از 18.5 = کمبود وزن<br>
+      18.5 تا 24.9 = وزن نرمال<br>
+      25 تا 29.9 = اضافه وزن<br>
+      30 و بیشتر = چاقی
+    </div>
+
+    <a class="back-link" href="index.html">← بازگشت به لانچر</a>
+  </div>
+
+  <script>
+    function calculateBMI(){
+      const height = parseFloat(document.getElementById("height").value);
+      const weight = parseFloat(document.getElementById("weight").value);
+      const resultBox = document.getElementById("resultBox");
+      const bmiNumber = document.getElementById("bmiNumber");
+      const bmiStatus = document.getElementById("bmiStatus");
+      const bmiDesc = document.getElementById("bmiDesc");
+
+      if (!height || !weight || height <= 0 || weight <= 0) {
+        alert("لطفاً قد و وزن معتبر وارد کنید.");
+        return;
+      }
+
+      const heightMeter = height / 100;
+      const bmi = weight / (heightMeter * heightMeter);
+      const finalBMI = bmi.toFixed(1);
+
+      let status = "";
+      let desc = "";
+      let color = "#6ea8fe";
+
+      if (bmi < 18.5) {
+        status = "کمبود وزن";
+        desc = "وزن شما کمتر از محدوده نرمال است. بهتر است رژیم غذایی و وضعیت سلامتی خود را بررسی کنید.";
+        color = "#f59e0b";
+      } else if (bmi < 25) {
+        status = "وزن نرمال";
+        desc = "وضعیت وزنی شما در محدوده سالم قرار دارد.";
+        color = "#22c55e";
+      } else if (bmi < 30) {
+        status = "اضافه وزن";
+        desc = "وزن شما کمی بالاتر از محدوده نرمال است و بهتر است به تغذیه و فعالیت بدنی توجه کنید.";
+        color = "#f97316";
+      } else {
+        status = "چاقی";
+        desc = "شاخص توده بدنی شما بالاست. پیشنهاد می‌شود برای بررسی دقیق‌تر با متخصص مشورت کنید.";
+        color = "#ef4444";
+      }
+
+      bmiNumber.textContent = finalBMI;
+      bmiStatus.textContent = status;
+      bmiStatus.style.color = color;
+      bmiDesc.textContent = desc;
+      resultBox.classList.add("show");
+    }
+
+    function resetBMI(){
+      document.getElementById("height").value = "";
+      document.getElementById("weight").value = "";
+      document.getElementById("resultBox").classList.remove("show");
+    }
+  </script>
+</body>
+</html>

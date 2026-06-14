@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تولیدکننده UUID - SA-APPS</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220;
+      --bg2:#0f172a;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+      --radius:24px;
+
+      --bg-light:#f0f4f9;
+      --bg2-light:#dbe2ee;
+      --text-light:#1a202c;
+      --muted-light:#6b7280;
+      --border-light:rgba(0,0,0,.12);
+      --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+
+    body.light-mode{
+      --bg:var(--bg-light);
+      --bg2:var(--bg2-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+      --border:var(--border-light);
+      --shadow:var(--shadow-light);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+        linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{ margin:0; padding:0; min-height:100%; }
+    body{
+      min-height:100vh;
+      font-family:"VazirmatnLocal", sans-serif;
+      background:#0b1220;
+      background-image:
+        radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      background-attachment:fixed;
+      color:var(--text);
+      overflow-x:hidden;
+      transition:background .3s ease, color .3s ease;
+    }
+
+    .container{
+      width:min(980px,100%);
+      margin:auto;
+      padding:20px;
+      position:relative;
+    }
+
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(30px);
+      opacity:.35;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .orb1{
+      width:180px;height:180px;
+      background:linear-gradient(135deg,var(--accent),transparent);
+      top:-30px; right:20px;
+    }
+
+    .orb2{
+      width:220px;height:220px;
+      background:linear-gradient(135deg,var(--accent2),transparent);
+      bottom:-40px; left:10px;
+    }
+
+    .panel{
+      position:relative;
+      z-index:1;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .light-mode .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+
+    .title-wrap h1{
+      margin:0;
+      font-size:24px;
+    }
+
+    .title-wrap p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn, .theme-btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:14px;
+      cursor:pointer;
+      font-family:inherit;
+      transition:.25s ease;
+      text-decoration:none;
+    }
+
+    .light-mode .btn, .light-mode .theme-btn{
+      background:rgba(0,0,0,.05);
+    }
+
+    .btn{
+      padding:11px 16px;
+      font-size:14px;
+    }
+
+    .theme-btn{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+    }
+
+    .btn:hover, .theme-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(0,0,0,.16);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:20px;
+    }
+
+    .light-mode .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .card h2{
+      margin:0 0 14px;
+      font-size:18px;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .output{
+      width:100%;
+      min-height:140px;
+      resize:vertical;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      border-radius:18px;
+      padding:14px;
+      font-family:monospace;
+      font-size:14px;
+      line-height:1.8;
+      outline:none;
+    }
+
+    .light-mode .output{
+      background:rgba(0,0,0,.04);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .field{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    input[type="number"]{
+      width:110px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-family:inherit;
+      outline:none;
+    }
+
+    .light-mode input[type="number"]{
+      background:rgba(0,0,0,.05);
+    }
+
+    label{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (max-width:760px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <section class="panel">
+      <div class="topbar">
+        <div class="title-wrap">
+          <h1>تولیدکننده UUID</h1>
+          <p>ساخت سریع UUID نسخه 4 برای استفاده در پروژه‌ها و شناسه‌های یکتا</p>
+        </div>
+
+        <div class="actions">
+          <button class="theme-btn" onclick="toggleTheme()" aria-label="تغییر تم">☀️</button>
+          <a class="btn" href="index.html">بازگشت</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>تنظیمات</h2>
+          <div class="field">
+            <label for="countInput">تعداد UUID:</label>
+            <input id="countInput" type="number" min="1" max="100" value="5">
+          </div>
+
+          <div class="row">
+            <button class="btn" onclick="generateUUIDs()">تولید UUID</button>
+            <button class="btn" onclick="copyOutput()">کپی خروجی</button>
+            <button class="btn" onclick="clearOutput()">پاک کردن</button>
+          </div>
+
+          <p class="muted" style="margin-top:16px;">
+            این ابزار از UUID v4 بر پایه مقادیر تصادفی استفاده می‌کند.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>خروجی</h2>
+          <textarea id="output" class="output" readonly placeholder="UUIDها اینجا نمایش داده می‌شوند..."></textarea>
+        </div>
+      </div>
+
+      <div class="footer-note">SA‑APPS • UUID Generator</div>
+    </section>
+  </div>
+
+  <script>
+    const themeKey = "sa-apps-theme";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme(localStorage.getItem(themeKey) || "dark");
+      generateUUIDs();
+    });
+
+    function applyTheme(theme){
+      document.body.classList.remove("dark-mode","light-mode");
+      document.body.classList.add(`${theme}-mode`);
+      localStorage.setItem(themeKey, theme);
+    }
+
+    function toggleTheme(){
+      const isDark = document.body.classList.contains("dark-mode");
+      applyTheme(isDark ? "light" : "dark");
+    }
+
+    function uuidv4(){
+      if(window.crypto && crypto.randomUUID){
+        return crypto.randomUUID();
+      }
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+        const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16;
+        const v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function generateUUIDs(){
+      const count = Math.min(100, Math.max(1, parseInt(document.getElementById("countInput").value) || 1));
+      const list = [];
+      for(let i=0;i<count;i++){
+        list.push(uuidv4());
+      }
+      document.getElementById("output").value = list.join("\n");
+    }
+
+    function copyOutput(){
+      const output = document.getElementById("output").value;
+      if(!output.trim()) return alert("خروجی خالی است.");
+      navigator.clipboard.writeText(output)
+        .then(() => alert("خروجی کپی شد."))
+        .catch(() => alert("خطا در کپی کردن."));
+    }
+
+    function clearOutput(){
+      document.getElementById("output").value = "";
+    }
+  </script>
+</body>
+</html>

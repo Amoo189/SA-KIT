@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>انتخاب‌گر تصادفی | SA-APPS</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220; --text:#e8eefc; --muted:#9fb0d0; --accent:#6ea8fe; --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08); --shadow:0 18px 50px rgba(0,0,0,.45); --glass:blur(14px);
+      --text-light:#1a202c; --muted-light:#6b7280; --border-light:rgba(0,0,0,.12); --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+    body.light-mode{
+      --text:var(--text-light); --muted:var(--muted-light); --border:var(--border-light); --shadow:var(--shadow-light);
+      background: radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+                  radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+                  linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;font-family:"VazirmatnLocal",sans-serif;color:var(--text);
+      background:#0b1220;background-image:radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      background-attachment:fixed;
+    }
+    .container{width:min(900px,100%);margin:auto;padding:20px}
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+      border-radius:32px;box-shadow:var(--shadow);padding:28px;
+    }
+    .light-mode .panel{background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1))}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+    .topbar-left{display:flex;align-items:center;gap:14px}
+    .brand-badge{
+      width:58px;height:58px;border-radius:18px;display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(110,168,254,.28), rgba(139,92,246,.24));
+      border:1px solid rgba(255,255,255,.10);font-size:24px;font-weight:800;
+    }
+    .brand-title h1{margin:0;font-size:24px}
+    .brand-title p{margin:0;color:var(--muted);font-size:14px}
+    .topbar-right{display:flex;gap:12px;flex-wrap:wrap}
+    .theme-switcher,.action-btn{
+      border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);
+      border-radius:14px;cursor:pointer;font-family:inherit;transition:.25s ease;
+      backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+    }
+    .theme-switcher{width:48px;height:48px;display:grid;place-items:center}
+    .action-btn{padding:11px 16px;text-decoration:none}
+    .light-mode .theme-switcher,.light-mode .action-btn{background:rgba(0,0,0,.05);border-color:var(--border-light)}
+    textarea{
+      width:100%;min-height:220px;resize:vertical;border-radius:20px;border:1px solid var(--border);
+      background:rgba(255,255,255,.05);color:var(--text);padding:16px;outline:none;font-family:inherit;font-size:15px;line-height:1.9;
+    }
+    .light-mode textarea{background:rgba(0,0,0,.05)}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .btn-primary,.btn{
+      padding:11px 16px;border-radius:14px;cursor:pointer;font-family:inherit;
+    }
+    .btn-primary{border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+    .btn{border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text)}
+    .result{
+      margin-top:18px;padding:24px;border-radius:20px;text-align:center;font-size:24px;font-weight:700;
+      background:linear-gradient(135deg, rgba(110,168,254,.14), rgba(139,92,246,.12));border:1px solid var(--border);
+    }
+    .footer{text-align:center;padding:24px 0;margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--border)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-badge">🎯</div>
+          <div class="brand-title">
+            <h1>انتخاب‌گر تصادفی</h1>
+            <p>هر گزینه را در یک خط بنویسید</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="theme-switcher" onclick="toggleTheme()">🌓</button>
+          <a class="action-btn" href="index.html">بازگشت ←</a>
+        </div>
+      </div>
+
+      <textarea id="options" placeholder="مثال:
+ریاضی
+شیمی
+فیزیک
+زیست"></textarea>
+
+      <div class="actions">
+        <button class="btn-primary" onclick="pickRandom()">انتخاب کن</button>
+        <button class="btn" onclick="clearAll()">پاک کردن</button>
+      </div>
+
+      <div class="result" id="result">نتیجه اینجا نمایش داده می‌شود</div>
+    </section>
+    <footer class="footer">SA‑APPS &copy; 2026</footer>
+  </div>
+
+  <script>
+    const theme = localStorage.getItem("sa-apps-theme") || "dark";
+    applyTheme(theme);
+
+    function applyTheme(mode){
+      document.body.classList.remove("dark-mode","light-mode");
+      document.body.classList.add(mode + "-mode");
+      localStorage.setItem("sa-apps-theme", mode);
+    }
+    function toggleTheme(){
+      const isLight = document.body.classList.contains("light-mode");
+      applyTheme(isLight ? "dark" : "light");
+    }
+
+    function pickRandom(){
+      const lines = document.getElementById("options").value
+        .split("\n")
+        .map(x => x.trim())
+        .filter(Boolean);
+
+      document.getElementById("result").textContent =
+        lines.length ? lines[Math.floor(Math.random() * lines.length)] : "لطفاً حداقل یک گزینه وارد کنید";
+    }
+
+    function clearAll(){
+      document.getElementById("options").value = "";
+      document.getElementById("result").textContent = "نتیجه اینجا نمایش داده می‌شود";
+    }
+  </script>
+</body>
+</html>

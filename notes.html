@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نوت‌برداری حرفه‌ای | SA Apps</title>
+
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#081120;
+      --bg-2:#0d1730;
+      --panel:rgba(255,255,255,.08);
+      --panel-strong:rgba(255,255,255,.12);
+      --text:#eaf2ff;
+      --muted:#a9b7d3;
+      --border:rgba(255,255,255,.10);
+      --accent:#6ea8fe;
+      --accent-2:#8b5cf6;
+      --success:#22c55e;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --input-bg:rgba(255,255,255,.05);
+    }
+
+    body.light-mode{
+      --bg:#f3f7ff;
+      --bg-2:#eaf1ff;
+      --panel:rgba(255,255,255,.72);
+      --panel-strong:rgba(255,255,255,.86);
+      --text:#182033;
+      --muted:#5f6b85;
+      --border:rgba(24,32,51,.10);
+      --shadow:0 20px 50px rgba(70,88,130,.14);
+      --input-bg:rgba(255,255,255,.82);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+    }
+
+    body{
+      font-family:"VazirmatnLocal",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(110,168,254,.22), transparent 0 28%),
+        radial-gradient(circle at 85% 18%, rgba(139,92,246,.18), transparent 0 24%),
+        radial-gradient(circle at 70% 80%, rgba(110,168,254,.10), transparent 0 26%),
+        linear-gradient(135deg,var(--bg),var(--bg-2));
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:24px;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    .orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(30px);
+      opacity:.28;
+      pointer-events:none;
+      z-index:0;
+    }
+    .orb1{
+      width:220px;height:220px;top:-40px;right:-60px;background:#6ea8fe;
+    }
+    .orb2{
+      width:240px;height:240px;bottom:-70px;left:-70px;background:#8b5cf6;
+    }
+
+    .theme-toggle{
+      position:fixed;
+      top:18px;
+      left:18px;
+      z-index:20;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      backdrop-filter:blur(14px);
+      border-radius:14px;
+      padding:10px 14px;
+      font-family:inherit;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+    }
+    .theme-toggle:hover{transform:translateY(-2px);background:var(--panel-strong)}
+
+    .wrap{
+      width:min(1200px,100%);
+      position:relative;
+      z-index:1;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:30px;
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:18px 20px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      font-size:16px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 25px rgba(110,168,254,.28);
+      flex-shrink:0;
+    }
+
+    .brand-text h1{
+      margin:0;
+      font-size:20px;
+      line-height:1.3;
+    }
+
+    .brand-text p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .stats{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .stat{
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .content{
+      padding:24px;
+    }
+
+    .hero{
+      margin-bottom:18px;
+    }
+
+    .hero h2{
+      margin:0 0 8px;
+      font-size:26px;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.9;
+      font-size:14px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:420px 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:18px;
+      min-width:0;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:16px;
+    }
+
+    .input,.textarea{
+      width:100%;
+      min-width:0;
+      max-width:100%;
+      padding:13px 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:var(--input-bg);
+      color:var(--text);
+      font-family:inherit;
+      font-size:15px;
+      outline:none;
+      transition:.2s ease;
+    }
+
+    .input::placeholder,.textarea::placeholder{
+      color:var(--muted);
+    }
+
+    .input:focus,.textarea:focus{
+      border-color:rgba(110,168,254,.55);
+      box-shadow:0 0 0 4px rgba(110,168,254,.12);
+      background:rgba(255,255,255,.08);
+    }
+
+    .textarea{
+      min-height:220px;
+      resize:vertical;
+      line-height:2;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:12px 0;
+    }
+
+    .tool-btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:12px;
+      padding:9px 12px;
+      font-family:inherit;
+      cursor:pointer;
+      font-size:13px;
+      transition:.2s ease;
+    }
+
+    .tool-btn:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.10);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .actions.three{
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:13px 16px;
+      font-family:inherit;
+      font-size:14px;
+      cursor:pointer;
+      transition:.22s ease;
+    }
+
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 14px 24px rgba(110,168,254,.22);
+    }
+    .btn-secondary{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+    }
+    .btn-danger{
+      color:#fff;
+      background:linear-gradient(135deg,#ef4444,#dc2626);
+    }
+    .btn-warning{
+      color:#fff;
+      background:linear-gradient(135deg,#f59e0b,#d97706);
+    }
+    .btn-success{
+      color:#fff;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+    }
+    .btn:hover{transform:translateY(-2px)}
+
+    .help{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:2;
+      border-top:1px solid var(--border);
+      padding-top:12px;
+    }
+
+    .search-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .notes-list{
+      display:grid;
+      gap:12px;
+      max-height:700px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .note-item{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      border-radius:20px;
+      padding:14px;
+      transition:.2s ease;
+    }
+
+    .note-item:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.06);
+    }
+
+    .note-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .note-title{
+      margin:0;
+      font-size:16px;
+      line-height:1.7;
+      word-break:break-word;
+    }
+
+    .note-actions{
+      display:flex;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .mini-btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:10px;
+      padding:7px 10px;
+      font-family:inherit;
+      cursor:pointer;
+      font-size:12px;
+    }
+
+    .mini-btn.delete{
+      color:#fff;
+      background:rgba(239,68,68,.85);
+      border-color:transparent;
+    }
+
+    .note-meta{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:10px;
+      line-height:1.8;
+    }
+
+    .note-preview{
+      border-top:1px solid var(--border);
+      padding-top:10px;
+      font-size:14px;
+      line-height:2;
+      word-break:break-word;
+    }
+
+    .note-preview h1,
+    .note-preview h2,
+    .note-preview h3{
+      margin:10px 0;
+      line-height:1.7;
+    }
+
+    .note-preview ul,
+    .note-preview ol{
+      margin:10px 0;
+      padding-right:22px;
+    }
+
+    .note-preview p{
+      margin:8px 0;
+    }
+
+    .note-preview strong{
+      color:#fff0a8;
+    }
+
+    body.light-mode .note-preview strong{
+      color:#8a5a00;
+    }
+
+    .empty{
+      border:1px dashed var(--border);
+      border-radius:20px;
+      padding:24px;
+      text-align:center;
+      color:var(--muted);
+      line-height:2;
+      background:rgba(255,255,255,.03);
+    }
+
+    .preview-box{
+      margin-top:14px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+      background:rgba(255,255,255,.04);
+      min-height:110px;
+    }
+
+    .status{
+      margin-top:10px;
+      min-height:20px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    @media (max-width:980px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:700px){
+      .content{padding:18px}
+      .hero h2{font-size:22px}
+      .grid2,.actions,.actions.three,.search-row{
+        grid-template-columns:1fr;
+      }
+      .note-head{
+        flex-direction:column;
+      }
+      .note-actions{
+        width:100%;
+      }
+      .note-actions .mini-btn{
+        flex:1;
+      }
+    }
+
+    @media (max-width:600px){
+      body{padding:16px}
+      .theme-toggle{
+        top:12px;
+        left:12px;
+        padding:9px 12px;
+        font-size:13px;
+      }
+      .panel{border-radius:24px}
+      .topbar{padding:16px}
+      .brand-text h1{font-size:18px}
+      .hero h2{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <button class="theme-toggle" id="themeToggle">تغییر تم</button>
+
+  <main class="wrap">
+    <section class="panel">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">SA</div>
+          <div class="brand-text">
+            <h1>برنامه‌های SA</h1>
+            <p>نوت‌برداری حرفه‌ای با Markdown ساده، ذخیره محلی و پیش‌نمایش زنده</p>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">تعداد یادداشت‌ها: <strong id="notesCount">0</strong></div>
+          <div class="stat">نتایج جستجو: <strong id="searchCount">0</strong></div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="hero">
+          <h2>نوت‌برداری حرفه‌ای</h2>
+          <p>
+            یادداشت بساز، با Markdown ساده فرمت بده، پیش‌نمایش زنده ببین و همه چیز را در مرورگر ذخیره کن.
+          </p>
+        </div>
+
+        <div class="layout">
+          <div class="card">
+            <h3 class="section-title">ویرایشگر یادداشت</h3>
+
+            <div class="grid2">
+              <input id="noteTitle" class="input" type="text" placeholder="عنوان یادداشت">
+              <input id="searchInput" class="input" type="text" placeholder="جستجو در یادداشت‌ها">
+            </div>
+
+            <div class="toolbar">
+              <button class="tool-btn" type="button" data-insert="**متن بولد**">Bold</button>
+              <button class="tool-btn" type="button" data-insert="- آیتم اول&#10;- آیتم دوم">لیست</button>
+              <button class="tool-btn" type="button" data-insert="1. مورد اول&#10;2. مورد دوم">لیست شماره‌ای</button>
+              <button class="tool-btn" type="button" data-insert="# عنوان">تیتر</button>
+              <button class="tool-btn" type="button" data-insert="## زیرعنوان">زیرعنوان</button>
+            </div>
+
+            <textarea id="noteContent" class="textarea" placeholder="متن یادداشت را اینجا بنویس...&#10;&#10;نمونه‌ها:&#10;**متن بولد**&#10;- آیتم لیست&#10;1. مورد شماره‌ای&#10;# عنوان"></textarea>
+
+            <div class="preview-box">
+              <div class="section-title" style="margin-bottom:10px;">پیش‌نمایش زنده</div>
+              <div id="livePreview" class="note-preview">هنوز متنی وارد نشده است.</div>
+            </div>
+
+            <div class="actions three">
+              <button class="btn btn-primary" id="saveBtn">ذخیره یادداشت</button>
+              <button class="btn btn-secondary" id="newBtn">یادداشت جدید</button>
+              <button class="btn btn-warning" id="clearEditorBtn">پاک کردن متن</button>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-success" id="exportBtn">خروجی JSON</button>
+              <button class="btn btn-danger" id="deleteAllBtn">حذف همه یادداشت‌ها</button>
+            </div>
+
+            <div class="status" id="statusText"></div>
+
+            <div class="help">
+              <strong>راهنمای Markdown ساده:</strong><br>
+              <code>**متن**</code> برای بولد<br>
+              <code># عنوان</code> برای تیتر<br>
+              <code>## زیرعنوان</code> برای زیرعنوان<br>
+              <code>- آیتم</code> برای لیست<br>
+              <code>1. آیتم</code> برای لیست شماره‌دار
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">یادداشت‌های ذخیره‌شده</h3>
+
+            <div class="search-row">
+              <input id="searchInputMobile" class="input" type="text" placeholder="جستجو در عنوان یا متن...">
+              <button class="btn btn-secondary" id="clearSearchBtn">پاک کردن جستجو</button>
+            </div>
+
+            <div id="notesList" class="notes-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "sa_notes_app_v1";
+    const EDIT_KEY = "sa_notes_editing_id";
+    const THEME_KEY = "sa-notes-theme";
+
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+
+    const noteTitle = document.getElementById("noteTitle");
+    const noteContent = document.getElementById("noteContent");
+    const livePreview = document.getElementById("livePreview");
+
+    const saveBtn = document.getElementById("saveBtn");
+    const newBtn = document.getElementById("newBtn");
+    const clearEditorBtn = document.getElementById("clearEditorBtn");
+    const deleteAllBtn = document.getElementById("deleteAllBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const clearSearchBtn = document.getElementById("clearSearchBtn");
+
+    const searchInput = document.getElementById("searchInput");
+    const searchInputMobile = document.getElementById("searchInputMobile");
+
+    const notesList = document.getElementById("notesList");
+    const notesCount = document.getElementById("notesCount");
+    const searchCount = document.getElementById("searchCount");
+    const statusText = document.getElementById("statusText");
+
+    let notes = loadNotes();
+    let editingId = localStorage.getItem(EDIT_KEY) || null;
+
+    function applyTheme(theme){
+      if(theme === "light"){
+        body.classList.add("light-mode");
+      }else{
+        body.classList.remove("light-mode");
+      }
+    }
+
+    applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+    themeToggle.addEventListener("click", () => {
+      const next = body.classList.contains("light-mode") ? "dark" : "light";
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+
+    function setStatus(text){
+      statusText.textContent = text || "";
+    }
+
+    function loadNotes(){
+      try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      }catch{
+        return [];
+      }
+    }
+
+    function saveNotes(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function parseMarkdown(text){
+      const escaped = escapeHtml(text || "");
+      const lines = escaped.split("\n");
+
+      let html = "";
+      let inUl = false;
+      let inOl = false;
+
+      function closeLists(){
+        if(inUl){ html += "</ul>"; inUl = false; }
+        if(inOl){ html += "</ol>"; inOl = false; }
+      }
+
+      function inlineFormat(line){
+        return line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      }
+
+      for(let rawLine of lines){
+        const line = rawLine.trim();
+
+        if(!line){
+          closeLists();
+          html += "<p></p>";
+          continue;
+        }
+
+        if(line.startsWith("### ")){
+          closeLists();
+          html += `<h3>${inlineFormat(line.slice(4))}</h3>`;
+          continue;
+        }
+
+        if(line.startsWith("## ")){
+          closeLists();
+          html += `<h2>${inlineFormat(line.slice(3))}</h2>`;
+          continue;
+        }
+
+        if(line.startsWith("# ")){
+          closeLists();
+          html += `<h1>${inlineFormat(line.slice(2))}</h1>`;
+          continue;
+        }
+
+        if(/^- /.test(line)){
+          if(inOl){ html += "</ol>"; inOl = false; }
+          if(!inUl){ html += "<ul>"; inUl = true; }
+          html += `<li>${inlineFormat(line.replace(/^- /, ""))}</li>`;
+          continue;
+        }
+
+        if(/^\d+\.\s/.test(line)){
+          if(inUl){ html += "</ul>"; inUl = false; }
+          if(!inOl){ html += "<ol>"; inOl = true; }
+          html += `<li>${inlineFormat(line.replace(/^\d+\.\s/, ""))}</li>`;
+          continue;
+        }
+
+        closeLists();
+        html += `<p>${inlineFormat(line)}</p>`;
+      }
+
+      closeLists();
+      return html || "<p>هنوز متنی وارد نشده است.</p>";
+    }
+
+    function formatDateTime(ts){
+      const d = new Date(ts);
+      return d.toLocaleString("fa-IR");
+    }
+
+    function updatePreview(){
+      const content = noteContent.value.trim();
+      livePreview.innerHTML = content ? parseMarkdown(content) : "هنوز متنی وارد نشده است.";
+    }
+
+    function makeId(){
+      return "n_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
+    }
+
+    function getSearchValue(){
+      return (searchInput.value || searchInputMobile.value || "").trim().toLowerCase();
+    }
+
+    function syncSearchInputs(value){
+      searchInput.value = value;
+      searchInputMobile.value = value;
+    }
+
+    function renderNotes(){
+      const q = getSearchValue();
+
+      const filtered = notes.filter(note => {
+        const hay = `${note.title} ${note.content}`.toLowerCase();
+        return hay.includes(q);
+      }).sort((a,b) => b.updatedAt - a.updatedAt);
+
+      notesCount.textContent = notes.length;
+      searchCount.textContent = filtered.length;
+
+      if(!filtered.length){
+        notesList.innerHTML = `<div class="empty">${q ? "یادداشتی با این جستجو پیدا نشد." : "هنوز یادداشتی ذخیره نشده است."}</div>`;
+        return;
+      }
+
+      notesList.innerHTML = filtered.map(note => `
+        <div class="note-item">
+          <div class="note-head">
+            <h4 class="note-title">${escapeHtml(note.title || "بدون عنوان")}</h4>
+            <div class="note-actions">
+              <button class="mini-btn" onclick="editNote('${note.id}')">ویرایش</button>
+              <button class="mini-btn delete" onclick="deleteNote('${note.id}')">حذف</button>
+            </div>
+          </div>
+          <div class="note-meta">
+            ایجاد: ${formatDateTime(note.createdAt)}<br>
+            آخرین ویرایش: ${formatDateTime(note.updatedAt)}
+          </div>
+          <div class="note-preview">${parseMarkdown(note.content)}</div>
+        </div>
+      `).join("");
+    }
+
+    function resetEditor(){
+      noteTitle.value = "";
+      noteContent.value = "";
+      editingId = null;
+      localStorage.removeItem(EDIT_KEY);
+      updatePreview();
+    }
+
+    function saveNote(){
+      const title = noteTitle.value.trim();
+      const content = noteContent.value.trim();
+
+      if(!title && !content){
+        setStatus("برای ذخیره، عنوان یا متن وارد کن.");
+        return;
+      }
+
+      if(editingId){
+        const idx = notes.findIndex(n => n.id === editingId);
+        if(idx !== -1){
+          notes[idx].title = title || "بدون عنوان";
+          notes[idx].content = content;
+          notes[idx].updatedAt = Date.now();
+          setStatus("یادداشت ویرایش شد.");
+        }
+      }else{
+        const now = Date.now();
+        notes.push({
+          id: makeId(),
+          title: title || "بدون عنوان",
+          content,
+          createdAt: now,
+          updatedAt: now
+        });
+        setStatus("یادداشت ذخیره شد.");
+      }
+
+      saveNotes();
+      resetEditor();
+      renderNotes();
+    }
+
+    window.editNote = function(id){
+      const note = notes.find(n => n.id === id);
+      if(!note) return;
+
+      editingId = id;
+      localStorage.setItem(EDIT_KEY, id);
+      noteTitle.value = note.title === "بدون عنوان" ? "" : note.title;
+      noteContent.value = note.content;
+      updatePreview();
+      setStatus("یادداشت برای ویرایش بارگذاری شد.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.deleteNote = function(id){
+      const note = notes.find(n => n.id === id);
+      if(!note) return;
+
+      const ok = confirm(`یادداشت «${note.title}» حذف شود؟`);
+      if(!ok) return;
+
+      notes = notes.filter(n => n.id !== id);
+      if(editingId === id){
+        resetEditor();
+      }
+      saveNotes();
+      renderNotes();
+      setStatus("یادداشت حذف شد.");
+    }
+
+    function deleteAllNotes(){
+      if(!notes.length){
+        setStatus("یادداشتی برای حذف وجود ندارد.");
+        return;
+      }
+
+      const ok = confirm("همه یادداشت‌ها حذف شوند؟ این عمل قابل بازگشت نیست.");
+      if(!ok) return;
+
+      notes = [];
+      saveNotes();
+      resetEditor();
+      renderNotes();
+      setStatus("همه یادداشت‌ها حذف شدند.");
+    }
+
+    function clearEditor(){
+      noteContent.value = "";
+      updatePreview();
+      setStatus("متن ویرایشگر پاک شد.");
+    }
+
+    function exportNotes(){
+      const blob = new Blob(
+        [JSON.stringify(notes, null, 2)],
+        { type: "application/json;charset=utf-8" }
+      );
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "sa-notes-export.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus("فایل خروجی ساخته شد.");
+    }
+
+    function insertAtCursor(text){
+      const start = noteContent.selectionStart;
+      const end = noteContent.selectionEnd;
+      const value = noteContent.value;
+
+      noteContent.value = value.slice(0, start) + text + value.slice(end);
+      noteContent.focus();
+      noteContent.selectionStart = noteContent.selectionEnd = start + text.length;
+      updatePreview();
+    }
+
+    document.querySelectorAll(".tool-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const text = btn.getAttribute("data-insert")
+          .replace(/&#10;/g, "\n");
+        insertAtCursor(text);
+      });
+    });
+
+    saveBtn.addEventListener("click", saveNote);
+    newBtn.addEventListener("click", () => {
+      resetEditor();
+      setStatus("ویرایشگر برای یادداشت جدید آماده شد.");
+    });
+    clearEditorBtn.addEventListener("click", clearEditor);
+    deleteAllBtn.addEventListener("click", deleteAllNotes);
+    exportBtn.addEventListener("click", exportNotes);
+
+    noteContent.addEventListener("input", updatePreview);
+    noteTitle.addEventListener("keydown", e => {
+      if(e.key === "Enter") saveNote();
+    });
+
+    [searchInput, searchInputMobile].forEach(input => {
+      input.addEventListener("input", e => {
+        syncSearchInputs(e.target.value);
+        renderNotes();
+      });
+    });
+
+    clearSearchBtn.addEventListener("click", () => {
+      syncSearchInputs("");
+      renderNotes();
+      setStatus("جستجو پاک شد.");
+    });
+
+    updatePreview();
+    renderNotes();
+  </script>
+</body>
+</html>

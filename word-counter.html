@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>شمارشگر متن | SA-APPS</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220;
+      --bg2:#0f172a;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+      --radius:24px;
+      --bg-light:#f0f4f9;
+      --bg2-light:#dbe2ee;
+      --text-light:#1a202c;
+      --muted-light:#6b7280;
+      --border-light:rgba(0,0,0,.12);
+      --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+
+    body.light-mode{
+      --bg:var(--bg-light);
+      --bg2:var(--bg2-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+      --border:var(--border-light);
+      --shadow:var(--shadow-light);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+        linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;width:100%;min-height:100%}
+
+    body{
+      min-height:100vh;
+      font-family:"VazirmatnLocal",sans-serif;
+      background:#0b1220;
+      background-image:
+        radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      background-attachment:fixed;
+      color:var(--text);
+      overflow-x:hidden;
+      transition:background .3s ease;
+    }
+
+    .container{
+      width:min(980px,100%);
+      position:relative;
+      margin:auto;
+      padding:20px;
+    }
+
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(30px);
+      opacity:.35;
+      pointer-events:none;
+      z-index:0;
+    }
+    .orb1{
+      width:170px;height:170px;
+      background:linear-gradient(135deg,var(--accent),transparent);
+      top:-40px;right:20px;
+    }
+    .orb2{
+      width:200px;height:200px;
+      background:linear-gradient(135deg,var(--accent2),transparent);
+      bottom:-60px;left:10px;
+    }
+
+    .panel{
+      position:relative;
+      z-index:1;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    .light-mode .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .brand-badge{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(110,168,254,.28), rgba(139,92,246,.24));
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:800;
+      font-size:24px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+      flex-shrink:0;
+    }
+
+    .brand-title h1{
+      margin:0;
+      font-size:24px;
+    }
+
+    .brand-title p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .theme-switcher,.action-btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      color:var(--text);
+      border-radius:14px;
+      cursor:pointer;
+      font-family:inherit;
+      transition:.25s ease;
+    }
+
+    .theme-switcher{
+      width:48px;height:48px;
+      display:grid;place-items:center;
+    }
+
+    .action-btn{
+      padding:11px 16px;
+      text-decoration:none;
+      font-size:14px;
+    }
+
+    .theme-switcher:hover,.action-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(0,0,0,.16);
+    }
+
+    .editor{
+      width:100%;
+      min-height:240px;
+      resize:vertical;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      border-radius:20px;
+      color:var(--text);
+      padding:16px;
+      font-family:inherit;
+      font-size:15px;
+      line-height:1.9;
+      outline:none;
+    }
+
+    .editor::placeholder{color:var(--muted)}
+
+    .light-mode .editor,
+    .light-mode .theme-switcher,
+    .light-mode .action-btn{
+      background:rgba(0,0,0,.05);
+      border-color:var(--border-light);
+    }
+
+    .stats{
+      margin-top:20px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+      gap:14px;
+    }
+
+    .stat-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .light-mode .stat-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .stat-label{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .stat-value{
+      font-size:24px;
+      font-weight:700;
+    }
+
+    .footer{
+      text-align:center;
+      padding:24px 0;
+      margin-top:28px;
+      font-size:13px;
+      color:var(--muted);
+      border-top:1px solid var(--border);
+    }
+
+    @media (max-width:640px){
+      .container{padding:16px}
+      .panel{padding:18px;border-radius:24px}
+      .topbar{justify-content:center}
+      .topbar-left,.topbar-right{width:100%;justify-content:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <section class="panel">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-badge">✍️</div>
+          <div class="brand-title">
+            <h1>شمارشگر متن</h1>
+            <p>محاسبه کلمات، حروف، خطوط و زمان مطالعه</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم">🌓</button>
+          <button class="action-btn" onclick="clearText()">پاک کردن</button>
+          <a class="action-btn" href="index.html">بازگشت ←</a>
+        </div>
+      </div>
+
+      <textarea id="textInput" class="editor" placeholder="متن خود را اینجا وارد کنید..."></textarea>
+
+      <div class="stats">
+        <div class="stat-card"><div class="stat-label">کلمات</div><div class="stat-value" id="words">0</div></div>
+        <div class="stat-card"><div class="stat-label">حروف بدون فاصله</div><div class="stat-value" id="charsNoSpace">0</div></div>
+        <div class="stat-card"><div class="stat-label">همه کاراکترها</div><div class="stat-value" id="chars">0</div></div>
+        <div class="stat-card"><div class="stat-label">خطوط</div><div class="stat-value" id="lines">0</div></div>
+        <div class="stat-card"><div class="stat-label">پاراگراف</div><div class="stat-value" id="paragraphs">0</div></div>
+        <div class="stat-card"><div class="stat-label">زمان مطالعه</div><div class="stat-value" id="readingTime">0 دقیقه</div></div>
+      </div>
+    </section>
+
+    <footer class="footer">SA‑APPS &copy; 2026</footer>
+  </div>
+
+  <script>
+    const theme = localStorage.getItem("sa-apps-theme") || "dark";
+    applyTheme(theme);
+
+    function applyTheme(mode){
+      document.body.classList.remove("dark-mode","light-mode");
+      document.body.classList.add(mode + "-mode");
+      localStorage.setItem("sa-apps-theme", mode);
+    }
+
+    function toggleTheme(){
+      const isLight = document.body.classList.contains("light-mode");
+      applyTheme(isLight ? "dark" : "light");
+    }
+
+    const textInput = document.getElementById("textInput");
+
+    function updateStats(){
+      const text = textInput.value;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const chars = text.length;
+      const charsNoSpace = text.replace(/\s/g,'').length;
+      const lines = text ? text.split(/\n/).length : 0;
+      const paragraphs = text.trim() ? text.trim().split(/\n\s*\n/).length : 0;
+      const readingTime = Math.ceil(words / 200);
+
+      document.getElementById("words").textContent = words;
+      document.getElementById("chars").textContent = chars;
+      document.getElementById("charsNoSpace").textContent = charsNoSpace;
+      document.getElementById("lines").textContent = lines;
+      document.getElementById("paragraphs").textContent = paragraphs;
+      document.getElementById("readingTime").textContent = readingTime + " دقیقه";
+    }
+
+    function clearText(){
+      textInput.value = "";
+      updateStats();
+    }
+
+    textInput.addEventListener("input", updateStats);
+    updateStats();
+  </script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-AC</title>
+<style>
+:root{
+--clr-clock:#00fbff;
+--clr-stopwatch:#ff2972;
+--clr-timer:#fee800;
+--active:var(--clr-clock);
+--bg:#2f363e;
+--shadow1:rgba(0,0,0,0.65);
+--shadow2:rgba(255,255,255,0.08);
+--text:#fff;
+--progress:var(--active);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--bg);
+color:var(--text);
+}
+
+.container{
+padding:30px;
+border-radius:35px;
+background:var(--bg);
+box-shadow:25px 25px 60px var(--shadow1),
+inset -5px -5px 15px var(--shadow2),
+inset 5px 5px 15px var(--shadow1);
+text-align:center;
+}
+
+/* Mode buttons */
+
+.mode-selector{
+display:flex;
+gap:12px;
+justify-content:center;
+margin-bottom:20px;
+}
+
+.mode-btn{
+padding:10px 18px;
+border:none;
+border-radius:20px;
+background:var(--bg);
+color:#fff;
+cursor:pointer;
+box-shadow:5px 5px 10px var(--shadow1),-5px -5px 10px var(--shadow2);
+}
+
+.mode-btn.active{
+color:var(--active);
+box-shadow:inset 5px 5px 10px var(--shadow1),
+inset -5px -5px 10px var(--shadow2);
+}
+
+/* Clock */
+
+.clock{
+position:relative;
+width:300px;
+height:300px;
+border-radius:50%;
+margin:auto;
+box-shadow:inset 5px 5px 15px var(--shadow1),
+inset -5px -5px 15px var(--shadow2);
+}
+
+/* Progress ring */
+
+.progress{
+position:absolute;
+top:0;left:0;
+width:100%;height:100%;
+border-radius:50%;
+background:conic-gradient(
+var(--progress) 0deg,
+transparent 0deg
+);
+pointer-events:none;
+opacity:0.3;
+}
+
+/* numbers */
+
+.clock span{
+position:absolute;
+inset:12px;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+transform:rotate(calc(30deg * var(--i)));
+}
+
+.clock span b{
+transform:rotate(calc(-30deg * var(--i)));
+opacity:.35;
+}
+
+/* hands */
+
+.hand{
+position:absolute;
+bottom:50%;
+left:50%;
+transform-origin:bottom;
+transform:translateX(-50%);
+border-radius:10px;
+background:var(--active);
+box-shadow:0 0 10px var(--active);
+}
+
+.hour{width:6px;height:70px;}
+.minute{width:4px;height:100px;}
+.second{width:2px;height:120px;}
+
+.center{
+position:absolute;
+width:14px;height:14px;
+background:var(--active);
+border-radius:50%;
+top:50%;left:50%;
+transform:translate(-50%,-50%);
+}
+
+/* digital */
+
+#digital{
+margin-top:18px;
+font-size:2em;
+font-weight:700;
+color:var(--active);
+}
+
+/* controls */
+
+.controls{
+display:none;
+gap:20px;
+justify-content:center;
+margin-top:15px;
+}
+
+.btn{
+width:60px;
+height:60px;
+border:none;
+border-radius:50%;
+font-size:1.4em;
+cursor:pointer;
+background:var(--bg);
+color:#fff;
+box-shadow:5px 5px 10px var(--shadow1),-5px -5px 10px var(--shadow2);
+}
+
+/* Laps */
+
+#laps{
+margin-top:20px;
+max-height:150px;
+overflow-y:auto;
+display:none;
+text-align:left;
+padding-right:5px;
+}
+
+.lap{
+padding:5px 0;
+border-bottom:1px solid #444;
+font-size:1.1em;
+color:var(--active);
+}
+
+/* Timer input */
+
+#timerBox{
+display:none;
+margin-top:12px;
+}
+
+#timerInput{
+width:110px;
+padding:8px;
+font-size:1.2em;
+text-align:center;
+border:none;
+border-radius:12px;
+background:var(--bg);
+color:#fff;
+box-shadow:inset 4px 4px 10px var(--shadow1),inset -4px -4px 10px var(--shadow2);
+}
+.preloader{
+position:fixed;
+inset:0;
+background:var(--bg);
+backdrop-filter:blur(18px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+transition:.8s;
+}
+
+.preloader-logo{
+position:relative;
+padding:22px 34px;
+border-radius:120px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+}
+
+.preloader-logo::before{
+content:"";
+position:absolute;
+inset:-6px;
+border-radius:140px;
+background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);
+filter:blur(10px);
+opacity:.7;
+animation:spin 5s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+.preloader-sign{
+position:relative;
+font-size:26px;
+font-weight:700;
+color:#fff;
+}
+
+.preloader.hide{
+opacity:0;
+pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+<div class="preloader">
+<div class="preloader-logo">
+<div class="preloader-sign">✦Saleh✦</div>
+</div>
+</div>
+<div class="container">
+<div class="mode-selector">
+<button class="mode-btn active" onclick="setMode('clock')">CLOCK</button>
+<button class="mode-btn" onclick="setMode('stopwatch')">STOPWATCH</button>
+<button class="mode-btn" onclick="setMode('timer')">TIMER</button>
+</div>
+
+<!-- CLOCK -->
+<div class="clock">
+
+<div class="progress" id="progress"></div>
+
+<div class="hand hour" id="hour"></div>
+<div class="hand minute" id="minute"></div>
+<div class="hand second" id="second"></div>
+<div class="center"></div>
+
+<script>
+document.write(
+[...Array(12)].map((_,i)=>`<span style="--i:${i+1}"><b>${i+1}</b></span>`).join('')
+)
+</script>
+
+</div>
+
+<div id="digital">00:00:00</div>
+
+<!-- Timer input -->
+<div id="timerBox">
+<input id="timerInput" placeholder="mm:ss" inputmode="numeric">
+</div>
+
+<!-- Controls -->
+<div class="controls" id="controls">
+<button class="btn" onclick="startStop()">▶</button>
+<button class="btn" onclick="lap()">🚩</button>
+<button class="btn" onclick="reset()">↺</button>
+</div>
+
+<!-- LAPS -->
+<div id="laps"></div>
+
+</div>
+<script>
+
+function goHome(){
+
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+<script>
+window.onload=()=>setTimeout(()=>document.querySelector(".preloader").classList.add("hide"),2000);
+
+const hour=document.getElementById("hour")
+const minute=document.getElementById("minute")
+const second=document.getElementById("second")
+const digital=document.getElementById("digital")
+const progress=document.getElementById("progress")
+const controls=document.getElementById("controls")
+const lapsDiv=document.getElementById("laps")
+const timerInput=document.getElementById("timerInput")
+const timerBox=document.getElementById("timerBox")
+
+let mode="clock"
+let running=false
+let baseTime=0
+let startTime=0
+let lapCount=0
+let timerTotal=0
+
+function setMode(m){
+
+mode=m
+
+document.querySelectorAll(".mode-btn").forEach(b=>{
+b.classList.toggle("active",b.textContent.toLowerCase()==m)
+})
+
+document.documentElement.style.setProperty("--active",`var(--clr-${m})`)
+document.documentElement.style.setProperty("--progress",`var(--clr-${m})`)
+
+controls.style.display=(m=="clock")?"none":"flex"
+timerBox.style.display=(m=="timer")?"block":"none"
+lapsDiv.style.display=(m=="stopwatch")?"block":"none"
+
+reset()
+}
+
+function startStop(){
+
+if(mode=="clock") return
+
+if(running){
+baseTime=getElapsed()
+running=false
+}else{
+startTime=performance.now()
+running=true
+}
+}
+
+function reset(){
+
+running=false
+baseTime=0
+lapCount=0
+lapsDiv.innerHTML=""
+
+display(0)
+}
+
+function lap(){
+
+if(mode!="stopwatch" || !running) return
+
+lapCount++
+
+let t=getElapsed()
+
+let h=Math.floor(t/3600)
+let m=Math.floor((t%3600)/60)
+let s=Math.floor(t%60)
+
+lapsDiv.innerHTML+=`
+<div class="lap">
+Lap ${lapCount}: 
+${String(h).padStart(2,"0")}:
+${String(m).padStart(2,"0")}:
+${String(s).padStart(2,"0")}
+</div>
+`
+
+}
+
+function getElapsed(){
+if(!running) return baseTime
+return baseTime + (performance.now()-startTime)/1000
+}
+
+function animate(){
+
+let t
+
+if(mode=="clock"){
+let now=new Date()
+t=now.getHours()*3600+
+now.getMinutes()*60+
+now.getSeconds()+
+now.getMilliseconds()/1000
+}else{
+t=getElapsed()
+if(mode=="timer") t=Math.max(timerTotal - t,0)
+}
+
+display(t)
+updateAnalog(t)
+updateProgress(t)
+
+requestAnimationFrame(animate)
+}
+
+function updateAnalog(t){
+let s=t%60
+let m=(t/60)%60
+let h=(t/3600)%12
+
+second.style.transform=`translateX(-50%) rotate(${s*6}deg)`
+minute.style.transform=`translateX(-50%) rotate(${m*6}deg)`
+hour.style.transform=`translateX(-50%) rotate(${h*30}deg)`
+}
+
+function updateProgress(t){
+if(mode=="clock"){
+let sec=(t%60)/60 *360
+progress.style.background=`conic-gradient(var(--progress) ${sec}deg, transparent 0deg)`
+}
+else if(mode=="stopwatch"){
+let sec=(t%60)/60 *360
+progress.style.background=`conic-gradient(var(--progress) ${sec}deg, transparent 0deg)`
+}
+else if(mode=="timer"){
+let sec = Math.max(timerTotal - t,0) / timerTotal *360
+progress.style.background=`conic-gradient(var(--progress) ${sec}deg, transparent 0deg)`
+}
+}
+
+function display(t){
+t=Math.floor(t)
+let h=Math.floor(t/3600)
+let m=Math.floor((t%3600)/60)
+let s=t%60
+digital.innerText=
+String(h).padStart(2,"0")+":"+
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0")
+}
+
+timerInput.addEventListener("input",()=>{
+let raw=timerInput.value.replace(/\D/g,"").slice(0,4)
+
+let m=0,s=0
+
+if(raw.length<=2)s=parseInt(raw||0)
+else if(raw.length==3){m=raw[0];s=raw.slice(1)}
+else{m=raw.slice(0,2);s=raw.slice(2)}
+
+if(s>59)s=59
+
+timerInput.value=
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0")
+
+timerTotal=m*60+Number(s)
+display(timerTotal)
+})
+
+animate()
+
+</script>
+
+</body>
+</html>

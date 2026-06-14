@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Encoder / Decoder | SA-APPS</title>
+  <style>
+    @font-face {
+      font-family: "VazirmatnLocal";
+      src: url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #07111f;
+      --bg-2: #0d1b2f;
+      --panel: rgba(255,255,255,.08);
+      --panel-border: rgba(255,255,255,.14);
+      --text: #ecf3ff;
+      --muted: #adc3df;
+      --primary: #5eead4;
+      --secondary: #60a5fa;
+      --accent: #c084fc;
+      --danger: #fb7185;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --input: rgba(255,255,255,.07);
+    }
+
+    body.light {
+      --bg: #eef6ff;
+      --bg-2: #dfefff;
+      --panel: rgba(255,255,255,.65);
+      --panel-border: rgba(255,255,255,.75);
+      --text: #102033;
+      --muted: #4e647d;
+      --primary: #0ea5e9;
+      --secondary: #2563eb;
+      --accent: #9333ea;
+      --danger: #e11d48;
+      --shadow: 0 10px 30px rgba(31,41,55,.12);
+      --input: rgba(255,255,255,.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "VazirmatnLocal", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(192,132,252,.16), transparent 30%),
+        linear-gradient(135deg, var(--bg), var(--bg-2));
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 24px));
+      margin: 24px auto;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .title-box { flex: 1; min-width: 280px; }
+    h1 { margin: 0 0 8px; }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.9; }
+
+    .actions, .tool-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: inherit;
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      resize: vertical;
+      border: 1px solid transparent;
+      background: var(--input);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 16px;
+      font-family: inherit;
+      font-size: .98rem;
+      line-height: 2;
+      outline: none;
+      direction: ltr;
+      text-align: left;
+    }
+
+    textarea:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(96,165,250,.14);
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel topbar">
+      <div class="title-box">
+        <h1>🔗 URL Encoder / Decoder</h1>
+        <p class="subtitle">کدگذاری و رمزگشایی آدرس‌ها و متن‌های URL-safe با اجرای کاملاً محلی داخل مرورگر</p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="themeToggle">تغییر تم</button>
+        <a href="index.html" class="btn">بازگشت به لانچر</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>ورودی</h2>
+        <textarea id="inputText" placeholder="متن یا URL را اینجا وارد کنید..."></textarea>
+        <div class="tool-actions" style="margin-top:14px;">
+          <button class="btn" id="encodeBtn">Encode</button>
+          <button class="btn" id="decodeBtn">Decode</button>
+          <button class="btn" id="clearBtn">پاک کردن</button>
+        </div>
+        <p class="hint">برای کدگذاری از <code>encodeURIComponent</code> و برای رمزگشایی از <code>decodeURIComponent</code> استفاده می‌شود.</p>
+      </div>
+
+      <div class="panel">
+        <h2>خروجی</h2>
+        <textarea id="outputText" placeholder="خروجی اینجا نمایش داده می‌شود..."></textarea>
+        <div class="tool-actions" style="margin-top:14px;">
+          <button class="btn" id="copyBtn">کپی خروجی</button>
+          <button class="btn" id="swapBtn">انتقال به ورودی</button>
+        </div>
+        <p class="hint" id="statusText">آماده برای پردازش</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const themeKey = "sa-apps-theme";
+    const body = document.body;
+    if (localStorage.getItem(themeKey) === "light") body.classList.add("light");
+
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      body.classList.toggle("light");
+      localStorage.setItem(themeKey, body.classList.contains("light") ? "light" : "dark");
+    });
+
+    const inputText = document.getElementById("inputText");
+    const outputText = document.getElementById("outputText");
+    const statusText = document.getElementById("statusText");
+
+    document.getElementById("encodeBtn").addEventListener("click", () => {
+      try {
+        outputText.value = encodeURIComponent(inputText.value);
+        statusText.textContent = "کدگذاری با موفقیت انجام شد.";
+      } catch {
+        statusText.textContent = "خطا در کدگذاری.";
+      }
+    });
+
+    document.getElementById("decodeBtn").addEventListener("click", () => {
+      try {
+        outputText.value = decodeURIComponent(inputText.value);
+        statusText.textContent = "رمزگشایی با موفقیت انجام شد.";
+      } catch {
+        statusText.textContent = "ورودی برای Decode معتبر نیست.";
+      }
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(outputText.value);
+        const btn = document.getElementById("copyBtn");
+        const old = btn.textContent;
+        btn.textContent = "کپی شد!";
+        setTimeout(() => btn.textContent = old, 1200);
+      } catch {
+        statusText.textContent = "کپی انجام نشد.";
+      }
+    });
+
+    document.getElementById("swapBtn").addEventListener("click", () => {
+      inputText.value = outputText.value;
+      statusText.textContent = "خروجی به ورودی منتقل شد.";
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      inputText.value = "";
+      outputText.value = "";
+      statusText.textContent = "پاک شد.";
+    });
+  </script>
+</body>
+</html>

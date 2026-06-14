@@ -1,0 +1,25 @@
+{
+  "name": "SA-APPS",
+  "short_name": "SA",
+  "description": "مجموعه ابزارهای کاربردی، آموزشی و سرگرمی",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "kit.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "kit.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

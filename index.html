@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="apple-touch-icon" href="kit.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SA-APPS</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220;
+      --bg2:#0f172a;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+      --radius:24px;
+      --bg-light:#f0f4f9;
+      --bg2-light:#dbe2ee;
+      --text-light:#1a202c;
+      --muted-light:#6b7280;
+      --border-light:rgba(0,0,0,.12);
+      --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+    body.light-mode{
+      --bg:var(--bg-light);
+      --bg2:var(--bg2-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+      --border:var(--border-light);
+      --shadow:var(--shadow-light);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+        linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+    html{
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100%;
+      scroll-behavior:smooth;
+    }
+    body{
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100vh;
+      font-family:"VazirmatnLocal", sans-serif;
+      background:#0b1220;
+      background-image:
+        radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      background-attachment:fixed;
+      color:var(--text);
+      overflow-x:hidden;
+      transition:background .3s ease, color .3s ease;
+    }
+    .container{
+      width:min(1120px,100%);
+      position:relative;
+      margin:auto;
+      padding:20px;
+    }
+
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(30px);
+      opacity:.35;
+      pointer-events:none;
+      z-index:0;
+    }
+    .orb1{
+      width:170px;
+      height:170px;
+      background:linear-gradient(135deg,var(--accent),transparent);
+      top:-40px;
+      right:20px;
+    }
+
+    .orb2{
+      width:200px;
+      height:200px;
+      background:linear-gradient(135deg,var(--accent2),transparent);
+      bottom:-60px;
+      left:10px;
+    }
+    .panel{
+      position:relative;
+      z-index:1;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:28px;
+      transition:background .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    .light-mode .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+    .topbar-left{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .brand-badge{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(110,168,254,.28), rgba(139,92,246,.24));
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:800;
+      font-size:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+      flex-shrink:0;
+    }
+    .brand-title h1{
+      margin:0;
+      font-size:24px;
+    }
+    .brand-title p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .search-input-container{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .search-input{
+      width:260px;
+      padding:11px 14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      border-radius:14px;
+      color:var(--text);
+      font-size:14px;
+      transition:width .3s ease, background .3s ease, border-color .3s ease;
+      font-family:inherit;
+    }
+    .search-input::placeholder{
+      color:var(--muted);
+    }
+    .light-mode .search-input{
+      background:rgba(0,0,0,.05);
+    }
+    .search-input:focus{
+      width:320px;
+      outline:none;
+      background:rgba(255,255,255,.08);
+      border-color:var(--accent);
+    }
+    .light-mode .search-input:focus{
+      background:rgba(0,0,0,.08);
+    }
+    .theme-switcher,
+    .about-btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      color:var(--text);
+      border-radius:14px;
+      cursor:pointer;
+      font-family:inherit;
+      transition:.3s ease;
+    }
+    .light-mode .theme-switcher,
+    .light-mode .about-btn{
+      background:rgba(0,0,0,.05);
+    }
+    .theme-switcher{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+    }
+    .theme-switcher:hover,
+    .about-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(0,0,0,.16);
+    }
+    .theme-switcher .icon{
+      width:20px;
+      height:20px;
+    }
+    .about-btn{
+      padding:11px 16px;
+      font-size:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,.16);
+    }
+    .category{
+      margin-top:32px;
+      animation:fadeUp .45s ease both;
+    }
+    .category-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:10px 6px 18px;
+      flex-wrap:wrap;
+    }
+    .category-title{
+      margin:0;
+      font-size:18px;
+      color:var(--muted);
+      font-weight:700;
+      padding-right:6px;
+    }
+    .category-count{
+      font-size:12px;
+      color:var(--text);
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
+    }
+    .light-mode .category-count{
+      background:rgba(0,0,0,.05);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:18px;
+    }
+    .card{
+      position:relative;
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:24px;
+      transition:transform .26s ease, border-color .26s ease, box-shadow .26s ease, background .26s ease, opacity .25s ease;
+      overflow:hidden;
+      cursor:pointer;
+      animation:fadeUp .45s ease both;
+    }
+    .light-mode .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg, rgba(110,168,254,.08), transparent 45%, rgba(139,92,246,.06));
+      opacity:.75;
+      pointer-events:none;
+    }
+    .card:hover{
+      transform:translateY(-6px);
+      border-color:rgba(110,168,254,.35);
+      box-shadow:0 18px 40px rgba(0,0,0,.22);
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:16px;
+      position:relative;
+      z-index:1;
+    }
+    .icon-badge{
+      width:50px;
+      height:50px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--accent);
+      font-size:24px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .light-mode .icon-badge{
+      background:rgba(0,0,0,.05);
+      border:1px solid rgba(0,0,0,.1);
+    }
+    .card h2{
+      margin:0 0 8px;
+      font-size:19px;
+      position:relative;
+      z-index:1;
+    }
+    .card p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+      position:relative;
+      z-index:1;
+      min-height:48px;
+    }
+    .card-footer{
+      margin-top:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:relative;
+      z-index:1;
+      gap:10px;
+    }
+    .pill{
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:11px;
+      border:1px solid rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    .light-mode .pill{
+      background:rgba(0,0,0,.04);
+      border-color:rgba(0,0,0,.1);
+    }
+    .open{
+      color:var(--accent);
+      font-weight:700;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .card-ripple{
+      position:absolute;
+      border-radius:50%;
+      background:rgba(255,255,255,0.2);
+      transform:scale(0);
+      animation:ripple 0.6s linear;
+      pointer-events:none;
+    }
+    .light-mode .card-ripple{
+      background:rgba(0,0,0,0.1);
+    }
+    #emptyState{
+      display:none;
+      margin-top:26px;
+      padding:28px 18px;
+      text-align:center;
+      border:1px dashed var(--border);
+      border-radius:22px;
+      color:var(--muted);
+      background:rgba(255,255,255,.03);
+      animation:fadeUp .35s ease both;
+    }
+    .light-mode #emptyState{
+      background:rgba(0,0,0,.03);
+    }
+    .footer{
+      text-align:center;
+      padding:24px 0;
+      margin-top:40px;
+      font-size:13px;
+      color:var(--muted);
+      border-top:1px solid var(--border);
+      position:relative;
+      z-index:10;
+    }
+    .about-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.44);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity .38s ease, visibility .38s ease;
+      z-index:5000;
+    }
+    .about-modal.show{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    .about-box{
+      width:min(560px,100%);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--border);
+      border-radius:26px;
+      padding:26px;
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      box-shadow:var(--shadow);
+      transform:translateY(18px) scale(.96);
+      opacity:0;
+      transition:transform .42s cubic-bezier(.2,.8,.2,1), opacity .42s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .light-mode .about-modal{
+      background:rgba(15,23,42,.18);
+    }
+    .light-mode .about-box{
+      background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.64));
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow:0 18px 40px rgba(0,0,0,.12);
+    }
+    .about-modal.show .about-box{
+      transform:translateY(0) scale(1);
+      opacity:1;
+    }
+    .about-header{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+      position:relative;
+      z-index:1;
+    }
+    .about-logo{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(110,168,254,.30), rgba(139,92,246,.24));
+      border:1px solid rgba(255,255,255,.10);
+      font-size:20px;
+      font-weight:800;
+      flex-shrink:0;
+    }
+
+    .about-title h2{
+      margin:0;
+      font-size:22px;
+    }
+
+    .about-title p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .about-content p{
+      color:var(--muted);
+      line-height:1.95;
+      font-size:14px;
+      margin:0 0 14px;
+    }
+
+    .meta-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+      margin-bottom:18px;
+      position:relative;
+      z-index:1;
+    }
+
+    .meta-card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .meta-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .meta-value{
+      font-size:14px;
+      color:var(--text);
+      font-weight:700;
+      word-break:break-word;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .meta-value a{
+      color:var(--accent);
+      text-decoration:none;
+      cursor:pointer;
+    }
+
+    .meta-value a:hover{
+      text-decoration:underline;
+    }
+
+    .copy-email-btn{
+      background:none;
+      border:none;
+      color:var(--accent);
+      cursor:pointer;
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      gap:4px;
+      padding:4px 6px;
+      border-radius:8px;
+      transition:background .2s ease;
+      font-family:inherit;
+    }
+
+    .copy-email-btn:hover{
+      background:rgba(110,168,254,.1);
+    }
+
+    .about-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:10px;
+      position:relative;
+      z-index:1;
+      flex-wrap:wrap;
+    }
+
+    .action-btn{
+      padding:10px 16px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      text-decoration:none;
+      cursor:pointer;
+      font-family:inherit;
+      font-size:14px;
+      transition:transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .action-btn:hover{
+      transform:translateY(-2px);
+      border-color:rgba(110,168,254,.38);
+    }
+
+    .action-btn.primary{
+      background:linear-gradient(135deg, rgba(110,168,254,.20), rgba(139,92,246,.18));
+      border-color:rgba(110,168,254,.28);
+    }
+
+    #splash{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(circle at center, rgba(110,168,254,.25), transparent 60%),
+        linear-gradient(180deg,#09111d,#0b1220);
+      transition:opacity .7s ease, visibility .7s ease;
+    }
+
+    #splash.hide{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    .splash-logo{
+      width:92px;
+      height:92px;
+      border-radius:26px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:grid;
+      place-items:center;
+      font-size:34px;
+      font-weight:800;
+      animation:logoPulse 2.2s infinite;
+      box-shadow:0 20px 50px rgba(110,168,254,.25);
+    }
+
+    .light-mode .about-logo{
+      border:1px solid rgba(0,0,0,.08);
+      color:#111827;
+    }
+
+    .light-mode .about-title h2{
+      color:var(--text-light);
+    }
+
+    .light-mode .about-title p{
+      color:var(--muted-light);
+    }
+
+    .light-mode .about-content p{
+      color:#4b5563;
+    }
+
+    .light-mode .meta-card{
+      background:rgba(255,255,255,.58);
+      border:1px solid rgba(0,0,0,.08);
+    }
+
+    .light-mode .meta-label{
+      color:#6b7280;
+    }
+
+    .light-mode .meta-value{
+      color:#111827;
+    }
+
+    .light-mode .meta-value a{
+      color:#2563eb;
+    }
+
+    .light-mode .copy-email-btn{
+      color:#2563eb;
+    }
+
+    .light-mode .copy-email-btn:hover{
+      background:rgba(37,99,235,.08);
+    }
+
+    .light-mode .action-btn{
+      background:rgba(255,255,255,.64);
+      color:#111827;
+      border:1px solid rgba(0,0,0,.10);
+    }
+
+    .light-mode .action-btn.primary{
+      background:linear-gradient(135deg, rgba(110,168,254,.22), rgba(139,92,246,.16));
+      color:#111827;
+      border-color:rgba(110,168,254,.24);
+    }
+
+    @keyframes ripple{
+      to{
+        transform:scale(4);
+        opacity:0;
+      }
+    }
+
+    @keyframes logoPulse{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.06);}
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(10px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media (max-width:768px){
+      .search-input{
+        width:220px;
+      }
+      .search-input:focus{
+        width:280px;
+      }
+    }
+
+    @media (max-width:640px){
+      .container{
+        padding:16px;
+      }
+
+      .panel{
+        padding:18px;
+        border-radius:24px;
+      }
+
+      .brand-title h1{
+        font-size:21px;
+      }
+
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .meta-grid{
+        grid-template-columns:1fr;
+      }
+
+      .about-box{
+        padding:20px;
+        border-radius:22px;
+      }
+
+      .topbar{
+        justify-content:center;
+        gap:20px;
+      }
+
+      .topbar-left,
+      .topbar-right{
+        width:100%;
+        justify-content:center;
+      }
+
+      .search-input-container{
+        width:100%;
+        justify-content:center;
+      }
+
+      .search-input{
+        width:100%;
+        max-width:320px;
+      }
+
+      .search-input:focus{
+        width:100%;
+      }
+      .category-header{
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div class="splash-logo">SA</div>
+  </div>
+  <div class="container">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <section class="panel">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-badge">SA</div>
+          <div class="brand-title">
+            <h1>برنامه‌های SA</h1>
+            <p>لانچر اصلی ابزارهای SA</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-input-container">
+            <input
+              type="text"
+              class="search-input"
+              id="searchInput"
+              placeholder="جستجو در برنامه‌ها یا دسته‌ها..."
+              autocomplete="off"
+            />
+          </div>
+          <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم" type="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2.5V5.5M12 18.5V21.5M5.5 12H2.5M21.5 12H18.5M18.364 5.63636L16.364 7.63636M7.63636 16.364L5.63636 18.364M16.364 16.364L18.364 18.364M5.63636 5.63636L7.63636 7.63636" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="about-btn" onclick="openAbout()" type="button">درباره ما</button>
+        </div>
+      </div>
+      <div id="appGrid">
+        <section class="category" data-category="شیمی">
+          <div class="category-header">
+            <h2 class="category-title">🧪 شیمی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="b.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">⚗️</div></div>
+              <h2>موازنه‌گر شیمیایی</h2>
+              <p>موازنه معادلات شیمیایی با رابط کاربری مدرن</p>
+              <div class="card-footer"><span class="pill">شیمی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="pt.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🧪</div></div>
+              <h2>جدول تناوبی</h2>
+              <p>جدول تناوبی مناسب موبایل و استفاده سریع</p>
+              <div class="card-footer"><span class="pill">شیمی</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="ریاضی">
+          <div class="category-header">
+            <h2 class="category-title">📐 ریاضی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="ps.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🧮</div></div>
+              <h2>حل‌کننده چندجمله‌ای</h2>
+              <p>حل معادلات ریاضی از درجه ۱ تا ۲۰</p>
+              <div class="card-footer"><span class="pill">ریاضی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="ls.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📉</div></div>
+              <h2>حل‌کننده نامعادله</h2>
+              <p>حل نامعادله با نمایش نمودار آن</p>
+              <div class="card-footer"><span class="pill">ریاضی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="calcu.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🧠</div></div>
+              <h2>ماشین حساب مهندسی</h2>
+              <p>ماشین حساب پیشرفته با قابلیت حل معادله</p>
+              <div class="card-footer"><span class="pill">ریاضی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="percent-calculator.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📐</div></div>
+              <h2>محاسبه‌گر درصد</h2>
+              <p>محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی</p>
+              <div class="card-footer"><span class="pill">ریاضی</span><span class="open">ورود ←</span></div>
+            </a>
+           <a href="math-solver-pro.html" class="card" onclick="cardClickHandler(event)">
+  <div class="card-top">
+    <div class="icon-badge">∫</div>
+  </div>
+  <h2>ابزار حرفه ای ریاضی</h2>
+  <p>مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین</p>
+  <div class="card-footer">
+    <span class="pill">ریاضی</span>
+    <span class="open">ورود ←</span>
+  </div>
+</a>
+          </div>
+        </section>
+        <section class="category" data-category="متن">
+          <div class="category-header">
+            <h2 class="category-title">✍️ متن</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="word-counter.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">✍️</div></div>
+              <h2>شمارشگر متن</h2>
+              <p>محاسبه تعداد کلمات، حروف، خطوط و زمان مطالعه</p>
+              <div class="card-footer"><span class="pill">متن</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="text-cleaner.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🧹</div></div>
+              <h2>پاک‌ساز متن</h2>
+              <p>حذف فاصله‌های اضافی، خطوط خالی و مرتب‌سازی سریع متن</p>
+              <div class="card-footer"><span class="pill">متن</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="برنامه‌نویسی">
+          <div class="category-header">
+            <h2 class="category-title">💻 برنامه‌نویسی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="json-formatter.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">{ }</div></div>
+              <h2>فرمت‌کننده JSON</h2>
+              <p>زیباسازی، فشرده‌سازی و بررسی صحت ساختار JSON</p>
+              <div class="card-footer"><span class="pill">برنامه‌نویسی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="hash-generator.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">#</div></div>
+              <h2>تولیدکننده هش</h2>
+              <p>تولید هش MD5، SHA-1 و SHA-256 برای متن ورودی با رابطی سریع و مدرن</p>
+              <div class="card-footer"><span class="pill">برنامه‌نویسی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="uuid-generator.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🆔</div></div>
+              <h2>تولیدکننده UUID</h2>
+              <p>تولید UUID نسخه 4 برای استفاده در پروژه‌ها و شناسه‌های یکتا</p>
+              <div class="card-footer"><span class="pill">برنامه‌نویسی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="base64-tool.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🔤</div></div>
+              <h2>رمزگذار Base64</h2>
+              <p>تبدیل متن به Base64 و رمزگشایی آن با پشتیبانی از متن فارسی</p>
+              <div class="card-footer"><span class="pill">برنامه‌نویسی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="regex-tester.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">.*</div></div>
+              <h2>تست‌کننده Regex</h2>
+              <p>بررسی الگوهای Regex و نمایش نتایج تطبیق در متن</p>
+              <div class="card-footer"><span class="pill">برنامه‌نویسی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="url-encoder.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🔗</div></div>
+              <h2>URL Encoder / Decoder</h2>
+              <p>کدگذاری و رمزگشایی URL و متن‌های قابل استفاده در لینک‌ها</p>
+              <div class="card-footer"><span class="pill">برنامه‌نویسی</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="تبدیل">
+          <div class="category-header">
+            <h2 class="category-title">🔄 تبدیل</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="u.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📏</div></div>
+              <h2>مبدل واحد</h2>
+              <p>تبدیل واحد در دسته‌بندی‌های مختلف</p>
+              <div class="card-footer"><span class="pill">تبدیل</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="ascii.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">A</div></div>
+              <h2>تولیدکننده Ascii Art</h2>
+              <p>تبدیل متن به خروجی ASCII Art با استایل‌های مختلف</p>
+              <div class="card-footer"><span class="pill">تبدیل</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="زمان">
+          <div class="category-header">
+            <h2 class="category-title">📅 زمان</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="s.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📅</div></div>
+              <h2>تقویم شمسی</h2>
+              <p>تقویم شمسی با دقت بالا و مناسبت‌ها</p>
+              <div class="card-footer"><span class="pill">زمان</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="date-difference.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📆</div></div>
+              <h2>فاصله دو تاریخ</h2>
+              <p>محاسبه اختلاف بین دو تاریخ با نمایش روز، هفته و ماه تقریبی</p>
+              <div class="card-footer"><span class="pill">زمان</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="date-converter.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📆</div></div>
+              <h2>تبدیل تاریخ دقیق</h2>
+              <p>تبدیل دقیق بین شمسی، میلادی و قمری</p>
+              <div class="card-footer"><span class="pill">زمان</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="pomodoro.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">⏱</div></div>
+              <h2>تایمر پومودورو</h2>
+              <p>تایمر تمرکز و استراحت برای افزایش بهره‌وری</p>
+              <div class="card-footer"><span class="pill">زمان</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="age.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🎂</div></div>
+              <h2>محاسبه‌گر سن</h2>
+              <p>محاسبه سن دقیق بر اساس تاریخ تولد</p>
+              <div class="card-footer"><span class="pill">زمان</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="ac.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🕗</div></div>
+              <h2>ساعت آنالوگ</h2>
+              <p>ساعت آنالوگ، تایمر و استاپ‌واچ در یک صفحه</p>
+              <div class="card-footer"><span class="pill">زمان</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="ابزارها">
+          <div class="category-header">
+            <h2 class="category-title">🧰 ابزارها</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="random.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🎲</div></div>
+              <h2>عدد تصادفی</h2>
+              <p>تولید عدد تصادفی بین یک بازه دلخواه</p>
+              <div class="card-footer"><span class="pill">ابزارها</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="morse.html" class="card" onclick="cardClickHandler(event)">
+  <div class="card-top"><div class="icon-badge">📟</div></div>
+  <h2>کد مورس آفلاین</h2>
+  <p>مترجم، پخش‌کننده صوتی و رادار چشمک‌زن مورس ۱۰۰٪ آفلاین</p>
+  <div class="card-footer"><span class="pill">تبدیل</span><span class="open">ورود ←</span></div>
+</a>
+            <a href="random-picker.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🎯</div></div>
+              <h2>انتخاب‌گر تصادفی</h2>
+              <p>انتخاب یک گزینه تصادفی از بین چند ورودی</p>
+              <div class="card-footer"><span class="pill">ابزارها</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="qr.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📱</div></div>
+              <h2>سازنده QR</h2>
+              <p>تبدیل سریع لینک و متن به کد QR</p>
+              <div class="card-footer"><span class="pill">ابزارها</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="بهره‌وری">
+          <div class="category-header">
+            <h2 class="category-title">📈 بهره‌وری</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="todo.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">✅</div></div>
+              <h2>لیست کارها</h2>
+              <p>مدیریت وظایف روزانه با ذخیره‌سازی محلی</p>
+              <div class="card-footer"><span class="pill">بهره‌وری</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="notes.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">📝</div></div>
+              <h2>نوت‌برداری حرفه‌ای</h2>
+              <p>یادداشت با بولد، لیست، Markdown ساده و ذخیره محلی</p>
+              <div class="card-footer"><span class="pill">بهره‌وری</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="typing-speed.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">⌨️</div></div>
+              <h2>تست سرعت تایپ حرفه‌ای</h2>
+              <p>اندازه‌گیری WPM، دقت، خطا، رکورد و نمودار عملکرد</p>
+              <div class="card-footer"><span class="pill">بهره‌وری</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="سلامتی">
+          <div class="category-header">
+            <h2 class="category-title">❤️ سلامتی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="bmi.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">❤️</div></div>
+              <h2>محاسبه‌گر BMI</h2>
+              <p>محاسبه شاخص توده بدنی با قد و وزن</p>
+              <div class="card-footer"><span class="pill">سلامتی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="bmr.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🔥</div></div>
+              <h2>محاسبه‌گر BMR</h2>
+              <p>محاسبه متابولیسم پایه و تخمین کالری موردنیاز روزانه</p>
+              <div class="card-footer"><span class="pill">سلامتی</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="مهندسی">
+          <div class="category-header">
+            <h2 class="category-title">⚙️ مهندسی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="base-converter.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🔢</div></div>
+              <h2>تبدیل مبنای اعداد</h2>
+              <p>تبدیل حرفه‌ای بین مبناهای باینری، دسی‌مال و هگز</p>
+              <div class="card-footer"><span class="pill">مهندسی</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="مالی">
+          <div class="category-header">
+            <h2 class="category-title">💸 مالی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="discount-calculator.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">💸</div></div>
+              <h2>محاسبه تخفیف</h2>
+              <p>محاسبه مبلغ تخفیف، قیمت نهایی و مقدار صرفه‌جویی</p>
+              <div class="card-footer"><span class="pill">مالی</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="expense-splitter.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🧾</div></div>
+              <h2>تقسیم هزینه</h2>
+              <p>تقسیم مبلغ بین چند نفر با محاسبه مالیات و انعام</p>
+              <div class="card-footer"><span class="pill">مالی</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="امنیت">
+          <div class="category-header">
+            <h2 class="category-title">🔐 امنیت</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="pg.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🔐</div></div>
+              <h2>رمزساز حرفه‌ای</h2>
+              <p>ساخت رمز امن با بررسی قدرت و تنظیمات سفارشی</p>
+              <div class="card-footer"><span class="pill">امنیت</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+        <section class="category" data-category="طراحی">
+          <div class="category-header">
+            <h2 class="category-title">🎨 طراحی</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="palette.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🎨</div></div>
+              <h2>پالت‌ساز رنگ</h2>
+              <p>تولید رنگ تصادفی و کپی سریع کد Hex و RGB</p>
+              <div class="card-footer"><span class="pill">طراحی</span><span class="open">ورود ←</span></div>
+            </a>
+             <a href="color-extractor.html" class="card" onclick="cardClickHandler(event)">
+  <div class="card-top"><div class="icon-badge">📸</div></div>
+  <h2>قطره‌چکان تصویر</h2>
+  <p>استخراج کد رنگ دقیق از روی عکس‌های شما</p>
+  <div class="card-footer"><span class="pill">طراحی</span><span class="open">ورود ←</span></div>
+</a>
+            <a href="gradient-generator.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🌈</div></div>
+              <h2>گرادینت‌ساز CSS</h2>
+              <p>ساخت گرادینت خطی و شعاعی با پیش‌نمایش زنده و کپی کد CSS</p>
+              <div class="card-footer"><span class="pill">طراحی</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+<section class="category" data-category="گرافیک">
+  <div class="category-header">
+    <h2 class="category-title">🖼️ گرافیک</h2>
+    <span class="category-count"></span>
+  </div>
+  <div class="grid">
+    <a href="img-opt.html" class="card" onclick="cardClickHandler(event)">
+      <div class="card-top"><div class="icon-badge">🖼️</div></div>
+      <h2>بهینه‌ساز تصویر</h2>
+      <p>کاهش حجم و تغییر ابعاد تصاویر بدون افت کیفیت محسوس</p>
+      <div class="card-footer"><span class="pill">گرافیک</span><span class="open">ورود ←</span></div>
+    </a>
+  </div>
+</section>
+        <section class="category" data-category="بازی‌ها">
+          <div class="category-header">
+            <h2 class="category-title">🎮 بازی‌ها</h2>
+            <span class="category-count"></span>
+          </div>
+          <div class="grid">
+            <a href="chess.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">♟️</div></div>
+              <h2>شطرنج</h2>
+              <p>بازی شطرنج آفلاین دونفره با رابط ساده</p>
+              <div class="card-footer"><span class="pill">بازی‌ها</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="tet.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">🎮</div></div>
+              <h2>تتریس</h2>
+              <p>بازی تتریس نئونی با تجربه روان و سبک</p>
+              <div class="card-footer"><span class="pill">بازی‌ها</span><span class="open">ورود ←</span></div>
+            </a>
+            <a href="ttt.html" class="card" onclick="cardClickHandler(event)">
+              <div class="card-top"><div class="icon-badge">❌</div></div>
+              <h2>بازی دوز</h2>
+              <p>دوز با قابلیت بازی دونفره و رقابت با ربات</p>
+              <div class="card-footer"><span class="pill">بازی‌ها</span><span class="open">ورود ←</span></div>
+            </a>
+          </div>
+        </section>
+      </div>
+      <div id="emptyState">هیچ نتیجه‌ای پیدا نشد.</div>
+    </section>
+    <footer class="footer">
+      <span id="versionDisplay"></span> | SA‑APPS &copy; 2026
+    </footer>
+  </div>
+  <div id="aboutModal" class="about-modal" onclick="closeAboutOnBackdrop(event)">
+    <div class="about-box">
+      <div class="about-header">
+        <div class="about-logo">SA</div>
+        <div class="about-title">
+          <h2>درباره SA‑APPS</h2>
+          <p>لانچر ابزارهای کاربردی، آموزشی و سرگرمی</p>
+        </div>
+      </div>
+      <div class="about-content">
+        <p>
+          SA‑APPS مجموعه‌ای از ابزارهای تحت وب است که با تمرکز بر سرعت، طراحی مدرن
+          و دسترسی آسان ساخته شده است. این پروژه تلاش می‌کند مجموعه‌ای از برنامه‌های
+          مفید را در یک لانچر یکپارچه و سبک در اختیار کاربر قرار دهد.
+        </p>
+        <p>
+          در این پروژه ابزارهای آموزشی، محاسباتی و سرگرمی در کنار هم قرار گرفته‌اند
+          تا بدون نیاز به نصب و با رابطی ساده و زیبا، تجربه‌ای روان و کاربردی فراهم شود.
+        </p>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-card">
+          <div class="meta-label">نسخه برنامه</div>
+          <div class="meta-value" id="modalVersion"></div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">وضعیت</div>
+          <div class="meta-value">نسخه پایدار</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">سایت</div>
+          <div class="meta-value">
+            <a href="javascript:void(0)" id="githubLinkText" onclick="openExternal(config.siteUrl)"></a>
+          </div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">ارتباط</div>
+          <div class="meta-value">
+            <a href="javascript:void(0)" id="contactEmailLink" onclick="openEmail(config.contactEmail)"></a>
+            <button class="copy-email-btn" onclick="copyEmail()" aria-label="کپی ایمیل" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 17H5C4.44772 17 4 16.5523 4 16V5C4 4.44772 4.44772 4 5 4H15C15.5523 4 16 4.44772 16 5V7M16 17V12C16 11.4477 16.4477 11 17 11H20C20.5523 11 21 11.4477 21 12V19C21 19.5523 20.5523 20 20 20H13C12.4477 20 12 19.5523 12 19V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="about-actions">
+        <a class="action-btn primary" href="javascript:void(0)" id="githubLinkButton" onclick="openExternal(config.githubRepo)">مشاهده گیت هاب</a>
+        <button class="action-btn" onclick="closeAbout()" type="button">بستن</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const config = {
+      version: "v5.0.0",
+      siteUrl: "https://amoo189.github.io/Saleh-Amoo/",
+      githubRepo: "https://github.com/Amoo189",
+      contactEmail: "salehamoo1389@gmail.com",
+      theme: localStorage.getItem("sa-apps-theme") || "dark"
+    };
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme(config.theme);
+      const versionDisplay = document.getElementById("versionDisplay");
+      const modalVersion = document.getElementById("modalVersion");
+      const siteLink = document.getElementById("githubLinkText");
+      const emailLink = document.getElementById("contactEmailLink");
+      if(versionDisplay) versionDisplay.textContent = `نسخه: ${config.version}`;
+      if(modalVersion) modalVersion.textContent = config.version;
+      if(siteLink) siteLink.textContent = config.siteUrl.replace(/^https?:\/\//, "");
+      if(emailLink) emailLink.textContent = config.contactEmail;
+      setTimeout(() => {
+        const splash = document.getElementById("splash");
+        if(splash) splash.classList.add("hide");
+      }, 1400);
+      setupSearch();
+      updateCategoryCounts();
+    });
+    function applyTheme(theme){
+      document.body.classList.remove("dark-mode", "light-mode");
+      document.body.classList.add(`${theme}-mode`);
+      localStorage.setItem("sa-apps-theme", theme);
+    }
+    function toggleTheme(){
+      config.theme = config.theme === "dark" ? "light" : "dark";
+      applyTheme(config.theme);
+    }
+    function cardClickHandler(event){
+      event.preventDefault();
+      const card = event.currentTarget;
+      const href = card.getAttribute("href");
+      if(!href) return;
+      const ripple = document.createElement("span");
+      ripple.className = "card-ripple";
+      card.appendChild(ripple);
+      const rect = card.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = event.clientX - rect.left - size / 2;
+      const y = event.clientY - rect.top - size / 2;
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      setTimeout(() => {
+        window.location.assign(href);
+      }, 380);
+      ripple.addEventListener("animationend", () => ripple.remove());
+    }
+    function openAbout(){
+      const modal = document.getElementById("aboutModal");
+      if(modal) modal.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+    function closeAbout(){
+      const modal = document.getElementById("aboutModal");
+      if(modal) modal.classList.remove("show");
+      document.body.style.overflow = "";
+    }
+    function closeAboutOnBackdrop(e){
+      if(e.target === e.currentTarget){
+        closeAbout();
+      }
+    }
+    window.addEventListener("keydown", function(e){
+      const modal = document.getElementById("aboutModal");
+      if(e.key === "Escape" && modal && modal.classList.contains("show")){
+        closeAbout();
+      }
+    });
+    function openExternal(url){
+      try{
+        const newWindow = window.open(url, "_blank");
+        if(!newWindow){
+          window.location.href = url;
+        }
+      }catch(err){
+        window.location.href = url;
+      }
+    }
+    function openEmail(email){
+      const mailto = `mailto:${email}`;
+      try{
+        const newWindow = window.open(mailto, "_blank");
+        if(!newWindow){
+          window.location.href = mailto;
+        }
+      }catch(err){
+        window.location.href = mailto;
+      }
+    }
+    function copyEmail(){
+      const btn = document.querySelector(".copy-email-btn");
+      if(!btn) return;
+      const showCopiedState = () => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = "<span style='font-weight:bold;'>کپی شد!</span>";
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+        }, 1500);
+      };
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(config.contactEmail)
+          .then(showCopiedState)
+          .catch(() => fallbackCopyEmail(showCopiedState));
+      }else{
+        fallbackCopyEmail(showCopiedState);
+      }
+    }
+    function fallbackCopyEmail(onSuccess){
+      const tempInput = document.createElement("textarea");
+      tempInput.value = config.contactEmail;
+      tempInput.setAttribute("readonly", "");
+      tempInput.style.position = "absolute";
+      tempInput.style.left = "-9999px";
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      tempInput.setSelectionRange(0, 99999);
+      try{
+        const successful = document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        if(successful){
+          onSuccess();
+        }else{
+          alert("کپی ایمیل انجام نشد.");
+        }
+      }catch(err){
+        document.body.removeChild(tempInput);
+        alert("خطا در کپی کردن ایمیل.");
+      }
+    }
+    function updateCategoryCounts(){
+      document.querySelectorAll(".category").forEach(category => {
+        const cards = [...category.querySelectorAll(".card")];
+        const visibleCards = cards.filter(card => card.style.display !== "none");
+        const countEl = category.querySelector(".category-count");
+        if(countEl) countEl.textContent = `${visibleCards.length} ابزار`;
+      });
+    }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(() => console.log('Service Worker Registered'));
+}
+    function setupSearch(){
+      const searchInput = document.getElementById("searchInput");
+      const categories = document.querySelectorAll("#appGrid .category");
+      const emptyState = document.getElementById("emptyState");
+      if(!searchInput) return;
+      searchInput.addEventListener("input", function(){
+        const query = this.value.trim().toLowerCase();
+        let totalVisible = 0;
+        categories.forEach(category => {
+          const categoryName = (category.dataset.category || "").toLowerCase();
+          const cards = category.querySelectorAll(".card");
+          let visibleCount = 0;
+          cards.forEach(card => {
+            const titleEl = card.querySelector("h2");
+            const descEl = card.querySelector("p");
+            const title = titleEl ? titleEl.textContent.toLowerCase() : "";
+            const desc = descEl ? descEl.textContent.toLowerCase() : "";
+            const match = title.includes(query) || desc.includes(query) || categoryName.includes(query);
+            if(match){
+              card.style.display = "";
+              visibleCount++;
+              totalVisible++;
+            } else {
+              card.style.display = "none";
+            }
+          });
+          category.style.display = visibleCount ? "" : "none";
+        });
+        if(emptyState){
+          emptyState.style.display = totalVisible ? "none" : "block";
+        }
+        updateCategoryCounts();
+      });
+    }
+  </script>
+</body>
+</html>

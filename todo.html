@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لیست کارها | SA-APPS</title>
+  <style>
+    :root{
+      --bg:#0b1220; --text:#e8eefc; --muted:#9fb0d0;
+      --accent:#6ea8fe; --accent2:#8b5cf6; --danger:#ef4444;
+      --glass:blur(14px); --border:rgba(255,255,255,.08);
+    }
+    body{ margin:0; min-height:100vh; font-family:Tahoma, sans-serif; color:var(--text); background:#0b1220; display:flex; justify-content:center; padding:20px; }
+    .app{ width:100%; max-width:400px; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:28px; padding:20px; backdrop-filter:var(--glass); }
+    h1{ text-align:center; font-size:20px; margin-bottom:20px; }
+    
+    .input-group{ display:flex; gap:10px; margin-bottom:20px; }
+    input{ flex:1; background:rgba(255,255,255,.06); border:1px solid var(--border); border-radius:14px; padding:12px; color:var(--text); outline:none; }
+    button#addBtn{ background:var(--accent); color:#0b1220; border:none; border-radius:14px; padding:0 20px; font-weight:bold; cursor:pointer; }
+    
+    ul{ list-style:none; padding:0; }
+    li{ background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+    li.done span{ text-decoration:line-through; opacity:0.6; }
+    .del-btn{ color:var(--danger); cursor:pointer; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>لیست کارها</h1>
+    <div class="input-group">
+      <input type="text" id="todoInput" placeholder="کار جدید...">
+      <button id="addBtn" onclick="addTodo()">+</button>
+    </div>
+    <ul id="todoList"></ul>
+    <a href="index.html" style="display:block; text-align:center; margin-top:20px; color:var(--muted); text-decoration:none; font-size:12px;">← بازگشت</a>
+  </div>
+
+  <script>
+    const input = document.getElementById('todoInput');
+    const list = document.getElementById('todoList');
+
+    function loadTodos() {
+      const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+      list.innerHTML = '';
+      todos.forEach((t, i) => {
+        const li = document.createElement('li');
+        li.className = t.done ? 'done' : '';
+        li.innerHTML = `<span onclick="toggleTodo(${i})">${t.text}</span><span class="del-btn" onclick="delTodo(${i})">×</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    function addTodo() {
+      if(!input.value) return;
+      const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+      todos.push({text: input.value, done: false});
+      localStorage.setItem('todos', JSON.stringify(todos));
+      input.value = '';
+      loadTodos();
+    }
+
+    function toggleTodo(i) {
+      const todos = JSON.parse(localStorage.getItem('todos'));
+      todos[i].done = !todos[i].done;
+      localStorage.setItem('todos', JSON.stringify(todos));
+      loadTodos();
+    }
+
+    function delTodo(i) {
+      const todos = JSON.parse(localStorage.getItem('todos'));
+      todos.splice(i, 1);
+      localStorage.setItem('todos', JSON.stringify(todos));
+      loadTodos();
+    }
+
+    loadTodos();
+  </script>
+</body>
+</html>

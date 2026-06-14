@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-PS</title>
+
+<style>
+/* ===== PRELOADER ===== */
+
+.preloader{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(18px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+transition:.8s;
+}
+
+.preloader-logo{
+position:relative;
+padding:22px 34px;
+border-radius:120px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+}
+
+.preloader-logo::before{
+content:"";
+position:absolute;
+inset:-6px;
+border-radius:140px;
+background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);
+filter:blur(10px);
+opacity:.7;
+animation:spin 5s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+.preloader-sign{
+position:relative;
+font-size:26px;
+font-weight:700;
+color:#fff;
+}
+
+.preloader.hide{
+opacity:0;
+pointer-events:none;
+}
+
+/* ===== THEME ===== */
+
+:root{
+--bg:#0b1220;
+--card:#111a2e;
+--text:#e8eefc;
+--muted:#a9b6d6;
+--accent:#6ea8fe;
+--accent2:#8b5cf6;
+--border:rgba(255,255,255,.08);
+--shadow:0 18px 60px rgba(0,0,0,.35);
+}
+
+body.light{
+--bg:#e7ecff;
+--card:#fff;
+--text:#111827;
+--muted:#6b7280;
+--border:rgba(0,0,0,.08);
+--shadow:0 18px 40px rgba(0,0,0,.1);
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:system-ui;
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:24px;
+}
+
+.container{width:min(1000px,100%)}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
+
+.title h1{
+margin:0;
+font-size:28px;
+}
+
+.title p{
+margin:4px 0 0;
+color:var(--muted);
+font-size:14px;
+}
+
+.theme-toggle{
+width:34px;
+height:34px;
+border-radius:999px;
+border:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+@media(max-width:900px){
+.grid{grid-template-columns:1fr}
+}
+
+.card{
+background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+border:1px solid var(--border);
+border-radius:18px;
+box-shadow:var(--shadow);
+}
+
+.inner{padding:18px}
+
+h2{
+margin:0 0 10px;
+font-size:16px;
+}
+
+.row{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.field{
+flex:1;
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+label{
+font-size:13px;
+color:var(--muted);
+}
+
+input,select{
+padding:12px;
+border-radius:14px;
+border:1px solid var(--border);
+background:rgba(0,0,0,.15);
+color:var(--text);
+}
+
+button{
+cursor:pointer;
+border:none;
+padding:12px 14px;
+border-radius:14px;
+font-weight:bold;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:white;
+}
+
+.actions{
+display:flex;
+gap:10px;
+margin-top:12px;
+flex-wrap:wrap;
+}
+
+.ghost{
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+}
+
+/* RESULT */
+
+.resultBox{
+padding:18px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.resultBig{
+font-size:28px;
+font-weight:900;
+direction:ltr;
+white-space:pre-line;
+}
+
+.resultMeta{
+font-size:13px;
+color:var(--muted);
+}
+
+.math{
+direction:ltr;
+margin-top:12px;
+font-size:18px;
+}
+/* مرکز چین */
+.sa-logo-center{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:10px 0 20px 0;
+}
+
+/* بخش اصلی لوگو */
+.sa-logo{
+  width:80px;
+  height:80px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  user-select:none;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
+    radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+    linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
+
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.55),
+    0 5px 12px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -12px 18px rgba(0,0,0,.55),
+    inset 10px 0 16px rgba(0,0,0,.20),
+    inset -10px 0 16px rgba(0,0,0,.20);
+}
+
+.sa-logo::before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    inset 0 0 18px rgba(255,255,255,.03);
+  pointer-events:none;
+}
+
+/* نوشته SA */
+.sa-text{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-42%);
+  font-family:"Arial Black", Arial, sans-serif;
+  font-size:46px;
+  font-weight:900;
+  letter-spacing:-7px;
+  color:#289CFF; /* رنگ دقیق مثل عکس */
+
+  text-shadow:
+    0 7px 12px rgba(0,0,0,.44),
+    0 2px 4px rgba(0,0,0,.30),
+    0 0 14px rgba(40,156,255,.25),
+    0 0 28px rgba(40,156,255,.12),
+    0 -1px 3px rgba(255,255,255,.08);
+}
+
+/* برچسب CB */
+.sa-badge{
+  position:absolute;
+  top:-3px;
+  right:10px;
+  padding:4px 10px;
+  font-size:13px;
+  font-weight:900;
+  border-radius:0 0 12px 12px;
+
+  color:#289CFF;
+  font-family:"Arial Black", Arial, sans-serif;
+
+  background:
+    linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
+  border:1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.50),
+    inset 0 -6px 9px rgba(0,0,0,.55),
+    inset 0 4px 6px rgba(255,255,255,.07),
+    0 3px 10px rgba(0,0,0,.35);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.35),
+    0 0 10px rgba(40,156,255,.18);
+}
+.fade-out{
+
+opacity:0;
+
+transition:.4s ease;
+}
+</style>
+</head>
+
+<body>
+
+</div>
+<div class="preloader">
+<div class="preloader-logo">
+<div class="preloader-sign">✦Saleh✦</div>
+</div>
+</div>
+
+<div class="container">
+<header>
+
+<div class="title">
+<h1>SA-Polynomial Solver</h1>
+<div class="sa-logo-center">
+  <div class="sa-logo">
+    <div class="sa-text">SA</div>
+    <div class="sa-badge">PS</div>
+  </div>
+<p>حل معادلات چندجمله‌ای درجه 1 تا 20</p>
+</div>
+
+<div class="theme-toggle" id="themeToggle">🌙</div>
+</header>
+
+<div class="grid">
+
+<div class="card">
+<div class="inner">
+
+<h2>تنظیم معادله</h2>
+
+<div class="field">
+<label>درجه معادله</label>
+<select id="degree">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+</select>
+</div>
+
+<div id="coeffInputs" class="row"></div>
+
+<div id="mathView" class="math"></div>
+
+<div class="actions">
+<button id="solveBtn">حل</button>
+<button class="ghost" id="clearBtn">پاک کردن</button>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<div class="resultBox">
+
+<h2>ریشه‌ها</h2>
+
+<div id="result" class="resultBig">—</div>
+<div class="resultMeta">نمایش ریشه‌های حقیقی و مختلط</div>
+
+</div>
+</div>
+
+</div>
+</div>
+<script>
+
+function goHome(){
+
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+<script>
+/* ===========================
+   THEME
+=========================== */
+const themeToggle=document.getElementById("themeToggle");
+themeToggle.onclick=()=>{
+  document.body.classList.toggle("light");
+  themeToggle.textContent=document.body.classList.contains("light")?"☀️":"🌙";
+};
+
+/* ===========================
+   PRELOADER
+=========================== */
+window.onload=()=>setTimeout(()=>document.querySelector(".preloader").classList.add("hide"),2000);
+
+/* ===========================
+   ELEMENTS
+=========================== */
+const degree=document.getElementById("degree");
+const coeffDiv=document.getElementById("coeffInputs");
+const mathView=document.getElementById("mathView");
+const result=document.getElementById("result");
+
+/* ===========================
+   PARSE FRACTIONS
+=========================== */
+function parseFraction(str){
+  str=str.trim();
+  if(str.includes("/")){
+      let [a,b]=str.split("/");
+      return parseFloat(a)/parseFloat(b);
+  }
+  return parseFloat(str);
+}
+
+/* ===========================
+   INPUT BUILDER
+=========================== */
+function buildInputs(){
+  let n=parseInt(degree.value);
+  coeffDiv.innerHTML="";
+  for(let i=n;i>=0;i--){
+      let field=document.createElement("div");
+      field.className="field";
+
+      let row=document.createElement("div");
+      row.className="row";
+
+      let sign=document.createElement("select");
+      sign.id="s"+i;
+      sign.innerHTML='<option value="1">+</option><option value="-1">−</option>';
+      sign.onchange=updateMath;
+
+      let input=document.createElement("input");
+      input.type="text"; // مهم: پذیرش کسر
+      input.placeholder="a"+i+"";
+      input.id="c"+i;
+      input.oninput=updateMath;
+
+      row.appendChild(sign);
+      row.appendChild(input);
+      field.appendChild(row);
+      coeffDiv.appendChild(field);
+  }
+  updateMath();
+}
+degree.onchange=buildInputs;
+buildInputs();
+
+/* ===========================
+   UPDATE MATH VIEW
+=========================== */
+function updateMath(){
+  let n=parseInt(degree.value);
+  let str="f(x) = ";
+  for(let i=n;i>=0;i--){
+      let v=document.getElementById("c"+i)?.value;
+      let s=document.getElementById("s"+i)?.value;
+      if(v==="") v="a"+i;
+
+      let t=(s=="-1"?"- ":"+ ")+v;
+      if(i===n) t=(s=="-1"?"- ":"")+v;
+
+      if(i>1) str+=`${t}x^${i} `;
+      else if(i==1) str+=`${t}x `;
+      else str+=`${t}`;
+  }
+  mathView.textContent=str;
+}
+
+/* ===========================
+   COMPLEX ARITHMETIC
+=========================== */
+function C(r,i){this.r=r;this.i=i;}
+function add(a,b){return new C(a.r+b.r,a.i+b.i);}
+function sub(a,b){return new C(a.r-b.r,a.i-b.i);}
+function mul(a,b){return new C(a.r*b.r-a.i*b.i,a.r*b.i+a.i*b.r);}
+function div(a,b){
+  let d=b.r*b.r+b.i*b.i;
+  return new C((a.r*b.r+a.i*b.i)/d,(a.i*b.r-a.r*b.i)/d);
+}
+function abs(a){return Math.sqrt(a.r*a.r+a.i*a.i);}
+
+/* ===========================
+   POLYNOMIAL EVAL
+=========================== */
+function poly(z, coeff){
+  let res=new C(0,0);
+  for(let i=coeff.length-1;i>=0;i--)
+      res=add(mul(res,z),new C(coeff[i],0));
+  return res;
+}
+function polyDer(z, coeff){
+  let n=coeff.length-1;
+  let res=new C(0,0);
+  for(let i=n;i>=1;i--)
+    res=add(mul(res,z),new C(coeff[i]*i,0));
+  return res;
+}
+
+/* ===========================================================
+   ABERTH–EHRLICH (Ultra‑Precision)
+   =========================================================== */
+function solvePoly(coeff){
+  let n = coeff.length - 1;
+
+  if(n===1)
+    return [new C(-coeff[0]/coeff[1],0)];
+
+  let roots=[];
+  let R = 1 + Math.max(...coeff.map(v=>Math.abs(v)));
+
+  for(let i=0;i<n;i++){
+    let a=2*Math.PI*i/n;
+    roots.push(new C(R*Math.cos(a),R*Math.sin(a)));
+  }
+
+  for(let iter=0; iter<80; iter++){
+    for(let i=0;i<n;i++){
+      let zi = roots[i];
+
+      let f = poly(zi, coeff);
+      let f1 = polyDer(zi, coeff);
+
+      let ratio = div(f, f1);
+
+      let sum = new C(0,0);
+      for(let j=0;j<n;j++){
+        if(i!==j){
+          let d = sub(zi, roots[j]);
+          if(abs(d) < 1e-12) d=new C(d.r+1e-12, d.i+1e-12);
+          sum = add(sum, div(new C(1,0), d));
+        }
+      }
+
+      let denom = sub(new C(1,0), mul(ratio, sum));
+      if(abs(denom) < 1e-12) denom=new C(denom.r+1e-12, denom.i+1e-12);
+
+      let corr = div(ratio, denom);
+      roots[i] = sub(zi, corr);
+    }
+  }
+
+  return roots;
+}
+
+/* ===========================
+   RATIONAL APPROX
+=========================== */
+function rationalApprox(x){
+  const MAXD=6000;
+  let bestN=0, bestD=1, bestErr=Infinity;
+  for(let d=1; d<=MAXD; d++){
+    let n=Math.round(x*d);
+    let err=Math.abs(x - n/d);
+    if(err < bestErr){
+      bestErr = err;
+      bestN = n;
+      bestD = d;
+      if(err < 1e-12) break;
+    }
+  }
+  if(bestErr <= 1e-9){
+    const g=(a,b)=>b?g(b,a%b):Math.abs(a);
+    let g0=g(bestN,bestD);
+    bestN/=g0; bestD/=g0;
+    if(bestD===1) return {type:"int",text:String(bestN)};
+    return {type:"frac",text:`${bestN}/${bestD}`};
+  }
+  return null;
+}
+
+/* ===========================
+   FORMAT REAL (NO ERROR)
+=========================== */
+function formatReal(x){
+  const EPS = 1e-8;
+
+  if(Math.abs(x - Math.round(x)) < EPS)
+      return String(Math.round(x));
+
+  const rat=rationalApprox(x);
+  if(rat) return rat.text;
+
+  let v = Number(x.toFixed(12));
+  if(Math.abs(v - Math.round(v)) < EPS)
+      return String(Math.round(v));
+
+  return v.toString();
+}
+
+/* ===========================
+   FORMAT COMPLEX
+=========================== */
+function format(z){
+  if(Math.abs(z.i) < 1e-10)
+    return formatReal(z.r);
+
+  if(Math.abs(z.r) < 1e-10){
+    let imag=formatReal(z.i);
+    if(imag==="1") return "i";
+    if(imag==="-1") return "-i";
+    return imag+"i";
+  }
+
+  const re=formatReal(z.r);
+  const imAbs=formatReal(Math.abs(z.i));
+  const sign=z.i>=0 ? " + " : " - ";
+  const imPart=imAbs==="1"? "i" : imAbs+"i";
+  return re + sign + imPart;
+}
+
+/* ===========================
+   SOLVE BUTTON
+=========================== */
+document.getElementById("solveBtn").onclick=()=>{
+  let n=parseInt(degree.value);
+  let c=[];
+
+  for(let i=n;i>=0;i--){
+    let raw=document.getElementById("c"+i).value.trim();
+    let s=parseFloat(document.getElementById("s"+i).value);
+    let v=raw===""?0:parseFraction(raw);
+    c.push(s*v);
+  }
+
+  c.reverse();
+
+  if(c[c.length-1]===0){
+    result.textContent="ضریب جمله بالاتر نمی‌تواند صفر باشد.";
+    return;
+  }
+
+  let roots = solvePoly(c);
+
+  roots.sort((a,b)=>a.r-b.r || a.i-b.i);
+
+  let out="";
+  for(let i=0;i<roots.length;i++)
+    out+=`x${i+1} = ${format(roots[i])}\n`;
+
+  result.textContent=out;
+};
+
+/* ===========================
+   CLEAR
+=========================== */
+document.getElementById("clearBtn").onclick=()=>{
+  document.querySelectorAll("#coeffInputs input").forEach(e=>e.value="");
+  result.textContent="—";
+  updateMath();
+};
+
+
+</script>
+</body>
+</html>

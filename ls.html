@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-IS</title>
+
+<style>
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#e2e8f0;
+--muted:#94a3b8;
+--border:#334155;
+--accent:#6366f1;
+}
+body.light{
+--bg:#f1f5f9;
+--card:#ffffff;
+--text:#0f172a;
+--muted:#475569;
+--border:#cbd5e1;
+--accent:#6366f1;
+}
+body{
+margin:0;
+padding:20px;
+background:var(--bg);
+color:var(--text);
+font-family:tahoma;
+transition:.3s;
+}
+.container{max-width:900px;margin:auto;}
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+.badge{
+padding:10px 16px;
+border-radius:14px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+color:var(--muted);
+font-size:14px;
+}
+.theme-toggle{
+width:40px;height:40px;
+display:flex;align-items:center;justify-content:center;
+border-radius:50%;cursor:pointer;
+border:1px solid var(--border);
+background:rgba(255,255,255,.06);
+font-size:18px;
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+padding:20px;
+border-radius:16px;
+margin-bottom:20px;
+}
+input{
+width:95%;
+padding:12px;
+font-size:16px;
+border-radius:10px;
+background:transparent;
+border:1px solid var(--border);
+color:var(--text);
+}
+button{
+margin-top:10px;
+padding:12px 16px;
+border:none;border-radius:10px;
+background:var(--accent);
+color:white;
+font-size:15px;
+cursor:pointer;
+}
+canvas{
+width:100%;
+margin-top:20px;
+background:white;
+border-radius:10px;
+}
+
+.preloader{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(16px);
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:9999;
+opacity:1;
+transition:opacity .8s ease;
+}
+.preloader.hide{opacity:0;pointer-events:none;}
+
+.preloader-logo{
+padding:26px 40px;
+border-radius:160px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.05);
+position:relative;
+overflow:hidden;
+}
+.preloader-logo::before{
+content:"";
+position:absolute;
+inset:-6px;
+border-radius:230px;
+background:conic-gradient(#6366f1,#0ea5e9,#22c55e,#6366f1);
+filter:blur(14px);
+opacity:.9;
+animation:ringSpin 5s linear infinite;
+}
+
+.preloader-sign{
+font-size:28px;
+font-weight:700;
+color:#fff;
+white-space:nowrap;
+border-right:3px solid #6ea8fe;
+padding-right:3px;
+}
+
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+
+.keyboard-tabs{
+display:flex;gap:8px;margin-top:10px;margin-bottom:8px;
+flex-wrap:wrap;
+}
+.keyboard-tabs button{
+padding:8px 14px;
+border-radius:10px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.05);
+color:var(--text);
+font-size:14px;
+cursor:pointer;
+}
+.keyboard-tabs button.active{
+background:var(--accent);
+color:white;
+}
+
+.math-keyboard-set{
+display:none;
+gap:8px;
+background:var(--card);
+padding:12px;
+border-radius:14px;
+border:1px solid var(--border);
+flex-wrap:wrap;
+animation:keySlide .25s ease;
+}
+.math-keyboard-set.active{display:flex;}
+
+.math-keyboard-set button{
+flex:1 0 18%;
+padding:10px 0;
+background:rgba(255,255,255,.06);
+border:1px solid var(--border);
+border-radius:10px;
+color:var(--text);
+font-size:16px;
+cursor:pointer;
+}
+
+@keyframes keySlide{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:600px){
+.math-keyboard-set button{flex:1 0 21%;}
+}
+footer{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+}
+    .hint{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.6;
+    }
+/* مرکز چین */
+.sa-logo-center{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:10px 0 20px 0;
+}
+
+/* بخش اصلی لوگو */
+.sa-logo{
+  width:80px;
+  height:80px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  user-select:none;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
+    radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+    linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
+
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.55),
+    0 5px 12px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -12px 18px rgba(0,0,0,.55),
+    inset 10px 0 16px rgba(0,0,0,.20),
+    inset -10px 0 16px rgba(0,0,0,.20);
+}
+
+.sa-logo::before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    inset 0 0 18px rgba(255,255,255,.03);
+  pointer-events:none;
+}
+
+/* نوشته SA */
+.sa-text{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-42%);
+  font-family:"Arial Black", Arial, sans-serif;
+  font-size:46px;
+  font-weight:900;
+  letter-spacing:-7px;
+  color:#289CFF; /* رنگ دقیق مثل عکس */
+
+  text-shadow:
+    0 7px 12px rgba(0,0,0,.44),
+    0 2px 4px rgba(0,0,0,.30),
+    0 0 14px rgba(40,156,255,.25),
+    0 0 28px rgba(40,156,255,.12),
+    0 -1px 3px rgba(255,255,255,.08);
+}
+
+/* برچسب CB */
+.sa-badge{
+  position:absolute;
+  top:-3px;
+  right:10px;
+  padding:4px 10px;
+  font-size:13px;
+  font-weight:900;
+  border-radius:0 0 12px 12px;
+
+  color:#289CFF;
+  font-family:"Arial Black", Arial, sans-serif;
+
+  background:
+    linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
+  border:1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.50),
+    inset 0 -6px 9px rgba(0,0,0,.55),
+    inset 0 4px 6px rgba(255,255,255,.07),
+    0 3px 10px rgba(0,0,0,.35);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.35),
+    0 0 10px rgba(40,156,255,.18);
+}
+.fade-out{
+
+opacity:0;
+
+transition:.4s ease;
+}
+</style>
+</head>
+<body>
+<div class="sa-logo-center">
+  <div class="sa-logo">
+    <div class="sa-text">SA</div>
+    <div class="sa-badge">IS</div>
+  </div>
+</div>
+
+
+<div id="preloader" class="preloader">
+  <div class="preloader-logo">
+<div class="preloader-sign"></div>
+  </div>
+</div>
+
+<div class="container">
+
+<header>
+  
+<div class="badge">Saleh Amoo</div>
+<div style="display:flex;gap:10px;align-items:center;">
+<div id="themeToggle" class="theme-toggle">🌙</div>
+<div id="themeLabel" class="badge">حالت تیره</div>
+  </div>
+</header>
+
+<div class="card">
+  <h3>SA‑Inequality Solver</h3>
+  <div class="hint">
+    <b>حتما متغیر ها را به x  وارد کنید</b>
+    </div>
+  <input id="equation" type="text" placeholder="مثلاً: x^3 - 4x > 0">
+
+  <div class="keyboard-tabs">
+<button class="active" data-tab="num">اعداد</button>
+<button data-tab="ops">عملگرها</button>
+<button data-tab="func">توابع</button>
+<button data-tab="sym">نمادها</button>
+  </div>
+
+  <div id="num" class="math-keyboard-set active">
+<button>7</button><button>8</button><button>9</button>
+<button>4</button><button>5</button><button>6</button>
+<button>1</button><button>2</button><button>3</button>
+<button>0</button><button>.</button><button>←</button>
+  </div>
+
+  <div id="ops" class="math-keyboard-set">
+<button>+</button><button>-</button><button>*</button><button>/</button>
+<button>^</button><button>(</button><button>)</button>
+<button><</button><button>></button><button>=</button>
+  </div>
+
+  <div id="func" class="math-keyboard-set">
+<button>sin(</button><button>cos(</button><button>tan(</button>
+<button>sqrt(</button><button>log(</button><button>exp(</button>
+  </div>
+
+  <div id="sym" class="math-keyboard-set">
+<button>x</button><button>x²</button><button>x³</button>
+<button>π</button><button>e</button>
+  </div>
+
+  <button onclick="solveIneq()">حل و رسم نمودار</button>
+
+  <p id="result" style="margin-top:12px;color:var(--accent);font-weight:bold"></p>
+  <p id="intervals" style="margin-top:6px;color:#22c55e;font-weight:bold"></p>
+
+  <canvas id="graph" width="600" height="300"></canvas>
+
+</div>
+
+</div>
+<script>
+
+function goHome(){
+
+document.body.classList.add("fade-out")
+setTimeout(()=>{
+location.href="index.html"
+},400)
+}
+
+/* Back button موبایل */
+window.addEventListener("popstate",()=>{
+goHome()
+})
+</script>
+<footer>
+Powerd By Saleh Amoo
+</footer>
+<script>
+
+/* PRELOADER */
+
+document.addEventListener("DOMContentLoaded",()=>{
+const loader=document.getElementById("preloader");
+const sign=document.querySelector(".preloader-sign");
+const text="Saleh";
+let i=0;
+
+function type(){
+ if(i<text.length){
+  sign.textContent+=text[i++];
+  setTimeout(type,150);
+ }else setTimeout(()=>loader.classList.add("hide"),600);
+}
+
+setTimeout(type,400);
+setTimeout(()=>loader.classList.add("hide"),5000);
+
+});
+
+/* THEME */
+
+const t=document.getElementById("themeToggle");
+const l=document.getElementById("themeLabel");
+
+t.onclick=()=>{
+document.body.classList.toggle("light");
+
+if(document.body.classList.contains("light")){
+t.textContent="☀️";
+l.textContent="حالت روشن";
+}else{
+t.textContent="🌙";
+l.textContent="حالت تیره";
+}
+
+};
+
+/* EVAL FUNCTION */
+
+function evalPoly(expr,x){
+
+let e=expr
+.replace(/(\d)x/g,"$1*x")
+.replace(/sqrt\(/g,"Math.sqrt(")
+.replace(/sin\(/g,"Math.sin(")
+.replace(/cos\(/g,"Math.cos(")
+.replace(/tan\(/g,"Math.tan(")
+.replace(/abs\(/g,"Math.abs(")
+.replace(/log\(/g,"Math.log(")
+.replace(/exp\(/g,"Math.exp(")
+.replace(/π/g,"Math.PI")
+.replace(/\be\b/g,"Math.E")
+.replace(/\^/g,"**");
+
+try{
+let v=Function("x","return "+e)(x);
+if(!isFinite(v)) return NaN;
+return v;
+}catch{
+return NaN;
+}
+
+}
+
+/* ROOT FIND */
+
+function bisection(expr,a,b){
+
+let fa=evalPoly(expr,a);
+let fb=evalPoly(expr,b);
+
+if(Math.sign(fa)===Math.sign(fb)) return null;
+
+for(let i=0;i<80;i++){
+
+let m=(a+b)/2;
+let fm=evalPoly(expr,m);
+
+if(Math.abs(fm)<1e-6) return m;
+
+if(Math.sign(fm)===Math.sign(fa)){
+a=m; fa=fm;
+}else{
+b=m;
+}
+
+}
+
+return (a+b)/2;
+
+}
+
+/* SOLVER */
+
+function solveIneq(){
+
+const eq=document.getElementById("equation").value.replace(/\s+/g,"");
+const res=document.getElementById("result");
+const inter=document.getElementById("intervals");
+
+if(!eq){
+res.textContent="معادله وارد نشده";
+inter.textContent="";
+return;
+}
+
+let op;
+
+if(eq.includes(">=")) op=">=";
+else if(eq.includes("<=")) op="<=";
+else if(eq.includes(">")) op=">";
+else if(eq.includes("<")) op="<";
+else op="=";
+
+let [left,right]=eq.split(op);
+if(!right) right="0";
+
+let expr="("+left+")-("+right+")";
+
+let roots=[];
+let prev=evalPoly(expr,-100);
+
+for(let x=-100;x<=100;x+=0.5){
+
+let cur=evalPoly(expr,x);
+
+if(Math.sign(prev)!==Math.sign(cur)){
+let r=bisection(expr,x-0.5,x);
+if(r) roots.push(r);
+}
+
+prev=cur;
+
+}
+
+roots=[...new Set(roots.map(v=>v.toFixed(4)))];
+
+res.innerHTML="ریشه‌ها: "+roots.join(" , ");
+
+/* GRAPH */
+
+drawGraph(expr,roots,op);
+
+}
+
+/* GRAPH */
+
+function drawGraph(expr,roots,op){
+
+const c=document.getElementById("graph");
+const ctx=c.getContext("2d");
+
+ctx.clearRect(0,0,c.width,c.height);
+
+ctx.strokeStyle="#888";
+
+ctx.beginPath();
+ctx.moveTo(0,150);
+ctx.lineTo(600,150);
+
+ctx.moveTo(300,0);
+ctx.lineTo(300,300);
+
+ctx.stroke();
+
+ctx.strokeStyle="blue";
+ctx.beginPath();
+
+let start=true;
+
+for(let px=0;px<600;px++){
+
+let x=(px-300)/30;
+let y=evalPoly(expr,x);
+
+let py=150-y*20;
+
+if(isNaN(py)) continue;
+
+if(start){
+ctx.moveTo(px,py);
+start=false;
+}else{
+ctx.lineTo(px,py);
+}
+
+}
+
+ctx.stroke();
+
+ctx.fillStyle="red";
+
+roots.forEach(r=>{
+let px=r*30+300;
+ctx.beginPath();
+ctx.arc(px,150,4,0,Math.PI*2);
+ctx.fill();
+});
+
+}
+
+/* KEYBOARD */
+
+document.querySelectorAll(".keyboard-tabs button").forEach(btn=>{
+
+btn.onclick=()=>{
+
+document.querySelectorAll(".keyboard-tabs button").forEach(b=>b.classList.remove("active"));
+document.querySelectorAll(".math-keyboard-set").forEach(s=>s.classList.remove("active"));
+
+btn.classList.add("active");
+document.getElementById(btn.dataset.tab).classList.add("active");
+
+};
+
+});
+
+const eqInput=document.getElementById("equation");
+
+document.querySelectorAll(".math-keyboard-set button").forEach(btn=>{
+
+btn.onclick=()=>{
+
+let key=btn.textContent;
+
+if(key==="x²") key="x^2";
+if(key==="x³") key="x^3";
+
+if(key==="←"){
+
+let s=eqInput.selectionStart;
+eqInput.value=eqInput.value.slice(0,s-1)+eqInput.value.slice(s);
+eqInput.setSelectionRange(s-1,s-1);
+return;
+
+}
+
+let s=eqInput.selectionStart;
+
+eqInput.value=
+eqInput.value.slice(0,s)+key+eqInput.value.slice(s);
+
+eqInput.setSelectionRange(s+key.length,s+key.length);
+
+eqInput.focus();
+
+};
+
+});
+
+</script>
+
+</body>
+</html>
