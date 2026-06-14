@@ -1,9 +1,9 @@
 {
   "name": "SA-APPS",
   "short_name": "SA",
-  "description": "مجموعه ابزارهای کاربردی، آموزشی و سرگرمی",
-  "start_url": "/index.html",
-  "scope": "/",
+  "description": "لانچر ابزارهای کاربردی، آموزشی و سرگرمی",
+  "start_url": "/SA-KIT/",
+  "scope": "/SA-KIT/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b1220",
