@@ -1243,6 +1243,15 @@
     </div>
   </div>
   <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/SA-KIT/sw.js')
+      .then(reg => console.log('✅ SW registered:', reg))
+      .catch(err => console.error('❌ SW failed:', err));
+  });
+}
+  </script>
+  <script>
     const config = {
       version: "v5.0.0",
       siteUrl: "https://amoo189.github.io/Saleh-Amoo/",
