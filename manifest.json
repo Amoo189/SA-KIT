@@ -1,10 +1,10 @@
 {
   "name": "SA-APPS",
-  "short_name": "SA",
+  "short_name": "SA-TOOLS",
   "description": "لانچر ابزارهای کاربردی، آموزشی و سرگرمی",
   "start_url": "/SA-KIT/",
   "scope": "/SA-KIT/",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#0b1220",
   "theme_color": "#0b1220",
