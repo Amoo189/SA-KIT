@@ -1,9 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "io.github.amoo189.pwa",
-        "sha256_cert_fingerprints": ["56:EF:9D:D6:6A:E6:E8:05:B2:62:1C:11:70:20:D6:16:D2:48:04:41:CE:E1:57:86:90:14:73:ED:7D:7D:F7:69"]
-      }
-    }]
-
