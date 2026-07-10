@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تست سرعت تایپ حرفه‌ای | SA Apps</title>
+
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#081120;
+      --bg-2:#0d1730;
+      --panel:rgba(255,255,255,.08);
+      --panel-strong:rgba(255,255,255,.12);
+      --text:#eaf2ff;
+      --muted:#9fb0cf;
+      --border:rgba(255,255,255,.10);
+      --accent:#6ea8fe;
+      --accent-2:#8b5cf6;
+      --success:#22c55e;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --active:#38bdf8;
+      --input-bg:rgba(255,255,255,.05);
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    body.light-mode{
+      --bg:#f3f7ff;
+      --bg-2:#eaf1ff;
+      --panel:rgba(255,255,255,.72);
+      --panel-strong:rgba(255,255,255,.88);
+      --text:#182033;
+      --muted:#61708c;
+      --border:rgba(24,32,51,.10);
+      --input-bg:rgba(255,255,255,.85);
+      --shadow:0 20px 50px rgba(70,88,130,.14);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+    }
+
+    body{
+      font-family:"VazirmatnLocal",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(110,168,254,.22), transparent 0 28%),
+        radial-gradient(circle at 85% 18%, rgba(139,92,246,.18), transparent 0 24%),
+        radial-gradient(circle at 70% 80%, rgba(110,168,254,.10), transparent 0 26%),
+        linear-gradient(135deg,var(--bg),var(--bg-2));
+      display:flex;
+      justify-content:center;
+      padding:24px;
+      overflow-x:hidden;
+      position:relative;
+    }
+
+    .orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(32px);
+      opacity:.28;
+      pointer-events:none;
+      z-index:0;
+    }
+    .orb1{width:220px;height:220px;top:-40px;right:-50px;background:#6ea8fe}
+    .orb2{width:250px;height:250px;bottom:-80px;left:-70px;background:#8b5cf6}
+
+    .theme-toggle{
+      position:fixed;
+      top:18px;
+      left:18px;
+      z-index:20;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      backdrop-filter:blur(14px);
+      border-radius:14px;
+      padding:10px 14px;
+      font-family:inherit;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+    }
+    .theme-toggle:hover{transform:translateY(-2px);background:var(--panel-strong)}
+
+    .wrap{
+      width:min(1250px,100%);
+      position:relative;
+      z-index:1;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:30px;
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 20px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:700;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 25px rgba(110,168,254,.28);
+      flex-shrink:0;
+    }
+
+    .brand-text h1{
+      margin:0;
+      font-size:20px;
+    }
+
+    .brand-text p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .best-score{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      padding:12px 14px;
+      border-radius:16px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .content{
+      padding:24px;
+    }
+
+    .hero{
+      margin-bottom:18px;
+    }
+
+    .hero h2{
+      margin:0 0 8px;
+      font-size:28px;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.9;
+      font-size:14px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:18px;
+      min-width:0;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:16px;
+    }
+
+    .control-group{
+      margin-bottom:14px;
+    }
+
+    .label{
+      display:block;
+      font-size:13px;
+      margin-bottom:8px;
+      color:var(--muted);
+    }
+
+    .select,.input{
+      width:100%;
+      padding:13px 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:var(--input-bg);
+      color:var(--text);
+      font-family:inherit;
+      font-size:15px;
+      outline:none;
+      transition:.2s ease;
+    }
+
+    .select:focus,.input:focus{
+      border-color:rgba(110,168,254,.55);
+      box-shadow:0 0 0 4px rgba(110,168,254,.12);
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin:16px 0;
+    }
+
+    .stat{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      border-radius:18px;
+      padding:14px;
+      text-align:center;
+    }
+
+    .stat-value{
+      display:block;
+      font-size:24px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .stat-label{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:13px 16px;
+      font-family:inherit;
+      font-size:14px;
+      cursor:pointer;
+      transition:.22s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 14px 24px rgba(110,168,254,.22);
+    }
+    .btn-secondary{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+    }
+
+    .status{
+      margin-top:12px;
+      min-height:20px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .text-box{
+      min-height:180px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      border-radius:22px;
+      padding:18px;
+      line-height:2.2;
+      font-size:24px;
+      user-select:none;
+      word-break:break-word;
+    }
+
+    .char{
+      position:relative;
+      border-radius:6px;
+      padding:0 1px;
+    }
+
+    .char.correct{
+      color:var(--success);
+      background:rgba(34,197,94,.10);
+    }
+
+    .char.wrong{
+      color:#fff;
+      background:rgba(239,68,68,.88);
+    }
+
+    .char.active{
+      background:rgba(56,189,248,.18);
+      outline:1px solid rgba(56,189,248,.50);
+    }
+
+    body.light-mode .char.wrong{
+      color:#fff;
+    }
+
+    .typing-area{
+      margin-top:16px;
+    }
+
+    .typing-input{
+      width:100%;
+      min-height:120px;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:var(--input-bg);
+      color:var(--text);
+      font-family:inherit;
+      font-size:18px;
+      line-height:2;
+      resize:vertical;
+      outline:none;
+    }
+
+    .typing-input:focus{
+      border-color:rgba(110,168,254,.55);
+      box-shadow:0 0 0 4px rgba(110,168,254,.12);
+    }
+
+    .subgrid{
+      display:grid;
+      grid-template-columns:1fr 340px;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .mini-card{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      border-radius:22px;
+      padding:16px;
+    }
+
+    .summary-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .summary-item{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      font-size:14px;
+    }
+
+    canvas{
+      width:100%;
+      height:220px;
+      background:rgba(255,255,255,.03);
+      border-radius:18px;
+      border:1px solid var(--border);
+      display:block;
+    }
+
+    .hint{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.9;
+    }
+
+    @media (max-width:1050px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+      .subgrid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:700px){
+      .content{padding:18px}
+      .hero h2{font-size:22px}
+      .stats-grid,.actions{
+        grid-template-columns:1fr;
+      }
+      .text-box{
+        font-size:20px;
+        line-height:2.05;
+      }
+      .typing-input{
+        font-size:16px;
+      }
+    }
+
+    @media (max-width:600px){
+      body{padding:16px}
+      .theme-toggle{
+        top:12px;
+        left:12px;
+        font-size:13px;
+        padding:9px 12px;
+      }
+      .panel{border-radius:24px}
+      .topbar{padding:16px}
+      .hero h2{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <button class="theme-toggle" id="themeToggle">تغییر تم</button>
+
+  <main class="wrap">
+    <section class="panel">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">SA</div>
+          <div class="brand-text">
+            <h1>برنامه‌های SA</h1>
+            <p>تست سرعت تایپ حرفه‌ای با رکورد، سختی، زبان و نمودار عملکرد</p>
+          </div>
+        </div>
+
+        <div class="best-score" id="bestScoreBox">
+          بهترین رکورد: هنوز ثبت نشده
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="hero">
+          <h2>تست سرعت تایپ حرفه‌ای</h2>
+          <p>
+            زبان، سطح سختی و زمان را انتخاب کن. با اولین تایپ تست شروع می‌شود و عملکردت به‌صورت زنده محاسبه می‌شود.
+          </p>
+        </div>
+
+        <div class="layout">
+          <aside class="card">
+            <h3 class="section-title">تنظیمات</h3>
+
+            <div class="control-group">
+              <label class="label" for="languageSelect">زبان</label>
+              <select id="languageSelect" class="select">
+                <option value="fa">فارسی</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="label" for="difficultySelect">سطح سختی</label>
+              <select id="difficultySelect" class="select">
+                <option value="easy">آسان</option>
+                <option value="medium">متوسط</option>
+                <option value="hard">سخت</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="label" for="timeSelect">مدت زمان</label>
+              <select id="timeSelect" class="select">
+                <option value="30">30 ثانیه</option>
+                <option value="60" selected>60 ثانیه</option>
+                <option value="120">120 ثانیه</option>
+              </select>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat">
+                <span class="stat-value" id="timeLeft">60</span>
+                <span class="stat-label">ثانیه باقیمانده</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value" id="wpm">0</span>
+                <span class="stat-label">WPM</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value" id="cpm">0</span>
+                <span class="stat-label">CPM</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value" id="accuracy">100%</span>
+                <span class="stat-label">دقت</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value" id="errors">0</span>
+                <span class="stat-label">خطا</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value" id="correctWords">0</span>
+                <span class="stat-label">کلمات درست</span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" id="restartBtn">شروع / ریست</button>
+              <button class="btn btn-secondary" id="focusBtn">تمرکز روی تایپ</button>
+            </div>
+
+            <div class="status" id="statusText">برای شروع، داخل کادر تایپ کن.</div>
+
+            <div class="hint">
+              نکته: تست با اولین کاراکتر آغاز می‌شود. اگر زبان یا سختی را تغییر بدهی، متن جدید ساخته می‌شود.
+            </div>
+          </aside>
+
+          <section class="card">
+            <h3 class="section-title">متن تست</h3>
+            <div class="text-box" id="textDisplay"></div>
+
+            <div class="typing-area">
+              <textarea
+                id="typingInput"
+                class="typing-input"
+                placeholder="اینجا تایپ کن..."
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+            <div class="subgrid">
+              <div class="mini-card">
+                <h3 class="section-title">نمودار عملکرد</h3>
+                <canvas id="performanceChart" width="800" height="220"></canvas>
+              </div>
+
+              <div class="mini-card">
+                <h3 class="section-title">خلاصه آزمون</h3>
+                <div class="summary-list">
+                  <div class="summary-item">
+                    <span>زبان</span>
+                    <strong id="summaryLanguage">فارسی</strong>
+                  </div>
+                  <div class="summary-item">
+                    <span>سطح</span>
+                    <strong id="summaryDifficulty">آسان</strong>
+                  </div>
+                  <div class="summary-item">
+                    <span>مدت</span>
+                    <strong id="summaryDuration">60 ثانیه</strong>
+                  </div>
+                  <div class="summary-item">
+                    <span>وضعیت</span>
+                    <strong id="summaryStatus">آماده شروع</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const THEME_KEY = "sa-typing-theme";
+    const BEST_KEY = "sa-typing-best-score-v1";
+
+    const textDisplay = document.getElementById("textDisplay");
+    const typingInput = document.getElementById("typingInput");
+
+    const languageSelect = document.getElementById("languageSelect");
+    const difficultySelect = document.getElementById("difficultySelect");
+    const timeSelect = document.getElementById("timeSelect");
+
+    const timeLeftEl = document.getElementById("timeLeft");
+    const wpmEl = document.getElementById("wpm");
+    const cpmEl = document.getElementById("cpm");
+    const accuracyEl = document.getElementById("accuracy");
+    const errorsEl = document.getElementById("errors");
+    const correctWordsEl = document.getElementById("correctWords");
+    const statusText = document.getElementById("statusText");
+
+    const restartBtn = document.getElementById("restartBtn");
+    const focusBtn = document.getElementById("focusBtn");
+    const bestScoreBox = document.getElementById("bestScoreBox");
+
+    const summaryLanguage = document.getElementById("summaryLanguage");
+    const summaryDifficulty = document.getElementById("summaryDifficulty");
+    const summaryDuration = document.getElementById("summaryDuration");
+    const summaryStatus = document.getElementById("summaryStatus");
+
+    const themeToggle = document.getElementById("themeToggle");
+    const chartCanvas = document.getElementById("performanceChart");
+    const ctx = chartCanvas.getContext("2d");
+
+    const textPools = {
+      fa: {
+        easy: [
+          "امروز هوا خوب است و من با آرامش تمرین تایپ انجام می دهم تا سرعت و دقت من بهتر شود",
+          "یادگیری مداوم باعث رشد ذهن می شود و تمرین روزانه می تواند مهارت های ما را تقویت کند",
+          "نوشتن سریع زمانی ارزشمند است که همراه با دقت باشد و خطاهای کم تری در متن دیده شود",
+          "زندگی پر از فرصت های تازه است و هر روز می تواند شروعی برای تجربه های مفید و جدید باشد"
+        ],
+        medium: [
+          "کار با ابزارهای دیجیتال زمانی لذت بخش تر می شود که رابط کاربری ساده، سریع و هماهنگ با نیاز کاربر طراحی شده باشد.",
+          "برای افزایش سرعت تایپ، بهتر است هر روز چند دقیقه تمرین منظم داشته باشیم و بدون نگاه کردن به صفحه کلید بنویسیم.",
+          "مدیریت زمان، تمرکز و استمرار سه عامل بسیار مهم هستند که در یادگیری مهارت های جدید نقش اساسی دارند."
+        ],
+        hard: [
+          "گاهی اوقات کیفیت یک متن فقط به سرعت نوشتن وابسته نیست؛ بلکه ساختار جمله، انتخاب واژه های مناسب، نشانه گذاری درست و حفظ تمرکز نیز نقش مهمی ایفا می کنند.",
+          "اگر کاربر در طول آزمون تایپ بتواند بدون مکث های طولانی و با کم ترین خطا متن را بازنویسی کند، نتیجه نهایی نشان دهنده تسلط بهتر او بر صفحه کلید خواهد بود.",
+          "توسعه ابزارهای وب واکنش گرا نیازمند توجه هم زمان به طراحی ظاهری، بهینه سازی عملکرد، سازگاری با موبایل و تجربه کاربری دقیق است."
+        ]
+      },
+      en: {
+        easy: [
+          "today is a good day to practice typing and improve both speed and accuracy in a calm way",
+          "small daily practice can build strong skills and make writing faster and more natural over time",
+          "good typing is not only about speed but also about focus rhythm and fewer mistakes in each line",
+          "learning new skills every day can create better habits and lead to steady personal growth"
+        ],
+        medium: [
+          "A clean interface and a smooth typing flow can make practice more enjoyable and help users stay focused for longer periods.",
+          "When people practice consistently, they often notice that accuracy improves first and speed begins to rise soon after that.",
+          "Building digital tools requires attention to usability, performance, responsiveness, and clear visual structure."
+        ],
+        hard: [
+          "Typing tests become more meaningful when they measure not only raw speed, but also consistency, accuracy, pacing, and the ability to recover after mistakes.",
+          "A well designed practice environment encourages repetition, reduces distraction, and gives immediate feedback that helps the user improve more effectively over time.",
+          "Modern web applications should balance visual quality, responsive layout, keyboard interaction, and reliable local data storage for a polished experience."
+        ]
+      }
+    };
+
+    let currentText = "";
+    let timer = null;
+    let started = false;
+    let finished = false;
+    let totalTime = 60;
+    let timeLeft = 60;
+    let performancePoints = [];
+
+    function applyTheme(theme){
+      document.body.classList.toggle("light-mode", theme === "light");
+    }
+
+    applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+
+    themeToggle.addEventListener("click", () => {
+      const next = document.body.classList.contains("light-mode") ? "dark" : "light";
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+      drawChart();
+    });
+
+    function getDifficultyLabel(v){
+      return v === "easy" ? "آسان" : v === "medium" ? "متوسط" : "سخت";
+    }
+
+    function getLanguageLabel(v){
+      return v === "fa" ? "فارسی" : "English";
+    }
+
+    function updateSummary(status = "آماده شروع"){
+      summaryLanguage.textContent = getLanguageLabel(languageSelect.value);
+      summaryDifficulty.textContent = getDifficultyLabel(difficultySelect.value);
+      summaryDuration.textContent = timeSelect.value + " ثانیه";
+      summaryStatus.textContent = status;
+    }
+
+    function getRandomText(){
+      const lang = languageSelect.value;
+      const diff = difficultySelect.value;
+      const arr = textPools[lang][diff];
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function renderText(){
+      textDisplay.innerHTML = "";
+      currentText.split("").forEach((ch, i) => {
+        const span = document.createElement("span");
+        span.className = "char" + (i === 0 ? " active" : "");
+        span.textContent = ch;
+        textDisplay.appendChild(span);
+      });
+    }
+
+    function resetStats(){
+      totalTime = Number(timeSelect.value);
+      timeLeft = totalTime;
+      started = false;
+      finished = false;
+      performancePoints = [];
+
+      timeLeftEl.textContent = timeLeft;
+      wpmEl.textContent = "0";
+      cpmEl.textContent = "0";
+      accuracyEl.textContent = "100%";
+      errorsEl.textContent = "0";
+      correctWordsEl.textContent = "0";
+      statusText.textContent = "برای شروع، داخل کادر تایپ کن.";
+      typingInput.value = "";
+
+      clearInterval(timer);
+      timer = null;
+
+      updateSummary("آماده شروع");
+      drawChart();
+    }
+
+    function generateNewTest(){
+      currentText = getRandomText();
+      renderText();
+      resetStats();
+    }
+
+    function startTimer(){
+      if(started) return;
+      started = true;
+      statusText.textContent = "آزمون شروع شد. ادامه بده!";
+      updateSummary("در حال اجرا");
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timeLeftEl.textContent = timeLeft;
+        capturePerformancePoint();
+
+        if(timeLeft <= 0){
+          finishTest();
+        }
+      }, 1000);
+    }
+
+    function calculateStats(){
+      const input = typingInput.value;
+      const chars = textDisplay.querySelectorAll(".char");
+
+      let correctChars = 0;
+      let errors = 0;
+
+      chars.forEach((span, i) => {
+        span.classList.remove("correct", "wrong", "active");
+
+        const typedChar = input[i];
+        if(typedChar == null){
+          // nothing
+        } else if(typedChar === currentText[i]){
+          span.classList.add("correct");
+          correctChars++;
+        } else {
+          span.classList.add("wrong");
+          errors++;
+        }
+
+        if(i === input.length){
+          span.classList.add("active");
+        }
+      });
+
+      if(input.length >= chars.length && chars.length){
+        chars[chars.length - 1].classList.remove("active");
+      }
+
+      const elapsedMinutes = Math.max((totalTime - timeLeft) / 60, 1/60);
+      const cpm = Math.round(correctChars / elapsedMinutes);
+      const wpm = Math.round((correctChars / 5) / elapsedMinutes);
+      const accuracy = input.length ? Math.max(0, Math.round((correctChars / input.length) * 100)) : 100;
+
+      const correctWords = countCorrectWords(input);
+
+      wpmEl.textContent = wpm;
+      cpmEl.textContent = cpm;
+      accuracyEl.textContent = accuracy + "%";
+      errorsEl.textContent = errors;
+      correctWordsEl.textContent = correctWords;
+
+      return { wpm, cpm, accuracy, errors, correctChars, correctWords };
+    }
+
+    function countCorrectWords(input){
+      const originalWords = currentText.trim().split(/\s+/);
+      const typedWords = input.trim().split(/\s+/);
+      let count = 0;
+      for(let i = 0; i < Math.min(originalWords.length, typedWords.length); i++){
+        if(originalWords[i] === typedWords[i]) count++;
+      }
+      return count;
+    }
+
+    function capturePerformancePoint(){
+      const stats = calculateStats();
+      performancePoints.push({
+        second: totalTime - timeLeft,
+        wpm: stats.wpm
+      });
+      drawChart();
+    }
+
+    function finishTest(){
+      clearInterval(timer);
+      timer = null;
+      finished = true;
+      started = false;
+      typingInput.blur();
+
+      const stats = calculateStats();
+      statusText.textContent = "آزمون تمام شد.";
+      updateSummary("پایان یافته");
+      saveBestScore(stats);
+      drawChart();
+    }
+
+    function saveBestScore(stats){
+      const record = {
+        wpm: stats.wpm,
+        accuracy: stats.accuracy,
+        language: languageSelect.value,
+        difficulty: difficultySelect.value,
+        duration: totalTime,
+        date: Date.now()
+      };
+
+      const old = JSON.parse(localStorage.getItem(BEST_KEY) || "null");
+      if(!old || record.wpm > old.wpm || (record.wpm === old.wpm && record.accuracy > old.accuracy)){
+        localStorage.setItem(BEST_KEY, JSON.stringify(record));
+      }
+      renderBestScore();
+    }
+
+    function renderBestScore(){
+      const best = JSON.parse(localStorage.getItem(BEST_KEY) || "null");
+      if(!best){
+        bestScoreBox.textContent = "بهترین رکورد: هنوز ثبت نشده";
+        return;
+      }
+
+      bestScoreBox.innerHTML = `
+        بهترین رکورد:
+        <strong>${best.wpm} WPM</strong>
+        | دقت ${best.accuracy}%
+        | ${best.language === "fa" ? "فارسی" : "English"}
+        | ${getDifficultyLabel(best.difficulty)}
+        | ${best.duration}s
+      `;
+    }
+
+    function drawChart(){
+      const isLight = document.body.classList.contains("light-mode");
+      const gridColor = isLight ? "rgba(24,32,51,.10)" : "rgba(255,255,255,.10)";
+      const textColor = isLight ? "#182033" : "#dbe7ff";
+      const lineColor = "#6ea8fe";
+
+      ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+
+      const w = chartCanvas.width;
+      const h = chartCanvas.height;
+      const pad = 36;
+
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+
+      for(let i = 0; i < 5; i++){
+        const y = pad + ((h - pad * 2) / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad, y);
+        ctx.lineTo(w - pad, y);
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(pad, pad);
+      ctx.lineTo(pad, h - pad);
+      ctx.lineTo(w - pad, h - pad);
+      ctx.stroke();
+
+      ctx.fillStyle = textColor;
+      ctx.font = "14px sans-serif";
+      ctx.fillText("WPM", 10, 18);
+      ctx.fillText("زمان", w - 52, h - 10);
+
+      if(!performancePoints.length){
+        ctx.fillStyle = textColor;
+        ctx.font = "16px sans-serif";
+        ctx.fillText("هنوز داده‌ای برای نمودار ثبت نشده است.", 220, 115);
+        return;
+      }
+
+      const maxWpm = Math.max(20, ...performancePoints.map(p => p.wpm));
+      const maxTime = Math.max(1, ...performancePoints.map(p => p.second));
+
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+
+      performancePoints.forEach((p, i) => {
+        const x = pad + (p.second / maxTime) * (w - pad * 2);
+        const y = h - pad - (p.wpm / maxWpm) * (h - pad * 2);
+        if(i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      ctx.fillStyle = lineColor;
+      performancePoints.forEach((p) => {
+        const x = pad + (p.second / maxTime) * (w - pad * 2);
+        const y = h - pad - (p.wpm / maxWpm) * (h - pad * 2);
+        ctx.beginPath();
+        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    typingInput.addEventListener("input", () => {
+      if(finished) return;
+      if(!started && typingInput.value.length > 0){
+        startTimer();
+      }
+      const stats = calculateStats();
+
+      if(typingInput.value.length >= currentText.length){
+        finishTest();
+      }
+
+      if(stats.errors > 0){
+        statusText.textContent = "ادامه بده؛ چند خطا ثبت شده است.";
+      } else {
+        statusText.textContent = started ? "عالیه، بدون خطا ادامه بده!" : "برای شروع، داخل کادر تایپ کن.";
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      generateNewTest();
+      typingInput.focus();
+    });
+
+    focusBtn.addEventListener("click", () => {
+      typingInput.focus();
+    });
+
+    [languageSelect, difficultySelect, timeSelect].forEach(el => {
+      el.addEventListener("change", () => {
+        generateNewTest();
+        updateSummary("آماده شروع");
+      });
+    });
+
+    renderBestScore();
+    generateNewTest();
+  </script>
+</body>
+</html>

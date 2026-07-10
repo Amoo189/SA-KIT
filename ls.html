@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-IS</title>
+
+<!-- فونت آوسوم لوکال -->
+<link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+<style>
+@font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#e2e8f0;
+--muted:#94a3b8;
+--border:#334155;
+--accent:#6366f1;
+--green:#22c55e;
+}
+body.light{
+--bg:#f1f5f9;
+--card:#ffffff;
+--text:#0f172a;
+--muted:#475569;
+--border:#cbd5e1;
+--accent:#6366f1;
+--green:#16a34a;
+}
+body{
+margin:0;
+padding:20px;
+background:var(--bg);
+color:var(--text);
+font-family:"VazirmatnLocal", sans-serif;
+transition:.3s;
+}
+.container{max-width:950px;margin:auto;}
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+flex-wrap:wrap;
+gap:10px;
+}
+.badge{
+padding:8px 16px;
+border-radius:40px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+color:var(--muted);
+font-size:14px;
+display:flex;
+align-items:center;
+gap:6px;
+}
+.theme-toggle{
+width:40px;height:40px;
+display:flex;align-items:center;justify-content:center;
+border-radius:50%;cursor:pointer;
+border:1px solid var(--border);
+background:rgba(255,255,255,.06);
+font-size:20px;
+}
+.card{
+background:var(--card);
+border:1px solid var(--border);
+padding:22px 20px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+input{
+width:100%;
+padding:14px 16px;
+font-size:18px;
+border-radius:14px;
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+color:var(--text);
+font-family:inherit;
+margin:6px 0 12px 0;
+transition:.2s;
+box-sizing:border-box;
+}
+input:focus{
+border-color:var(--accent);
+outline:none;
+box-shadow:0 0 0 3px rgba(99,102,241,.2);
+}
+button{
+padding:12px 20px;
+border:none;border-radius:12px;
+background:var(--accent);
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+display:inline-flex;
+align-items:center;
+gap:8px;
+}
+button:hover{opacity:.85; transform:scale(.98);}
+canvas{
+width:100%;
+height:auto;
+margin-top:18px;
+background:#0b1120;
+border-radius:16px;
+border:1px solid var(--border);
+display:block;
+}
+body.light canvas{ background:#f8fafc; }
+.preloader{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.7);
+backdrop-filter:blur(14px);
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:9999;
+opacity:1;
+transition:opacity .8s ease;
+}
+.preloader.hide{opacity:0;pointer-events:none;}
+.preloader-logo{
+padding:20px 36px;
+border-radius:160px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.04);
+position:relative;
+overflow:hidden;
+}
+.preloader-logo::before{
+content:"";
+position:absolute;
+inset:-6px;
+border-radius:230px;
+background:conic-gradient(#6366f1,#0ea5e9,#22c55e,#6366f1);
+filter:blur(14px);
+opacity:.8;
+animation:ringSpin 5s linear infinite;
+}
+.preloader-sign{
+font-size:30px;
+font-weight:700;
+color:#fff;
+border-right:3px solid #6ea8fe;
+padding-right:6px;
+}
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+.keyboard-tabs{
+display:flex;gap:8px;margin:12px 0 8px 0;
+flex-wrap:wrap;
+}
+.keyboard-tabs button{
+padding:6px 16px;
+border-radius:30px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.04);
+color:var(--text);
+font-size:13px;
+cursor:pointer;
+font-weight:500;
+display:inline-flex;
+align-items:center;
+gap:4px;
+}
+.keyboard-tabs button.active{
+background:var(--accent);
+color:white;
+border-color:var(--accent);
+}
+.math-keyboard-set{
+display:none;
+gap:8px;
+background:rgba(255,255,255,.02);
+padding:12px;
+border-radius:16px;
+border:1px solid var(--border);
+flex-wrap:wrap;
+animation:keySlide .2s ease;
+}
+.math-keyboard-set.active{display:flex;}
+.math-keyboard-set button{
+flex:1 0 16%;
+padding:10px 0;
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+border-radius:10px;
+color:var(--text);
+font-size:16px;
+cursor:pointer;
+font-family:inherit;
+transition:.1s;
+}
+.math-keyboard-set button:hover{
+background:var(--accent);
+color:white;
+border-color:var(--accent);
+}
+@keyframes keySlide{
+from{opacity:0;transform:translateY(8px)}
+to{opacity:1;transform:translateY(0)}
+}
+footer{
+margin-top:16px;
+color:var(--muted);
+font-size:13px;
+text-align:center;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+}
+.hint{
+color:var(--muted);
+font-size:.95rem;
+line-height:1.5;
+margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:6px;
+}
+.sa-logo-center{
+display:flex;
+justify-content:center;
+margin:0 0 10px 0;
+}
+.sa-logo{
+width:78px;
+height:78px;
+position:relative;
+border-radius:18px;
+background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.08), transparent 40%),
+            radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+            linear-gradient(185deg, #232e40 0%, #1b2535 58%, #121c2a 100%);
+box-shadow:0 14px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+display:flex;
+align-items:center;
+justify-content:center;
+gap:2px;
+}
+.sa-logo i {
+font-size: 32px;
+color: #289CFF;
+text-shadow: 0 7px 12px rgba(0,0,0,.44), 0 0 20px rgba(40,156,255,.2);
+z-index: 2;
+}
+.sa-logo .fa-infinity {
+font-size: 28px;
+color: #22c55e;
+text-shadow: 0 0 20px rgba(34,197,94,.2);
+}
+.sa-badge{
+position:absolute;
+top:-2px;
+right:8px;
+padding:2px 10px;
+font-size:13px;
+font-weight:900;
+border-radius:0 0 12px 12px;
+color:#289CFF;
+font-family:"Arial Black",Arial,sans-serif;
+background:linear-gradient(180deg, #283448, #161d2a);
+box-shadow:0 8px 18px rgba(0,0,0,.5);
+display:flex;
+align-items:center;
+gap:4px;
+}
+.sa-badge i {
+font-size: 10px;
+color: #22c55e;
+}
+.result-box{
+margin-top:16px;
+background:rgba(255,255,255,.03);
+padding:12px 16px;
+border-radius:14px;
+border-right:4px solid var(--accent);
+}
+.result-box p{
+margin:6px 0;
+font-size:1rem;
+display:flex;
+align-items:center;
+gap:6px;
+}
+.interval-tag{
+display:inline-block;
+background:rgba(34,197,94,.12);
+color:var(--green);
+padding:2px 12px;
+border-radius:20px;
+margin:4px 6px 4px 0;
+border:1px solid rgba(34,197,94,.2);
+font-weight:500;
+}
+.fade-out{opacity:0;transition:.4s;}
+
+/* RTL/LTR برای نمایش اعداد */
+.ltr-digits{
+direction:ltr;
+display:inline-block;
+unicode-bidi:isolate;
+}
+
+.math-keyboard-set button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+@media(max-width:600px){
+.math-keyboard-set button{flex:1 0 21%;}
+}
+</style>
+</head>
+<body>
+<div class="sa-logo-center">
+<div class="sa-logo">
+<i class="fas fa-chart-line"></i>
+<i class="fas fa-infinity"></i>
+<div class="sa-badge"><i class="fas fa-cog fa-spin"></i> IS</div>
+</div>
+</div>
+
+<div id="preloader" class="preloader">
+<div class="preloader-logo"><div class="preloader-sign"></div></div>
+</div>
+
+<div class="container">
+<header>
+<div class="badge"><i class="fas fa-user-astronaut"></i> Saleh Amoo</div>
+<div style="display:flex;gap:12px;align-items:center;">
+<div id="themeToggle" class="theme-toggle">🌙</div>
+<div id="themeLabel" class="badge">حالت تیره</div>
+</div>
+</header>
+
+<div class="card">
+<h3 style="margin:0 0 6px 0;display:flex;align-items:center;gap:8px;"><i class="fas fa-calculator"></i> حل‌کننده نامعادله</h3>
+<div class="hint"><i class="fas fa-info-circle"></i> <b>متغیر دلخواه (x, y, t, …) • مثال: x^3 - 4*x > 0</b></div>
+<input id="equation" type="text" placeholder="مثلاً: sin(x) - 0.5 > 0  یا  x^2 - 3*x + 2 ≤ 0">
+
+<div class="keyboard-tabs">
+<button class="active" data-tab="num"><i class="fas fa-hashtag"></i> اعداد</button>
+<button data-tab="ops"><i class="fas fa-code"></i> عملگرها</button>
+<button data-tab="func"><i class="fas fa-function"></i> توابع</button>
+<button data-tab="sym"><i class="fas fa-superscript"></i> نمادها</button>
+</div>
+
+<div id="num" class="math-keyboard-set active">
+<button>7</button><button>8</button><button>9</button>
+<button>4</button><button>5</button><button>6</button>
+<button>1</button><button>2</button><button>3</button>
+<button>0</button><button>.</button><button>←</button>
+</div>
+<div id="ops" class="math-keyboard-set">
+<button>+</button><button>-</button><button>*</button><button>/</button>
+<button>^</button><button>(</button><button>)</button>
+<button>&lt;</button><button>&gt;</button><button>=</button>
+</div>
+<div id="func" class="math-keyboard-set">
+<button>sin(</button><button>cos(</button><button>tan(</button>
+<button>sqrt(</button><button>log(</button><button>exp(</button>
+</div>
+<div id="sym" class="math-keyboard-set">
+<button>x</button><button>y</button><button>t</button>
+<button>π</button><button>e</button>
+</div>
+
+<button onclick="solveIneq()" style="width:100%;margin-top:14px;justify-content:center;"><i class="fas fa-play"></i> حل و رسم</button>
+
+<div id="resultBox" class="result-box">
+<p id="result" style="color:var(--accent);font-weight:600;"></p>
+<div id="intervals" style="color:var(--green);font-weight:600;display:flex;flex-wrap:wrap;gap:4px;direction:ltr;text-align:left;"></div>
+</div>
+
+<canvas id="graph" width="700" height="320"></canvas>
+</div>
+</div>
+
+<footer><i class="fas fa-bolt"></i> Powerd By Saleh Amoo <i class="fas fa-crown"></i></footer>
+
+<script>
+// ---------- PRELOADER ----------
+document.addEventListener("DOMContentLoaded",()=>{
+const loader=document.getElementById("preloader");
+const sign=document.querySelector(".preloader-sign");
+const text="Saleh";
+let i=0;
+function type(){
+ if(i<text.length){
+  sign.textContent+=text[i++];
+  setTimeout(type,130);
+ } else setTimeout(()=>loader.classList.add("hide"),500);
+}
+setTimeout(type,300);
+setTimeout(()=>loader.classList.add("hide"),4500);
+});
+
+// ---------- THEME ----------
+const t=document.getElementById("themeToggle");
+const l=document.getElementById("themeLabel");
+t.onclick=()=>{
+document.body.classList.toggle("light");
+if(document.body.classList.contains("light")){
+ t.textContent="☀️"; l.textContent="حالت روشن";
+}else{
+ t.textContent="🌙"; l.textContent="حالت تیره";
+}
+};
+
+// ---------- تابع کمکی برای فرمت عدد (رفع کامل -0) ----------
+function formatNumber(num) {
+if (num === undefined || num === null || !isFinite(num)) return "0";
+// اگر عدد خیلی به صفر نزدیک است => 0
+if (Math.abs(num) < 1e-10) return "0";
+// اگر عدد صحیح است (مثل -2, 0, 5)
+if (Number.isInteger(num)) {
+    // اطمینان از اینکه -0 نشه
+    if (num === 0) return "0";
+    return num.toString();
+}
+// گرد کردن به 3 رقم اعشار
+let str = num.toFixed(3);
+// حذف صفرهای انتهایی
+str = str.replace(/\.?0+$/, '');
+// اگر فقط یک نقطه مونده
+if (str.endsWith('.')) str = str.slice(0, -1);
+// اگر تبدیل به -0 شده
+if (str === "-0") return "0";
+return str;
+}
+
+// ---------- EVAL با متغیر دلخواه ----------
+function evalExpr(expr, varName, val){
+let e = expr
+ .replace(/(\d)([a-zA-Z])/g,"$1*$2")
+ .replace(/sqrt\(/g,"Math.sqrt(")
+ .replace(/sin\(/g,"Math.sin(")
+ .replace(/cos\(/g,"Math.cos(")
+ .replace(/tan\(/g,"Math.tan(")
+ .replace(/abs\(/g,"Math.abs(")
+ .replace(/log\(/g,"Math.log(")
+ .replace(/exp\(/g,"Math.exp(")
+ .replace(/π/g,"Math.PI")
+ .replace(/\be\b/g,"Math.E")
+ .replace(/\^/g,"**");
+try{
+ let fn = new Function(varName, "return " + e);
+ let v = fn(val);
+ if(!isFinite(v)) return NaN;
+ return v;
+}catch{ return NaN; }
+}
+
+// ---------- پیدا کردن ریشه (بخش‌بندی) ----------
+function bisection(expr, varName, a, b){
+let fa = evalExpr(expr, varName, a);
+let fb = evalExpr(expr, varName, b);
+if(Math.sign(fa) === Math.sign(fb)) return null;
+for(let i=0; i<90; i++){
+ let m = (a+b)/2;
+ let fm = evalExpr(expr, varName, m);
+ if(Math.abs(fm) < 1e-7) return m;
+ if(Math.sign(fm) === Math.sign(fa)){
+  a = m; fa = fm;
+ }else{
+  b = m;
+ }
+}
+return (a+b)/2;
+}
+
+// ---------- تشخیص متغیر ----------
+function detectVariable(expr){
+const match = expr.match(/[a-zA-Z]/);
+return match ? match[0] : 'x';
+}
+
+// ---------- حل اصلی (با بازه‌های دقیق) ----------
+function solveIneq(){
+const raw = document.getElementById("equation").value.replace(/\s/g,"");
+const res = document.getElementById("result");
+const inter = document.getElementById("intervals");
+if(!raw){ res.textContent="⚠️ عبارت وارد نشده"; inter.innerHTML=""; drawGraph("0",'x',[]); return; }
+
+// تشخیص عملگر
+let op;
+if(raw.includes(">=")) op=">=";
+else if(raw.includes("<=")) op="<=";
+else if(raw.includes(">")) op=">";
+else if(raw.includes("<")) op="<";
+else op="=";
+
+let parts = raw.split(op);
+if(parts.length<2) { res.textContent="⚠️ عملگر نامعادله را وارد کنید"; inter.innerHTML=""; return; }
+let left = parts[0].trim(), right = (parts[1]||"0").trim();
+if(right === "") right = "0";
+let expr = "(" + left + ")-(" + right + ")";
+let varName = detectVariable(expr);
+
+// جستجوی ریشه‌ها با دقت بیشتر
+let roots = [];
+let step = 0.2;
+let start = -100, end = 100;
+let prevX = start;
+let prevVal = evalExpr(expr, varName, prevX);
+for(let x = start + step; x <= end; x += step){
+ let curVal = evalExpr(expr, varName, x);
+ if(!isNaN(prevVal) && !isNaN(curVal) && Math.sign(prevVal) !== Math.sign(curVal)){
+  let r = bisection(expr, varName, x-step, x);
+  if(r !== null && isFinite(r)) roots.push(r);
+ }
+ prevX = x; prevVal = curVal;
+}
+
+// ریشه‌های منحصر‌به‌فرد
+let unique = [];
+roots.sort((a,b)=>a-b);
+for(let r of roots){
+ if(unique.length===0 || Math.abs(r - unique[unique.length-1]) > 1e-5) unique.push(r);
+}
+
+// تعیین بازه‌های پاسخ
+let intervals = [];
+let testPoints = [-100, ...unique, 100];
+let midPoints = [];
+for(let i=0; i<testPoints.length-1; i++){
+ let mid = (testPoints[i] + testPoints[i+1]) / 2;
+ midPoints.push(mid);
+}
+
+if(unique.length===0){
+ let mid = 0;
+ let val = evalExpr(expr, varName, mid);
+ if(!isNaN(val)){
+  let sign = Math.sign(val);
+  if( (op===">" || op===">=") && sign>0 ) intervals.push({start:-Infinity, end:Infinity, openStart:false, openEnd:false});
+  else if( (op==="<" || op==="<=") && sign<0 ) intervals.push({start:-Infinity, end:Infinity, openStart:false, openEnd:false});
+  else if(op==="=" && Math.abs(val)<1e-8) intervals.push({start:-Infinity, end:Infinity, openStart:false, openEnd:false});
+ }
+}else{
+ let points = [-100, ...unique, 100];
+ for(let i=0; i<points.length-1; i++){
+  let mid = (points[i] + points[i+1]) / 2;
+  let val = evalExpr(expr, varName, mid);
+  if(isNaN(val)) continue;
+  let sign = Math.sign(val);
+  let include = false;
+  if(op===">" && sign>0) include=true;
+  else if(op===">=" && sign>=0) include=true;
+  else if(op==="<" && sign<0) include=true;
+  else if(op==="<=" && sign<=0) include=true;
+  else if(op==="=" && Math.abs(val)<1e-8) include=true;
+  if(include){
+   let start = points[i], end = points[i+1];
+   let openStart = false, openEnd = false;
+   if(i>0){
+    let r1 = unique[i-1];
+    if(Math.abs(start - r1) < 1e-7){
+     openStart = (op===">" || op==="<" || op==="=");
+    }
+   }
+   if(i<points.length-2){
+    let r2 = unique[i];
+    if(Math.abs(end - r2) < 1e-7){
+     openEnd = (op===">" || op==="<" || op==="=");
+    }
+   }
+   intervals.push({start, end, openStart, openEnd});
+  }
+ }
+ if(op==="="){
+  for(let r of unique){
+   if(Math.abs(evalExpr(expr, varName, r))<1e-7){
+    intervals.push({start:r, end:r, openStart:false, openEnd:false});
+   }
+  }
+ }
+}
+
+// نمایش نتیجه با RTL/LTR صحیح
+let resultText = "";
+if(intervals.length===0){
+ resultText = "💡 هیچ بازه‌ای یافت نشد";
+}else{
+ let parts = intervals.map(it => {
+  if(it.start === -Infinity && it.end === Infinity) return "ℝ";
+  if(it.start === it.end) {
+   let val = formatNumber(it.start);
+   return "{" + val + "}";
+  }
+  let s = it.openStart ? "(" : "[";
+  let e = it.openEnd ? ")" : "]";
+  let a = it.start === -Infinity ? "-∞" : formatNumber(it.start);
+  let b = it.end === Infinity ? "+∞" : formatNumber(it.end);
+  return s + a + ", " + b + e;
+ });
+ resultText = parts.join(" ∪ ");
+}
+res.textContent = "✅ بازه‌های پاسخ:";
+
+// نمایش با LTR برای اعداد
+inter.innerHTML = intervals.map(it => {
+ if(it.start === -Infinity && it.end === Infinity) return `<span class="interval-tag">ℝ</span>`;
+ if(it.start === it.end) {
+  let val = formatNumber(it.start);
+  return `<span class="interval-tag ltr-digits">{${val}}</span>`;
+ }
+ let s = it.openStart ? "(" : "[";
+ let e = it.openEnd ? ")" : "]";
+ let a = it.start === -Infinity ? "-∞" : formatNumber(it.start);
+ let b = it.end === Infinity ? "+∞" : formatNumber(it.end);
+ return `<span class="interval-tag ltr-digits">${s}${a}, ${b}${e}</span>`;
+}).join(" ∪ ");
+
+// رسم نمودار
+drawGraph(expr, varName, unique, intervals, op);
+}
+
+// ---------- رسم گراف ----------
+function drawGraph(expr, varName, roots, intervals, op){
+const c = document.getElementById("graph");
+const ctx = c.getContext("2d");
+const W = c.width, H = c.height;
+ctx.clearRect(0,0,W,H);
+
+// محورها
+ctx.strokeStyle = "#94a3b8";
+ctx.lineWidth = 1.2;
+ctx.beginPath();
+ctx.moveTo(0, H/2);
+ctx.lineTo(W, H/2);
+ctx.moveTo(W/2, 0);
+ctx.lineTo(W/2, H);
+ctx.stroke();
+
+// علامت‌های محور
+ctx.fillStyle = "#94a3b8";
+ctx.font = "11px VazirmatnLocal";
+ctx.textAlign = "center";
+ctx.fillText("0", W/2+10, H/2+18);
+for(let i=-10; i<=10; i++){
+ if(i===0) continue;
+ let px = W/2 + i*25;
+ if(px>0 && px<W){
+  ctx.fillText(i, px, H/2+18);
+  ctx.beginPath();
+  ctx.moveTo(px, H/2-5);
+  ctx.lineTo(px, H/2+5);
+  ctx.stroke();
+ }
+}
+
+// رسم تابع
+ctx.strokeStyle = "#3b82f6";
+ctx.lineWidth = 2.5;
+ctx.beginPath();
+let started = false;
+let scale = 25;
+for(let px=0; px<W; px++){
+ let x = (px - W/2) / scale;
+ let y = evalExpr(expr, varName, x);
+ if(isNaN(y) || !isFinite(y)) { started=false; continue; }
+ let py = H/2 - y*scale;
+ if(py < -2000 || py > 2000) { started=false; continue; }
+ if(!started){ ctx.moveTo(px, py); started=true; }
+ else ctx.lineTo(px, py);
+}
+ctx.stroke();
+
+// ریشه‌ها
+if(roots){
+ ctx.fillStyle = "#ef4444";
+ for(let r of roots){
+  let px = W/2 + r*scale;
+  if(px>0 && px<W){
+   ctx.beginPath();
+   ctx.arc(px, H/2, 6, 0, 2*Math.PI);
+   ctx.fill();
+   ctx.fillStyle = "white";
+   ctx.font = "10px VazirmatnLocal";
+   ctx.textAlign = "center";
+   let label = formatNumber(r);
+   ctx.fillText(label, px, H/2-12);
+   ctx.fillStyle = "#ef4444";
+  }
+ }
+}
+
+// هایلایت بازه‌ها
+if(intervals && intervals.length>0){
+ ctx.fillStyle = "rgba(34,197,94,0.15)";
+ for(let it of intervals){
+  let x1 = it.start, x2 = it.end;
+  if(x1 === -Infinity) x1 = -50;
+  if(x2 === Infinity) x2 = 50;
+  if(x1 === x2) continue;
+  let p1 = W/2 + x1*scale;
+  let p2 = W/2 + x2*scale;
+  if(p1 > W) continue;
+  if(p2 < 0) continue;
+  p1 = Math.max(0, p1);
+  p2 = Math.min(W, p2);
+  ctx.fillRect(p1, 0, p2-p1, H);
+  ctx.strokeStyle = "#22c55e";
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.moveTo(p1, 0);
+  ctx.lineTo(p1, H);
+  ctx.moveTo(p2, 0);
+  ctx.lineTo(p2, H);
+  ctx.stroke();
+  ctx.setLineDash([]);
+ }
+ for(let it of intervals){
+  if(it.start === it.end) continue;
+  let x1 = it.start, x2 = it.end;
+  if(x1 === -Infinity) x1 = -50;
+  if(x2 === Infinity) x2 = 50;
+  let p1 = W/2 + x1*scale;
+  let p2 = W/2 + x2*scale;
+  if(p1>0 && p1<W && it.openStart){
+   ctx.beginPath();
+   ctx.arc(p1, H/2, 7, 0, 2*Math.PI);
+   ctx.strokeStyle = "#22c55e";
+   ctx.lineWidth = 2;
+   ctx.stroke();
+  }
+  if(p2>0 && p2<W && it.openEnd){
+   ctx.beginPath();
+   ctx.arc(p2, H/2, 7, 0, 2*Math.PI);
+   ctx.strokeStyle = "#22c55e";
+   ctx.lineWidth = 2;
+   ctx.stroke();
+  }
+ }
+}
+}
+
+// ---------- کیبورد مجازی ----------
+document.querySelectorAll(".keyboard-tabs button").forEach(btn=>{
+btn.onclick=()=>{
+ document.querySelectorAll(".keyboard-tabs button").forEach(b=>b.classList.remove("active"));
+ document.querySelectorAll(".math-keyboard-set").forEach(s=>s.classList.remove("active"));
+ btn.classList.add("active");
+ document.getElementById(btn.dataset.tab).classList.add("active");
+};
+});
+
+const eqInput = document.getElementById("equation");
+document.querySelectorAll(".math-keyboard-set button").forEach(btn=>{
+btn.onclick=()=>{
+ let key = btn.textContent;
+ if(key==="←"){
+  let s=eqInput.selectionStart;
+  if(s>0){
+   eqInput.value = eqInput.value.slice(0,s-1) + eqInput.value.slice(s);
+   eqInput.setSelectionRange(s-1,s-1);
+  }
+  eqInput.focus();
+  return;
+ }
+ let s=eqInput.selectionStart;
+ eqInput.value = eqInput.value.slice(0,s) + key + eqInput.value.slice(s);
+ eqInput.setSelectionRange(s+key.length, s+key.length);
+ eqInput.focus();
+};
+});
+
+// نمونه اولیه
+window.onload = ()=>{
+document.getElementById("equation").value = "x^3 - 4*x > 0";
+solveIneq();
+};
+</script>
+</body>
+</html>

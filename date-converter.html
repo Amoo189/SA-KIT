@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تبدیل تاریخ دقیق | SA Apps</title>
+
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#081120;
+      --bg-2:#0d1730;
+      --panel:rgba(255,255,255,.08);
+      --panel-strong:rgba(255,255,255,.12);
+      --text:#eaf2ff;
+      --muted:#a9b7d3;
+      --border:rgba(255,255,255,.10);
+      --accent:#6ea8fe;
+      --accent-2:#8b5cf6;
+      --success:#22c55e;
+      --danger:#ef4444;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --input-bg:rgba(255,255,255,.05);
+    }
+
+    body.light-mode{
+      --bg:#f3f7ff;
+      --bg-2:#eaf1ff;
+      --panel:rgba(255,255,255,.72);
+      --panel-strong:rgba(255,255,255,.86);
+      --text:#182033;
+      --muted:#5f6b85;
+      --border:rgba(24,32,51,.10);
+      --shadow:0 20px 50px rgba(70,88,130,.14);
+      --input-bg:rgba(255,255,255,.8);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+    }
+
+    body{
+      font-family:"VazirmatnLocal",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(110,168,254,.22), transparent 0 28%),
+        radial-gradient(circle at 85% 18%, rgba(139,92,246,.18), transparent 0 24%),
+        radial-gradient(circle at 70% 80%, rgba(110,168,254,.10), transparent 0 26%),
+        linear-gradient(135deg,var(--bg),var(--bg-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    .orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(30px);
+      opacity:.28;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .orb1{
+      width:220px;
+      height:220px;
+      top:-40px;
+      right:-60px;
+      background:#6ea8fe;
+    }
+
+    .orb2{
+      width:240px;
+      height:240px;
+      bottom:-70px;
+      left:-70px;
+      background:#8b5cf6;
+    }
+
+    .theme-toggle{
+      position:fixed;
+      top:18px;
+      left:18px;
+      z-index:20;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      backdrop-filter:blur(14px);
+      border-radius:14px;
+      padding:10px 14px;
+      font-family:inherit;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+    }
+
+    .theme-toggle:hover{transform:translateY(-2px);background:var(--panel-strong)}
+
+    .wrap{
+      width:min(920px,100%);
+      position:relative;
+      z-index:1;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:30px;
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:18px 20px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      font-size:16px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 25px rgba(110,168,254,.28);
+      flex-shrink:0;
+    }
+
+    .brand-text h1{
+      margin:0;
+      font-size:20px;
+      line-height:1.3;
+    }
+
+    .brand-text p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .content{padding:24px}
+
+    .hero{margin-bottom:20px}
+
+    .hero h2{
+      margin:0 0 8px;
+      font-size:26px;
+      line-height:1.4;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.9;
+      font-size:14px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:18px;
+      min-width:0;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:16px;
+    }
+
+    .date-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .type-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .input,.select{
+      width:100%;
+      min-width:0;
+      max-width:100%;
+      padding:13px 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:var(--input-bg);
+      color:var(--text);
+      font-family:inherit;
+      font-size:15px;
+      outline:none;
+      transition:.2s ease;
+      appearance:none;
+    }
+
+    .input::placeholder{color:var(--muted)}
+
+    .input:focus,.select:focus{
+      border-color:rgba(110,168,254,.55);
+      box-shadow:0 0 0 4px rgba(110,168,254,.12);
+      background:rgba(255,255,255,.08);
+    }
+
+    .select-wrap{position:relative}
+
+    .select-wrap::after{
+      content:"⌄";
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--muted);
+      pointer-events:none;
+      font-size:14px;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .actions.secondary{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin-top:12px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:13px 16px;
+      font-family:inherit;
+      font-size:15px;
+      cursor:pointer;
+      transition:.22s ease;
+    }
+
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 14px 24px rgba(110,168,254,.22);
+    }
+
+    .btn-secondary{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+    }
+
+    .btn-success{
+      color:#fff;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+    }
+
+    .btn:hover{transform:translateY(-2px)}
+
+    .result{
+      display:grid;
+      gap:12px;
+    }
+
+    .result-box{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .result-label{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .result-main{
+      font-size:22px;
+      font-weight:700;
+      line-height:1.9;
+      word-break:break-word;
+    }
+
+    .result-sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.8;
+    }
+
+    .meta-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .meta-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .meta-item span:first-child{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .meta-item strong{
+      font-size:14px;
+      text-align:left;
+    }
+
+    .hint{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.9;
+    }
+
+    .status{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:20px;
+    }
+
+    @media (max-width:860px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:700px){
+      .content{padding:18px}
+      .hero h2{font-size:22px}
+      .actions,.actions.secondary{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:600px){
+      body{
+        padding:16px;
+        align-items:flex-start;
+      }
+
+      .theme-toggle{
+        top:12px;
+        left:12px;
+        padding:9px 12px;
+        font-size:13px;
+      }
+
+      .panel{border-radius:24px}
+      .topbar{padding:16px}
+      .brand-text h1{font-size:18px}
+      .hero h2{font-size:20px}
+      .date-grid,.type-grid{
+        grid-template-columns:1fr;
+      }
+      .result-main{font-size:18px}
+      .meta-item{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <button class="theme-toggle" id="themeToggle">تغییر تم</button>
+
+  <main class="wrap">
+    <section class="panel">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">SA</div>
+          <div class="brand-text">
+            <h1>برنامه‌های SA</h1>
+            <p>تبدیل تاریخ دقیق و کامل با پشتیبانی از شمسی، میلادی و قمری</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="hero">
+          <h2>تبدیل تاریخ دقیق</h2>
+          <p>
+            تاریخ را وارد کن، نوع مبدا و مقصد را انتخاب کن و نتیجه دقیق به‌همراه
+            روز هفته، فرمت استاندارد و امکان کپی دریافت کن.
+          </p>
+        </div>
+
+        <div class="layout">
+          <div class="card">
+            <h3 class="section-title">ورود تاریخ</h3>
+
+            <div class="date-grid">
+              <input id="year" class="input" type="number" placeholder="سال" inputmode="numeric">
+              <input id="month" class="input" type="number" placeholder="ماه" inputmode="numeric">
+              <input id="day" class="input" type="number" placeholder="روز" inputmode="numeric">
+            </div>
+
+            <div class="type-grid">
+              <div class="select-wrap">
+                <select id="fromType" class="select">
+                  <option value="jalali">از: شمسی</option>
+                  <option value="gregorian">از: میلادی</option>
+                  <option value="islamic">از: قمری</option>
+                </select>
+              </div>
+
+              <div class="select-wrap">
+                <select id="toType" class="select">
+                  <option value="gregorian">به: میلادی</option>
+                  <option value="jalali">به: شمسی</option>
+                  <option value="islamic">به: قمری</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" id="convertBtn">تبدیل تاریخ</button>
+              <button class="btn btn-secondary" id="swapBtn">جابجایی مبدا و مقصد</button>
+            </div>
+
+            <div class="actions secondary">
+              <button class="btn btn-success" id="todayBtn">قرار دادن تاریخ امروز</button>
+              <button class="btn btn-secondary" id="copyBtn">کپی نتیجه</button>
+            </div>
+
+            <div class="status" id="statusText"></div>
+
+            <div class="hint">
+              برای تاریخ قمری، محاسبه بر اساس الگوریتم تقویم اسلامی محاسباتی انجام می‌شود.
+            </div>
+          </div>
+
+          <div class="card result">
+            <div class="result-box">
+              <div class="result-label">نتیجه تبدیل</div>
+              <div class="result-main" id="resultMain">هنوز تبدیلی انجام نشده است</div>
+              <div class="result-sub" id="resultSub">سال / ماه / روزِ تبدیل‌شده اینجا نمایش داده می‌شود.</div>
+            </div>
+
+            <div class="meta-list">
+              <div class="meta-item">
+                <span>نوع تاریخ مقصد</span>
+                <strong id="targetTypeLabel">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <span>روز هفته</span>
+                <strong id="weekdayLabel">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <span>فرمت استاندارد</span>
+                <strong id="standardLabel">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <span>تاریخ میلادی متناظر</span>
+                <strong id="gregorianMirror">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <span>تاریخ شمسی متناظر</span>
+                <strong id="jalaliMirror">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <span>تاریخ قمری متناظر</span>
+                <strong id="islamicMirror">—</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+
+    const yearInput = document.getElementById("year");
+    const monthInput = document.getElementById("month");
+    const dayInput = document.getElementById("day");
+
+    const fromType = document.getElementById("fromType");
+    const toType = document.getElementById("toType");
+
+    const convertBtn = document.getElementById("convertBtn");
+    const swapBtn = document.getElementById("swapBtn");
+    const todayBtn = document.getElementById("todayBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    const resultMain = document.getElementById("resultMain");
+    const resultSub = document.getElementById("resultSub");
+    const targetTypeLabel = document.getElementById("targetTypeLabel");
+    const weekdayLabel = document.getElementById("weekdayLabel");
+    const standardLabel = document.getElementById("standardLabel");
+    const gregorianMirror = document.getElementById("gregorianMirror");
+    const jalaliMirror = document.getElementById("jalaliMirror");
+    const islamicMirror = document.getElementById("islamicMirror");
+    const statusText = document.getElementById("statusText");
+
+    const typeNames = {
+      gregorian: "میلادی",
+      jalali: "شمسی",
+      islamic: "قمری"
+    };
+
+    const weekdayNames = [
+      "یکشنبه",
+      "دوشنبه",
+      "سه‌شنبه",
+      "چهارشنبه",
+      "پنجشنبه",
+      "جمعه",
+      "شنبه"
+    ];
+
+    function applyTheme(theme){
+      if(theme === "light"){
+        body.classList.add("light-mode");
+      }else{
+        body.classList.remove("light-mode");
+      }
+    }
+
+    function toggleTheme(){
+      const nextTheme = body.classList.contains("light-mode") ? "dark" : "light";
+      localStorage.setItem("sa-date-theme", nextTheme);
+      applyTheme(nextTheme);
+    }
+
+    applyTheme(localStorage.getItem("sa-date-theme") || "dark");
+    themeToggle.addEventListener("click", toggleTheme);
+
+    function pad(num){
+      return String(num).padStart(2,"0");
+    }
+
+    function formatDate(y,m,d){
+      return `${y}/${pad(m)}/${pad(d)}`;
+    }
+
+    function setStatus(text){
+      statusText.textContent = text || "";
+    }
+
+    function updateResultUI(targetType, resultDate, weekdayIndex, gDate, jDate, iDate){
+      resultMain.textContent = formatDate(resultDate.y, resultDate.m, resultDate.d);
+      resultSub.textContent = `تاریخ واردشده با موفقیت به ${typeNames[targetType]} تبدیل شد.`;
+      targetTypeLabel.textContent = typeNames[targetType];
+      weekdayLabel.textContent = weekdayNames[weekdayIndex];
+      standardLabel.textContent = formatDate(resultDate.y, resultDate.m, resultDate.d);
+      gregorianMirror.textContent = formatDate(gDate.y, gDate.m, gDate.d);
+      jalaliMirror.textContent = formatDate(jDate.y, jDate.m, jDate.d);
+      islamicMirror.textContent = formatDate(iDate.y, iDate.m, iDate.d);
+    }
+
+    function clearResult(message){
+      resultMain.textContent = message;
+      resultSub.textContent = "لطفاً ورودی‌ها را بررسی کن.";
+      targetTypeLabel.textContent = "—";
+      weekdayLabel.textContent = "—";
+      standardLabel.textContent = "—";
+      gregorianMirror.textContent = "—";
+      jalaliMirror.textContent = "—";
+      islamicMirror.textContent = "—";
+    }
+
+    function div(a,b){
+      return Math.floor(a/b);
+    }
+
+    function mod(a,b){
+      return a - Math.floor(a/b) * b;
+    }
+
+    function gregorianToJD(gy, gm, gd){
+      const a = div(14 - gm, 12);
+      const y = gy + 4800 - a;
+      const m = gm + 12 * a - 3;
+      return gd + div(153 * m + 2, 5) + 365 * y + div(y,4) - div(y,100) + div(y,400) - 32045;
+    }
+
+    function jdToGregorian(jd){
+      let a = jd + 32044;
+      let b = div(4 * a + 3, 146097);
+      let c = a - div(146097 * b, 4);
+      let d = div(4 * c + 3, 1461);
+      let e = c - div(1461 * d, 4);
+      let m = div(5 * e + 2, 153);
+
+      let day = e - div(153 * m + 2, 5) + 1;
+      let month = m + 3 - 12 * div(m, 10);
+      let year = 100 * b + d - 4800 + div(m, 10);
+
+      return { y: year, m: month, d: day };
+    }
+
+    function jalaliToJD(jy, jm, jd){
+      const epBase = jy - (jy >= 0 ? 474 : 473);
+      const epYear = 474 + mod(epBase, 2820);
+      return jd
+        + (jm <= 7 ? (jm - 1) * 31 : ((jm - 1) * 30 + 6))
+        + div((epYear * 682) - 110, 2816)
+        + (epYear - 1) * 365
+        + div(epBase, 2820) * 1029983
+        + (1948320 - 1);
+    }
+
+    function jdToJalali(jd){
+      jd = Math.floor(jd);
+      const depoch = jd - jalaliToJD(475,1,1);
+      const cycle = div(depoch, 1029983);
+      const cyear = mod(depoch, 1029983);
+      let ycycle;
+
+      if(cyear === 1029982){
+        ycycle = 2820;
+      }else{
+        const aux1 = div(cyear, 366);
+        const aux2 = mod(cyear, 366);
+        ycycle = div(2134 * aux1 + 2816 * aux2 + 2815, 1028522) + aux1 + 1;
+      }
+
+      let jy = ycycle + 2820 * cycle + 474;
+      if(jy <= 0) jy--;
+
+      const yday = jd - jalaliToJD(jy,1,1) + 1;
+      let jm, jdDay;
+
+      if(yday <= 186){
+        jm = Math.ceil(yday / 31);
+        jdDay = yday - (jm - 1) * 31;
+      }else{
+        jm = Math.ceil((yday - 186) / 30) + 6;
+        jdDay = yday - 186 - (jm - 7) * 30;
+      }
+
+      return { y: jy, m: jm, d: jdDay };
+    }
+
+    const ISLAMIC_EPOCH = 1948439;
+
+    function islamicToJD(iy, im, id){
+      return id
+        + Math.ceil(29.5 * (im - 1))
+        + (iy - 1) * 354
+        + div(3 + 11 * iy, 30)
+        + ISLAMIC_EPOCH
+        - 1;
+    }
+
+    function jdToIslamic(jd){
+      jd = Math.floor(jd);
+      const iy = div(30 * (jd - ISLAMIC_EPOCH) + 10646, 10631);
+      const im = Math.min(12, Math.ceil((jd - 29 - islamicToJD(iy,1,1)) / 29.5) + 1);
+      const id = jd - islamicToJD(iy, im, 1) + 1;
+      return { y: iy, m: im, d: id };
+    }
+
+    function isGregorianLeap(year){
+      return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    }
+
+    function gregorianMonthLength(year, month){
+      const lengths = [31, isGregorianLeap(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      return lengths[month - 1];
+    }
+
+    function isJalaliLeap(jy){
+      const a = jy > 0 ? jy - 474 : jy - 473;
+      const b = mod(a, 2820) + 474;
+      return mod((b + 38) * 682, 2816) < 682;
+    }
+
+    function jalaliMonthLength(year, month){
+      if(month <= 6) return 31;
+      if(month <= 11) return 30;
+      return isJalaliLeap(year) ? 30 : 29;
+    }
+
+    function islamicLeap(year){
+      return ((11 * year) + 14) % 30 < 11;
+    }
+
+    function islamicMonthLength(year, month){
+      if(month % 2 === 1) return 30;
+      if(month !== 12) return 29;
+      return islamicLeap(year) ? 30 : 29;
+    }
+
+    function validateDate(type, y, m, d){
+      if(!Number.isInteger(y) || !Number.isInteger(m) || !Number.isInteger(d)) return false;
+      if(m < 1 || m > 12 || d < 1) return false;
+
+      let maxDay = 31;
+
+      if(type === "gregorian"){
+        maxDay = gregorianMonthLength(y, m);
+      }else if(type === "jalali"){
+        maxDay = jalaliMonthLength(y, m);
+      }else if(type === "islamic"){
+        maxDay = islamicMonthLength(y, m);
+      }
+
+      return d <= maxDay;
+    }
+
+    function toJD(type, y, m, d){
+      if(type === "gregorian") return gregorianToJD(y, m, d);
+      if(type === "jalali") return jalaliToJD(y, m, d);
+      if(type === "islamic") return islamicToJD(y, m, d);
+      return null;
+    }
+
+    function fromJD(type, jd){
+      if(type === "gregorian") return jdToGregorian(jd);
+      if(type === "jalali") return jdToJalali(jd);
+      if(type === "islamic") return jdToIslamic(jd);
+      return null;
+    }
+
+    function getWeekdayFromJD(jd){
+      const g = jdToGregorian(jd);
+      const jsDate = new Date(g.y, g.m - 1, g.d);
+      return jsDate.getDay();
+    }
+
+    function convertDate(){
+      setStatus("");
+
+      const y = parseInt(yearInput.value, 10);
+      const m = parseInt(monthInput.value, 10);
+      const d = parseInt(dayInput.value, 10);
+      const sourceType = fromType.value;
+      const targetType = toType.value;
+
+      if(!validateDate(sourceType, y, m, d)){
+        clearResult("تاریخ واردشده معتبر نیست");
+        setStatus("لطفاً سال، ماه و روز را مطابق نوع تاریخ وارد کن.");
+        return;
+      }
+
+      const jd = toJD(sourceType, y, m, d);
+      if(!jd){
+        clearResult("خطا در تبدیل تاریخ");
+        setStatus("امکان پردازش این ورودی وجود نداشت.");
+        return;
+      }
+
+      const targetDate = fromJD(targetType, jd);
+      const gDate = jdToGregorian(jd);
+      const jDate = jdToJalali(jd);
+      const iDate = jdToIslamic(jd);
+      const weekdayIndex = getWeekdayFromJD(jd);
+
+      updateResultUI(targetType, targetDate, weekdayIndex, gDate, jDate, iDate);
+      setStatus("تبدیل با موفقیت انجام شد.");
+    }
+
+    function swapTypes(){
+      const temp = fromType.value;
+      fromType.value = toType.value;
+      toType.value = temp;
+      setStatus("مبدا و مقصد جابجا شدند.");
+    }
+
+    function setToday(){
+      const now = new Date();
+      const gy = now.getFullYear();
+      const gm = now.getMonth() + 1;
+      const gd = now.getDate();
+
+      let sourceDate;
+
+      if(fromType.value === "gregorian"){
+        sourceDate = { y: gy, m: gm, d: gd };
+      }else{
+        const jd = gregorianToJD(gy, gm, gd);
+        sourceDate = fromJD(fromType.value, jd);
+      }
+
+      yearInput.value = sourceDate.y;
+      monthInput.value = sourceDate.m;
+      dayInput.value = sourceDate.d;
+      setStatus("تاریخ امروز بر اساس نوع مبدا قرار داده شد.");
+    }
+
+    async function copyResult(){
+      const text = [
+        `نتیجه: ${resultMain.textContent}`,
+        `نوع مقصد: ${targetTypeLabel.textContent}`,
+        `روز هفته: ${weekdayLabel.textContent}`,
+        `میلادی: ${gregorianMirror.textContent}`,
+        `شمسی: ${jalaliMirror.textContent}`,
+        `قمری: ${islamicMirror.textContent}`
+      ].join("\n");
+
+      try{
+        await navigator.clipboard.writeText(text);
+        setStatus("نتیجه کپی شد.");
+      }catch{
+        setStatus("کپی خودکار ممکن نبود.");
+      }
+    }
+
+    convertBtn.addEventListener("click", convertDate);
+    swapBtn.addEventListener("click", swapTypes);
+    todayBtn.addEventListener("click", setToday);
+    copyBtn.addEventListener("click", copyResult);
+
+    [yearInput, monthInput, dayInput].forEach(input => {
+      input.addEventListener("keydown", (e) => {
+        if(e.key === "Enter") convertDate();
+      });
+    });
+
+    setToday();
+    convertDate();
+  </script>
+</body>
+</html>

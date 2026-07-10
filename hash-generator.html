@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تولیدکننده هش</title>
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --bg:#0b1220;
+      --bg2:#0f172a;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --glass:blur(14px);
+      --radius:24px;
+
+      --bg-light:#f0f4f9;
+      --bg2-light:#dbe2ee;
+      --text-light:#1a202c;
+      --muted-light:#6b7280;
+      --border-light:rgba(0,0,0,.12);
+      --shadow-light:0 10px 30px rgba(0,0,0,.12);
+    }
+
+    body.light-mode{
+      --bg:var(--bg-light);
+      --bg2:var(--bg2-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+      --border:var(--border-light);
+      --shadow:var(--shadow-light);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.12), transparent 34%),
+        linear-gradient(180deg, #e2e8f0, #f8fafc 45%, #e2e8f0 100%);
+    }
+
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"VazirmatnLocal", sans-serif;
+      background:#0b1220;
+      background-image:
+        radial-gradient(circle at top left, rgba(110,168,254,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.18), transparent 34%);
+      background-attachment:fixed;
+      color:var(--text);
+      transition:background .3s ease,color .3s ease;
+    }
+
+    .container{
+      width:min(980px,100%);
+      margin:auto;
+      padding:20px;
+      position:relative;
+    }
+
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(30px);
+      opacity:.35;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .orb1{
+      width:170px;
+      height:170px;
+      background:linear-gradient(135deg,var(--accent),transparent);
+      top:-30px;
+      right:10px;
+    }
+
+    .orb2{
+      width:200px;
+      height:200px;
+      background:linear-gradient(135deg,var(--accent2),transparent);
+      bottom:-40px;
+      left:0;
+    }
+
+    .panel{
+      position:relative;
+      z-index:1;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      backdrop-filter:var(--glass);
+      -webkit-backdrop-filter:var(--glass);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    .light-mode .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:24px;
+    }
+
+    .title-wrap h1{
+      margin:0;
+      font-size:24px;
+    }
+
+    .title-wrap p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:14px;
+      padding:11px 16px;
+      cursor:pointer;
+      font-family:inherit;
+      text-decoration:none;
+      transition:.25s ease;
+    }
+
+    .light-mode .btn{
+      background:rgba(0,0,0,.05);
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(0,0,0,.16);
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg, rgba(110,168,254,.20), rgba(139,92,246,.18));
+      border-color:rgba(110,168,254,.28);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:22px;
+    }
+
+    .light-mode .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.1));
+    }
+
+    .label{
+      display:block;
+      margin-bottom:10px;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    textarea, select, input{
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:16px;
+      padding:14px 16px;
+      font-family:inherit;
+      font-size:14px;
+      outline:none;
+      transition:.25s ease;
+    }
+
+    .light-mode textarea,
+    .light-mode select,
+    .light-mode input{
+      background:rgba(0,0,0,.05);
+    }
+
+    textarea{
+      min-height:180px;
+      resize:vertical;
+      line-height:1.9;
+    }
+
+    textarea:focus, select:focus, input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 4px rgba(110,168,254,.10);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .result-box{
+      min-height:180px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      color:var(--text);
+      word-break:break-all;
+      line-height:1.9;
+      font-size:14px;
+    }
+
+    .light-mode .result-box{
+      background:rgba(0,0,0,.04);
+    }
+
+    .hint{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.9;
+    }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (max-width:820px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:640px){
+      .panel{
+        padding:18px;
+        border-radius:24px;
+      }
+
+      .row{
+        grid-template-columns:1fr;
+      }
+
+      .title-wrap h1{
+        font-size:21px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <section class="panel">
+      <div class="topbar">
+        <div class="title-wrap">
+          <h1>تولیدکننده هش</h1>
+          <p>تولید هش برای متن با استفاده از الگوریتم‌های SHA</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn" onclick="toggleTheme()">تغییر تم</button>
+          <a class="btn primary" href="index.html">بازگشت به لانچر</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <label class="label" for="inputText">متن ورودی</label>
+          <textarea id="inputText" placeholder="متن موردنظر را وارد کنید..."></textarea>
+
+          <div class="row" style="margin-top:16px;">
+            <div>
+              <label class="label" for="algorithm">الگوریتم</label>
+              <select id="algorithm">
+                <option value="SHA-1">SHA-1</option>
+                <option value="SHA-256" selected>SHA-256</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-512">SHA-512</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="label" for="encoding">نمایش خروجی</label>
+              <select id="encoding">
+                <option value="hex" selected>Hex</option>
+                <option value="base64">Base64</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions" style="margin-top:16px;">
+            <button class="btn primary" onclick="generateHash()">تولید هش</button>
+            <button class="btn" onclick="copyResult()">کپی خروجی</button>
+            <button class="btn" onclick="clearAll()">پاک کردن</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <label class="label">خروجی هش</label>
+          <div id="result" class="result-box">هنوز خروجی تولید نشده است.</div>
+          <div class="hint">
+            توجه: در Web Crypto الگوریتم MD5 پشتیبانی نمی‌شود. برای امنیت بهتر از SHA-256 یا SHA-512 استفاده کنید.
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        این ابزار به صورت محلی در مرورگر اجرا می‌شود و متن شما به سرور ارسال نمی‌شود.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const THEME_KEY = "sa-apps-theme";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+    });
+
+    function applyTheme(theme){
+      document.body.classList.remove("dark-mode", "light-mode");
+      document.body.classList.add(`${theme}-mode`);
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    function toggleTheme(){
+      const current = document.body.classList.contains("light-mode") ? "light" : "dark";
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+
+    async function generateHash(){
+      const input = document.getElementById("inputText").value;
+      const algorithm = document.getElementById("algorithm").value;
+      const encoding = document.getElementById("encoding").value;
+      const resultEl = document.getElementById("result");
+
+      if(!input.trim()){
+        resultEl.textContent = "لطفاً ابتدا یک متن وارد کنید.";
+        return;
+      }
+
+      try{
+        const encoder = new TextEncoder();
+        const data = encoder.encode(input);
+        const hashBuffer = await crypto.subtle.digest(algorithm, data);
+        const bytes = Array.from(new Uint8Array(hashBuffer));
+
+        let output = "";
+
+        if(encoding === "hex"){
+          output = bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+        } else {
+          let binary = "";
+          bytes.forEach(b => binary += String.fromCharCode(b));
+          output = btoa(binary);
+        }
+
+        resultEl.textContent = output;
+      } catch(error){
+        resultEl.textContent = "خطا در تولید هش.";
+      }
+    }
+
+    function copyResult(){
+      const text = document.getElementById("result").textContent.trim();
+      if(!text || text === "هنوز خروجی تولید نشده است." || text === "لطفاً ابتدا یک متن وارد کنید."){
+        return;
+      }
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btns = document.querySelectorAll(".actions .btn");
+        const copyBtn = [...btns].find(btn => btn.textContent.includes("کپی"));
+        if(copyBtn){
+          const original = copyBtn.textContent;
+          copyBtn.textContent = "کپی شد!";
+          setTimeout(() => copyBtn.textContent = original, 1400);
+        }
+      });
+    }
+
+    function clearAll(){
+      document.getElementById("inputText").value = "";
+      document.getElementById("result").textContent = "هنوز خروجی تولید نشده است.";
+      document.getElementById("algorithm").value = "SHA-256";
+      document.getElementById("encoding").value = "hex";
+    }
+  </script>
+</body>
+</html>
