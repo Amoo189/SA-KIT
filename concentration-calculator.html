@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>محاسبه‌گر غلظت محلول</title>
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <style>
+        @font-face {
+            font-family: VazirmatnLocal;
+            src: url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: VazirmatnLocal;
+            src: url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+            font-weight: 700;
+            font-display: swap;
+        }
+        :root {
+            --bg: #0b1220;
+            --bg2: #0f172a;
+            --text: #e8eefc;
+            --muted: #9fb0d0;
+            --accent: #6ea8fe;
+            --accent2: #8b5cf6;
+            --border: rgba(255, 255, 255, .08);
+            --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+            --glass: blur(14px);
+            --radius: 24px;
+            --card-bg: rgba(255, 255, 255, .04);
+            --bg-light: #eef2f7;
+            --bg2-light: #d5dee8;
+            --text-light: #1a202c;
+            --muted-light: #5a6a7e;
+            --border-light: rgba(0, 0, 0, .1);
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, .08);
+            --success: #4ade80;
+            --danger: #f87171;
+            --warning: #fbbf24;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            font-family: VazirmatnLocal, sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at top left, rgba(110, 168, 254, .2), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(139, 92, 246, .18), transparent 34%);
+            background-attachment: fixed;
+            color: var(--text);
+            transition: all .3s;
+            padding: 20px;
+        }
+        body.light-mode {
+            background: var(--bg-light);
+            background-image: radial-gradient(circle at top left, rgba(110, 168, 254, .08), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(139, 92, 246, .06), transparent 34%);
+        }
+        .container {
+            width: min(800px, 100%);
+            margin: auto;
+            position: relative;
+        }
+        .panel {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+            border: 1px solid var(--border);
+            backdrop-filter: var(--glass);
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            transition: all .3s;
+        }
+        body.light-mode .panel {
+            background: rgba(255, 255, 255, .75);
+            border-color: rgba(0, 0, 0, .08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            transition: all .3s;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, .04);
+        }
+        body.light-mode .back-link {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--muted-light);
+        }
+        .back-link:hover {
+            border-color: var(--accent);
+            color: var(--text);
+            transform: translateX(-4px);
+        }
+        body.light-mode .back-link:hover {
+            color: var(--text-light);
+        }
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(110, 168, 254, .28), rgba(139, 92, 246, .24));
+            border: 1px solid rgba(255, 255, 255, .1);
+            font-size: 28px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+        body.light-mode .tool-icon {
+            background: linear-gradient(135deg, rgba(110, 168, 254, .15), rgba(139, 92, 246, .1));
+            border-color: rgba(0, 0, 0, .06);
+        }
+        .tool-title h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .tool-title p {
+            color: var(--muted);
+            font-size: 14px;
+            margin: 4px 0 0;
+        }
+        body.light-mode .tool-title p {
+            color: var(--muted-light);
+        }
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .mode-tab {
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .04);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        body.light-mode .mode-tab {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--muted-light);
+        }
+        .mode-tab:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .mode-tab:hover {
+            color: var(--text-light);
+        }
+        .mode-tab.active {
+            background: rgba(110, 168, 254, .15);
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .mode-tab.active {
+            background: rgba(110, 168, 254, .1);
+            color: var(--text-light);
+        }
+        .mode-content {
+            display: none;
+            animation: fadeUp .4s ease both;
+        }
+        .mode-content.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        body.light-mode .form-group label {
+            color: var(--muted-light);
+        }
+        .form-group .hint {
+            font-size: 12px;
+            color: var(--muted);
+            opacity: .7;
+            margin-top: 4px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media(max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .05);
+            backdrop-filter: var(--glass);
+            border-radius: 14px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+            transition: all .3s;
+            outline: none;
+        }
+        body.light-mode input,
+        body.light-mode select {
+            background: rgba(255, 255, 255, .8);
+            border-color: rgba(0, 0, 0, .1);
+            color: var(--text-light);
+        }
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, .08);
+        }
+        body.light-mode input:focus,
+        body.light-mode select:focus {
+            background: rgba(255, 255, 255, .95);
+        }
+        input::placeholder {
+            color: var(--muted);
+            opacity: .5;
+        }
+        body.light-mode input::placeholder {
+            color: #999;
+        }
+        .calc-btn {
+            padding: 14px 32px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .3s;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(110, 168, 254, .3);
+        }
+        .calc-btn:active {
+            transform: scale(.97);
+        }
+        .result-box {
+            margin-top: 24px;
+            padding: 24px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .04);
+            transition: all .3s;
+            display: none;
+        }
+        body.light-mode .result-box {
+            background: rgba(0, 0, 0, .03);
+            border-color: rgba(0, 0, 0, .08);
+        }
+        .result-box.show {
+            display: block;
+            animation: fadeUp .4s ease both;
+        }
+        .result-box .result-title {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+        body.light-mode .result-box .result-title {
+            color: var(--muted-light);
+        }
+        .result-box .result-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            word-break: break-all;
+        }
+        .result-box .result-detail {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        body.light-mode .result-box .result-detail {
+            color: var(--muted-light);
+            border-top-color: rgba(0, 0, 0, .08);
+        }
+        .result-box .result-detail span {
+            color: var(--text);
+            font-weight: 600;
+        }
+        body.light-mode .result-box .result-detail span {
+            color: var(--text-light);
+        }
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .result-actions button {
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .04);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        body.light-mode .result-actions button {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--muted-light);
+        }
+        .result-actions button:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .result-actions button:hover {
+            color: var(--text-light);
+        }
+        .result-actions button.copied {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .quick-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .quick-presets button {
+            padding: 4px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .03);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+        body.light-mode .quick-presets button {
+            background: rgba(0, 0, 0, .03);
+            border-color: rgba(0, 0, 0, .06);
+            color: var(--muted-light);
+        }
+        .quick-presets button:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .quick-presets button:hover {
+            color: var(--text-light);
+        }
+        .error-text {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+        .error-text.show {
+            display: block;
+        }
+        .theme-switcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .05);
+            backdrop-filter: var(--glass);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 20px;
+            display: grid;
+            place-items: center;
+            transition: all .3s;
+            z-index: 100;
+        }
+        body.light-mode .theme-switcher {
+            background: rgba(255, 255, 255, .7);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--text-light);
+        }
+        .theme-switcher:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+        }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, .85);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 16px;
+            font-size: 15px;
+            z-index: 99999;
+            opacity: 0;
+            transition: all .4s cubic-bezier(.2, .8, .2, 1);
+            border: 1px solid rgba(255, 255, 255, .1);
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+            font-family: VazirmatnLocal, sans-serif;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        @media(max-width: 640px) {
+            .panel {
+                padding: 18px;
+                border-radius: 24px;
+            }
+            .tool-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .tool-title h1 {
+                font-size: 20px;
+            }
+            .result-box .result-value {
+                font-size: 22px;
+            }
+            .theme-switcher {
+                bottom: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="panel">
+            <a href="index.html" class="back-link"><i class="fa fa-arrow-right"></i> بازگشت به لانچر</a>
+
+            <div class="tool-header">
+                <div class="tool-icon"><i class="fa fa-flask"></i></div>
+                <div class="tool-title">
+                    <h1>محاسبه‌گر غلظت محلول</h1>
+                    <p>محاسبه غلظت مولی، درصدی و رقت‌سازی</p>
+                </div>
+            </div>
+
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="molarity"><i class="fa fa-percent"></i> غلظت مولی</button>
+                <button class="mode-tab" data-mode="percent"><i class="fa fa-percent"></i> غلظت درصدی</button>
+                <button class="mode-tab" data-mode="dilution"><i class="fa fa-water"></i> رقت‌سازی</button>
+            </div>
+
+            <!-- حالت غلظت مولی -->
+            <div class="mode-content active" id="mode-molarity">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>مقدار ماده حل‌شونده (مول)</label>
+                        <input type="number" id="mol-solute" placeholder="مثلاً 0.5" step="any" min="0" />
+                        <div class="hint">تعداد مول ماده حل شده</div>
+                    </div>
+                    <div class="form-group">
+                        <label>حجم محلول (لیتر)</label>
+                        <input type="number" id="vol-solution" placeholder="مثلاً 2" step="any" min="0" />
+                        <div class="hint">حجم نهایی محلول بر حسب لیتر</div>
+                    </div>
+                </div>
+                <div class="quick-presets">
+                    <span style="font-size:12px;color:var(--muted);margin-left:8px;">پیش‌تنظیم:</span>
+                    <button onclick="setPreset('molarity',0.5,1)">NaCl 0.5M در 1L</button>
+                    <button onclick="setPreset('molarity',0.1,0.5)">HCl 0.1M در 0.5L</button>
+                    <button onclick="setPreset('molarity',1,2)">H₂SO₄ 1M در 2L</button>
+                </div>
+                <div class="error-text" id="error-molarity">لطفاً مقادیر معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="calcMolarity()"><i class="fa fa-calculator"></i> محاسبه غلظت مولی</button>
+                <div class="result-box" id="result-molarity">
+                    <div class="result-title">نتیجه</div>
+                    <div class="result-value" id="molarity-result">--</div>
+                    <div class="result-detail">
+                        <span id="molarity-detail">جزئیات محاسبه</span>
+                    </div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('molarity-result','molarity-copy-btn')" id="molarity-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- حالت غلظت درصدی -->
+            <div class="mode-content" id="mode-percent">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>جرم ماده حل‌شونده (گرم)</label>
+                        <input type="number" id="mass-solute" placeholder="مثلاً 25" step="any" min="0" />
+                        <div class="hint">جرم ماده حل شده بر حسب گرم</div>
+                    </div>
+                    <div class="form-group">
+                        <label>جرم کل محلول (گرم)</label>
+                        <input type="number" id="mass-solution" placeholder="مثلاً 100" step="any" min="0" />
+                        <div class="hint">جرم کل محلول بر حسب گرم</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>نوع درصد</label>
+                    <select id="percent-type">
+                        <option value="w/w">درصد جرمی (w/w)</option>
+                        <option value="w/v">درصد حجمی-جرمی (w/v)</option>
+                        <option value="v/v">درصد حجمی (v/v)</option>
+                    </select>
+                </div>
+                <div class="quick-presets">
+                    <span style="font-size:12px;color:var(--muted);margin-left:8px;">پیش‌تنظیم:</span>
+                    <button onclick="setPreset('percent',5,100)">محلول 5% نمک</button>
+                    <button onclick="setPreset('percent',10,200)">محلول 10% شکر</button>
+                    <button onclick="setPreset('percent',15,50)">محلول 15% اسید</button>
+                </div>
+                <div class="error-text" id="error-percent">لطفاً مقادیر معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="calcPercent()"><i class="fa fa-calculator"></i> محاسبه غلظت درصدی</button>
+                <div class="result-box" id="result-percent">
+                    <div class="result-title">نتیجه</div>
+                    <div class="result-value" id="percent-result">--</div>
+                    <div class="result-detail">
+                        <span id="percent-detail">جزئیات محاسبه</span>
+                    </div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('percent-result','percent-copy-btn')" id="percent-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- حالت رقت‌سازی -->
+            <div class="mode-content" id="mode-dilution">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>غلظت اولیه (M)</label>
+                        <input type="number" id="c1" placeholder="مثلاً 2" step="any" min="0" />
+                        <div class="hint">غلظت محلول اولیه</div>
+                    </div>
+                    <div class="form-group">
+                        <label>حجم اولیه (mL)</label>
+                        <input type="number" id="v1" placeholder="مثلاً 50" step="any" min="0" />
+                        <div class="hint">حجم محلول اولیه</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>غلظت نهایی (M)</label>
+                        <input type="number" id="c2" placeholder="مثلاً 0.5" step="any" min="0" />
+                        <div class="hint">غلظت مورد نظر پس از رقت</div>
+                    </div>
+                    <div class="form-group">
+                        <label>حجم نهایی (mL)</label>
+                        <input type="number" id="v2" placeholder="مثلاً 200" step="any" min="0" />
+                        <div class="hint">حجم نهایی پس از رقت</div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-bottom:12px;font-size:13px;color:var(--muted);">
+                    <i class="fa fa-info-circle"></i> برای محاسبه، دو فیلد را پر کنید (C₁,V₁) یا (C₁,C₂) یا (V₁,V₂) و غیره.
+                </div>
+                <div class="error-text" id="error-dilution">لطفاً حداقل دو مقدار معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="calcDilution()"><i class="fa fa-calculator"></i> محاسبه رقت</button>
+                <div class="result-box" id="result-dilution">
+                    <div class="result-title">نتیجه رقت‌سازی</div>
+                    <div class="result-value" id="dilution-result">--</div>
+                    <div class="result-detail">
+                        <span id="dilution-detail">جزئیات محاسبه</span>
+                    </div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('dilution-result','dilution-copy-btn')" id="dilution-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم">
+        <i class="fa fa-moon" id="themeIcon"></i>
+    </button>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ========== Theme ==========
+        function getTheme() {
+            return localStorage.getItem('sa-apps-theme') || 'dark';
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.toggle('light-mode', theme === 'light');
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'light' ? 'fa fa-sun' : 'fa fa-moon';
+            }
+            localStorage.setItem('sa-apps-theme', theme);
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            const theme = isLight ? 'light' : 'dark';
+            applyTheme(theme);
+        }
+
+        // ========== Tabs ==========
+        document.querySelectorAll('.mode-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const mode = this.dataset.mode;
+                document.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('mode-' + mode).classList.add('active');
+                // Hide all results
+                document.querySelectorAll('.result-box').forEach(r => r.classList.remove('show'));
+            });
+        });
+
+        // ========== Toast ==========
+        let toastTimer;
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ========== Copy ==========
+        function copyResult(resultId, btnId) {
+            const el = document.getElementById(resultId);
+            const text = el.textContent;
+            if (!text || text === '--') {
+                showToast('نتیجه‌ای برای کپی وجود ندارد');
+                return;
+            }
+            const btn = document.getElementById(btnId);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.classList.add('copied');
+                    btn.innerHTML = '<i class="fa fa-check"></i> کپی شد';
+                    showToast('نتیجه کپی شد');
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = '<i class="fa fa-copy"></i> کپی';
+                    }, 2000);
+                }).catch(() => fallbackCopy(text, btn));
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                btn.classList.add('copied');
+                btn.innerHTML = '<i class="fa fa-check"></i> کپی شد';
+                showToast('نتیجه کپی شد');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<i class="fa fa-copy"></i> کپی';
+                }, 2000);
+            } catch (e) {
+                showToast('کپی نشد! لطفاً دستی کپی کنید');
+            }
+            document.body.removeChild(ta);
+        }
+
+        // ========== Presets ==========
+        function setPreset(mode, val1, val2) {
+            if (mode === 'molarity') {
+                document.getElementById('mol-solute').value = val1;
+                document.getElementById('vol-solution').value = val2;
+            } else if (mode === 'percent') {
+                document.getElementById('mass-solute').value = val1;
+                document.getElementById('mass-solution').value = val2;
+            }
+            showToast('پیش‌تنظیم اعمال شد');
+        }
+
+        // ========== Molarity ==========
+        function calcMolarity() {
+            const mol = parseFloat(document.getElementById('mol-solute').value);
+            const vol = parseFloat(document.getElementById('vol-solution').value);
+            const err = document.getElementById('error-molarity');
+            if (isNaN(mol) || isNaN(vol) || mol < 0 || vol <= 0) {
+                err.classList.add('show');
+                document.getElementById('result-molarity').classList.remove('show');
+                return;
+            }
+            err.classList.remove('show');
+            const conc = mol / vol;
+            document.getElementById('molarity-result').textContent = conc.toFixed(4) + ' M (mol/L)';
+            document.getElementById('molarity-detail').textContent =
+                mol + ' مول ماده حل‌شونده در ' + vol + ' لیتر محلول → غلظت = ' + conc.toFixed(4) + ' M';
+            document.getElementById('result-molarity').classList.add('show');
+        }
+
+        // ========== Percent ==========
+        function calcPercent() {
+            const massSolute = parseFloat(document.getElementById('mass-solute').value);
+            const massSolution = parseFloat(document.getElementById('mass-solution').value);
+            const type = document.getElementById('percent-type').value;
+            const err = document.getElementById('error-percent');
+            if (isNaN(massSolute) || isNaN(massSolution) || massSolute < 0 || massSolution <= 0 || massSolute > massSolution) {
+                err.classList.add('show');
+                document.getElementById('result-percent').classList.remove('show');
+                return;
+            }
+            err.classList.remove('show');
+            const pct = (massSolute / massSolution) * 100;
+            const typeLabel = { 'w/w': 'درصد جرمی (w/w)', 'w/v': 'درصد حجمی-جرمی (w/v)', 'v/v': 'درصد حجمی (v/v)' } [type];
+            document.getElementById('percent-result').textContent = pct.toFixed(2) + ' %';
+            document.getElementById('percent-detail').textContent =
+                massSolute + ' گرم ماده حل‌شونده در ' + massSolution + ' گرم محلول → ' + typeLabel + ' = ' + pct.toFixed(2) +
+                '%';
+            document.getElementById('result-percent').classList.add('show');
+        }
+
+        // ========== Dilution ==========
+        function calcDilution() {
+            const c1 = parseFloat(document.getElementById('c1').value);
+            const v1 = parseFloat(document.getElementById('v1').value);
+            const c2 = parseFloat(document.getElementById('c2').value);
+            const v2 = parseFloat(document.getElementById('v2').value);
+            const err = document.getElementById('error-dilution');
+            const resultBox = document.getElementById('result-dilution');
+            const resultEl = document.getElementById('dilution-result');
+            const detailEl = document.getElementById('dilution-detail');
+
+            const filled = [c1, v1, c2, v2].filter(v => !isNaN(v) && v >= 0);
+            if (filled.length < 2) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+                return;
+            }
+            err.classList.remove('show');
+
+            let resultText = '';
+            let detailText = '';
+
+            // محاسبه بر اساس فرمول C1*V1 = C2*V2
+            if (!isNaN(c1) && !isNaN(v1) && !isNaN(c2) && !isNaN(v2)) {
+                // همه مقادیر موجود
+                const left = c1 * v1;
+                const right = c2 * v2;
+                if (Math.abs(left - right) < 0.001) {
+                    resultText = '✅ معادله رقت برقرار است';
+                    detailText = c1 + ' × ' + v1 + ' = ' + c2 + ' × ' + v2 + ' → ' + left.toFixed(2) + ' = ' + right.toFixed(2);
+                } else {
+                    resultText = '⚠️ معادله رقت برقرار نیست';
+                    detailText = c1 + ' × ' + v1 + ' = ' + left.toFixed(2) + ' ≠ ' + right.toFixed(2) + ' = ' + c2 + ' × ' + v2;
+                }
+            } else if (!isNaN(c1) && !isNaN(v1) && !isNaN(c2)) {
+                // محاسبه V2
+                const v2Calc = (c1 * v1) / c2;
+                resultText = 'حجم نهایی (V₂) = ' + v2Calc.toFixed(2) + ' mL';
+                detailText = c1 + ' × ' + v1 + ' ÷ ' + c2 + ' = ' + v2Calc.toFixed(2) + ' mL';
+            } else if (!isNaN(c1) && !isNaN(v1) && !isNaN(v2)) {
+                // محاسبه C2
+                const c2Calc = (c1 * v1) / v2;
+                resultText = 'غلظت نهایی (C₂) = ' + c2Calc.toFixed(4) + ' M';
+                detailText = c1 + ' × ' + v1 + ' ÷ ' + v2 + ' = ' + c2Calc.toFixed(4) + ' M';
+            } else if (!isNaN(c1) && !isNaN(c2) && !isNaN(v2)) {
+                // محاسبه V1
+                const v1Calc = (c2 * v2) / c1;
+                resultText = 'حجم اولیه (V₁) = ' + v1Calc.toFixed(2) + ' mL';
+                detailText = c2 + ' × ' + v2 + ' ÷ ' + c1 + ' = ' + v1Calc.toFixed(2) + ' mL';
+            } else if (!isNaN(v1) && !isNaN(c2) && !isNaN(v2)) {
+                // محاسبه C1
+                const c1Calc = (c2 * v2) / v1;
+                resultText = 'غلظت اولیه (C₁) = ' + c1Calc.toFixed(4) + ' M';
+                detailText = c2 + ' × ' + v2 + ' ÷ ' + v1 + ' = ' + c1Calc.toFixed(4) + ' M';
+            } else {
+                resultText = '❌ اطلاعات کافی نیست';
+                detailText = 'حداقل دو مقدار برای محاسبه نیاز است';
+            }
+
+            resultEl.textContent = resultText;
+            detailEl.textContent = detailText;
+            resultBox.classList.add('show');
+        }
+
+        // ========== Enter key support ==========
+        document.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const activeTab = document.querySelector('.mode-content.active');
+                    if (activeTab) {
+                        const id = activeTab.id;
+                        if (id === 'mode-molarity') calcMolarity();
+                        else if (id === 'mode-percent') calcPercent();
+                        else if (id === 'mode-dilution') calcDilution();
+                    }
+                }
+            });
+        });
+
+        // ========== Init ==========
+        applyTheme(getTheme());
+    </script>
+</body>
+  </html>
