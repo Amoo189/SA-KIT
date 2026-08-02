@@ -231,10 +231,11 @@ body.light-mode .back-top-btn:hover{background:rgba(110,168,254,.2)}
 </div></div>
 <div id="toast" class="toast"></div>
 <script>
-var config={version:"v16.3.0",siteUrl:"https://amoo189.github.io/Saleh-Amoo/",githubRepo:"https://github.com/Amoo189",contactEmail:"salehamoo1389@gmail.com",theme:localStorage.getItem("sa-apps-theme")||"dark"};
+var config={version:"v16.4.0",siteUrl:"https://amoo189.github.io/Saleh-Amoo/",githubRepo:"https://github.com/Amoo189",contactEmail:"salehamoo1389@gmail.com",theme:localStorage.getItem("sa-apps-theme")||"dark"};
 var currentFilter="all";
 var historyLog=[];
 (function(){var c=document.getElementById("splashCanvas");if(!c)return;var ctx=c.getContext("2d");var W,H,particles=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}resize();window.addEventListener("resize",resize);for(var i=0;i<60;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+1,dx:(Math.random()-0.5)*0.8,dy:(Math.random()-0.5)*0.8,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.15)"})}function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}draw()})();
+// ======== ابزارهای در حال توسعه (newTools) ========
 var newTools={
 "شیمی":[{name:"محاسبه‌گر pH",icon:"fa-flask",desc:"محاسبه pH اسیدها و بازها"},{name:"وزن مولکولی",icon:"fa-weight-scale",desc:"محاسبه وزن مولکولی ترکیبات"},{name:"تبدیل واحد شیمی",icon:"fa-arrows-left-right",desc:"تبدیل مول، گرم و حجم"},{name:"جدول حلالیت",icon:"fa-table",desc:"جدول حلالیت ترکیبات یونی"},{name:"ترازوی الکترونیکی",icon:"fa-scale-balanced",desc:"ترازوی دیجیتال برای آزمایشگاه"}],
 "ریاضی":[{name:"حل‌کننده ماتریس",icon:"fa-table",desc:"عملیات روی ماتریس‌ها"},{name:"محاسبه‌گر احتمال",icon:"fa-dice",desc:"محاسبه احتمالات"},{name:"آمار توصیفی",icon:"fa-chart-pie",desc:"محاسبه میانگین، میانه و واریانس"},{name:"حل‌کننده معادله دیفرانسیل",icon:"fa-wave-square",desc:"حل معادلات دیفرانسیل"},{name:"مثلثات‌یاب",icon:"fa-circle",desc:"محاسبه توابع مثلثاتی"}],
@@ -250,8 +251,9 @@ var newTools={
 "امنیت":[{name:"تولید کلید SSH",icon:"fa-key",desc:"تولید کلید SSH"},{name:"تست قدرت رمز",icon:"fa-shield-halved",desc:"بررسی قدرت رمز"},{name:"رمزنگاری فایل",icon:"fa-lock",desc:"رمزنگاری فایل‌ها"},{name:"امضای دیجیتال",icon:"fa-pen",desc:"امضای دیجیتال"}],
 "هوش مصنوعی":[{name:"تشخیص تصویر",icon:"fa-image",desc:"تشخیص اشیاء در تصویر"},{name:"ترجمه هوشمند",icon:"fa-language",desc:"ترجمه با هوش مصنوعی"},{name:"تولید متن",icon:"fa-pen",desc:"تولید متن با هوش مصنوعی"},{name:"پاسخ‌گویی خودکار",icon:"fa-comment",desc:"پاسخ‌گویی هوشمند"}],
 "طراحی":[{name:"ویرایشگر تصویر",icon:"fa-image",desc:"ویرایش ساده تصاویر"},{name:"نقاشی با ماوس",icon:"fa-paintbrush",desc:"نقاشی با ماوس"},{name:"تولید لوگو",icon:"fa-pen-nib",desc:"تولید لوگوی ساده"},{name:"فونت‌یاب",icon:"fa-font",desc:"پیدا کردن فونت"}],
-"بازی‌ها":[{name:"سودوکو",icon:"fa-th",desc:"بازی سودوکو"},{name:"بازی حافظه",icon:"fa-brain",desc:"بازی حافظه"},{name:"مار",icon:"fa-arrow-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
+"بازی‌ها":[{name:"مار",icon:"fa-arrow-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
 };
+// ======== ابزارهای فعال (mainTools) ========
 var mainTools={
 "شیمی":[{name:"موازنه‌گر شیمیایی",icon:"fa-flask",desc:"موازنه معادلات شیمیایی با رابط کاربری مدرن",link:"b.html"},{name:"جدول تناوبی",icon:"fa-table",desc:"جدول تناوبی مناسب موبایل و استفاده سریع",link:"pt.html"},{name:"محاسبه‌گر غلظت محلول",icon:"fa-flask",desc:"محاسبه غلظت مولی، درصدی و رقت‌سازی",link:"concentration-calculator.html"}],
 "ریاضی":[{name:"حل‌کننده چندجمله‌ای",icon:"fa-square-root-variable",desc:"حل معادلات ریاضی از درجه ۱ تا ۲۰",link:"ps.html"},{name:"حل‌کننده نامعادله",icon:"fa-chart-line",desc:"حل نامعادله با نمایش نمودار آن",link:"ls.html"},{name:"ماشین حساب مهندسی",icon:"fa-calculator",desc:"ماشین حساب پیشرفته با قابلیت حل معادله",link:"calcu.html"},{name:"محاسبه‌گر درصد",icon:"fa-percent",desc:"محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی",link:"percent-calculator.html"},{name:"ابزار حرفه ای ریاضی",icon:"fa-infinity",desc:"مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین",link:"math-solver-pro.html"},{name:"حل‌کننده پیشرفته معادلات",icon:"fa-infinity",desc:"حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار",link:"equation-solver-pro.html"}],
@@ -268,7 +270,7 @@ var mainTools={
 "امنیت":[{name:"رمزساز حرفه‌ای",icon:"fa-key",desc:"ساخت رمز امن با بررسی قدرت و تنظیمات",link:"pg.html"}],
 "هوش مصنوعی":[{name:"هوش مصنوعی آنلاین",icon:"fa-robot",desc:"هوش مصنوعی رایگان و سریع (با اینترنت وارد شوید)",link:"ai.html"}],
 "طراحی":[{name:"پالت‌ساز رنگ",icon:"fa-palette",desc:"تولید رنگ تصادفی و کپی سریع کد Hex",link:"palette.html"},{name:"گرادینت‌ساز CSS",icon:"fa-rainbow",desc:"ساخت گرادینت با پیش‌نمایش زنده و کپی کد",link:"gradient-generator.html"}],
-"بازی‌ها":[{name:"شطرنج",icon:"fa-chess",desc:"بازی شطرنج آفلاین دونفره با رابط ساده",link:"chess.html"},{name:"تتریس",icon:"fa-cubes",desc:"بازی تتریس نئونی با تجربه روان و سبک",link:"tet.html"},{name:"بازی دوز",icon:"fa-x",desc:"دوز با قابلیت بازی دونفره و رقابت با ربات",link:"ttt.html"},{name:"بازی حافظه",icon:"fa-brain",desc:"پیدا کردن کارت‌های مشابه",link:"memory-match.html"},{name:"سودوکو",icon:"fa-th",desc:"جدول ۹×۹ را کامل کنید",link:"sudoku-game.html"}]
+"بازی‌ها":[{name:"بازی حافظه",icon:"fa-brain",desc:"کارت‌های مشابه را پیدا کنید",link:"memory-match.html"},{name:"سودوکو",icon:"fa-th",desc:"جدول ۹×۹ را با اعداد ۱ تا ۹ کامل کنید",link:"sudoku-game.html"},{name:"شطرنج",icon:"fa-chess",desc:"بازی شطرنج آفلاین دونفره",link:"chess.html"},{name:"تتریس",icon:"fa-cubes",desc:"بازی تتریس نئونی",link:"tet.html"},{name:"بازی دوز",icon:"fa-x",desc:"دوز با قابلیت بازی دونفره و رقابت با ربات",link:"ttt.html"}]
 };
 var historyTools={name:"تاریخچه",icon:"fa-clock-rotate-left",desc:"آخرین ابزارهای بازدید شده",items:[]};
 function addToHistory(name){if(!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
