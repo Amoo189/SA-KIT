@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>حل‌کننده پیشرفته معادلات</title>
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <style>
+        @font-face {
+            font-family: VazirmatnLocal;
+            src: url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: VazirmatnLocal;
+            src: url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+            font-weight: 700;
+            font-display: swap;
+        }
+        :root {
+            --bg: #0b1220;
+            --bg2: #0f172a;
+            --text: #e8eefc;
+            --muted: #9fb0d0;
+            --accent: #6ea8fe;
+            --accent2: #8b5cf6;
+            --border: rgba(255, 255, 255, .08);
+            --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+            --glass: blur(14px);
+            --radius: 24px;
+            --card-bg: rgba(255, 255, 255, .04);
+            --bg-light: #eef2f7;
+            --bg2-light: #d5dee8;
+            --text-light: #1a202c;
+            --muted-light: #5a6a7e;
+            --border-light: rgba(0, 0, 0, .1);
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, .08);
+            --success: #4ade80;
+            --danger: #f87171;
+            --warning: #fbbf24;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            font-family: VazirmatnLocal, sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at top left, rgba(110, 168, 254, .2), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(139, 92, 246, .18), transparent 34%);
+            background-attachment: fixed;
+            color: var(--text);
+            transition: all .3s;
+            padding: 20px;
+        }
+        body.light-mode {
+            background: var(--bg-light);
+            background-image: radial-gradient(circle at top left, rgba(110, 168, 254, .08), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(139, 92, 246, .06), transparent 34%);
+        }
+        .container {
+            width: min(900px, 100%);
+            margin: auto;
+            position: relative;
+        }
+        .panel {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+            border: 1px solid var(--border);
+            backdrop-filter: var(--glass);
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            transition: all .3s;
+        }
+        body.light-mode .panel {
+            background: rgba(255, 255, 255, .75);
+            border-color: rgba(0, 0, 0, .08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            transition: all .3s;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, .04);
+        }
+        body.light-mode .back-link {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--muted-light);
+        }
+        .back-link:hover {
+            border-color: var(--accent);
+            color: var(--text);
+            transform: translateX(-4px);
+        }
+        body.light-mode .back-link:hover {
+            color: var(--text-light);
+        }
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(110, 168, 254, .28), rgba(139, 92, 246, .24));
+            border: 1px solid rgba(255, 255, 255, .1);
+            font-size: 28px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+        body.light-mode .tool-icon {
+            background: linear-gradient(135deg, rgba(110, 168, 254, .15), rgba(139, 92, 246, .1));
+            border-color: rgba(0, 0, 0, .06);
+        }
+        .tool-title h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .tool-title p {
+            color: var(--muted);
+            font-size: 14px;
+            margin: 4px 0 0;
+        }
+        body.light-mode .tool-title p {
+            color: var(--muted-light);
+        }
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .mode-tabs::-webkit-scrollbar {
+            height: 3px;
+        }
+        .mode-tabs::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 999px;
+        }
+        .mode-tab {
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .04);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        body.light-mode .mode-tab {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--muted-light);
+        }
+        .mode-tab:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .mode-tab:hover {
+            color: var(--text-light);
+        }
+        .mode-tab.active {
+            background: rgba(110, 168, 254, .15);
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .mode-tab.active {
+            background: rgba(110, 168, 254, .1);
+            color: var(--text-light);
+        }
+        .mode-content {
+            display: none;
+            animation: fadeUp .4s ease both;
+        }
+        .mode-content.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        body.light-mode .form-group label {
+            color: var(--muted-light);
+        }
+        .form-group .hint {
+            font-size: 11px;
+            color: var(--muted);
+            opacity: .7;
+            margin-top: 3px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        @media(max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-row-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media(max-width: 400px) {
+            .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+        input,
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .05);
+            backdrop-filter: var(--glass);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all .3s;
+            outline: none;
+        }
+        body.light-mode input,
+        body.light-mode select {
+            background: rgba(255, 255, 255, .8);
+            border-color: rgba(0, 0, 0, .1);
+            color: var(--text-light);
+        }
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, .08);
+        }
+        body.light-mode input:focus,
+        body.light-mode select:focus {
+            background: rgba(255, 255, 255, .95);
+        }
+        input::placeholder {
+            color: var(--muted);
+            opacity: .5;
+        }
+        body.light-mode input::placeholder {
+            color: #999;
+        }
+        .calc-btn {
+            padding: 12px 28px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .3s;
+            width: 100%;
+            margin-top: 6px;
+        }
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(110, 168, 254, .3);
+        }
+        .calc-btn:active {
+            transform: scale(.97);
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .04);
+            transition: all .3s;
+            display: none;
+        }
+        body.light-mode .result-box {
+            background: rgba(0, 0, 0, .03);
+            border-color: rgba(0, 0, 0, .08);
+        }
+        .result-box.show {
+            display: block;
+            animation: fadeUp .4s ease both;
+        }
+        .result-box .result-title {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        body.light-mode .result-box .result-title {
+            color: var(--muted-light);
+        }
+        .result-box .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            word-break: break-all;
+            line-height: 1.6;
+        }
+        .result-box .result-detail {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            line-height: 1.8;
+        }
+        body.light-mode .result-box .result-detail {
+            color: var(--muted-light);
+            border-top-color: rgba(0, 0, 0, .08);
+        }
+        .result-box .result-detail span {
+            color: var(--text);
+            font-weight: 600;
+        }
+        body.light-mode .result-box .result-detail span {
+            color: var(--text-light);
+        }
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .result-actions button {
+            padding: 6px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .04);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        body.light-mode .result-actions button {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--muted-light);
+        }
+        .result-actions button:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .result-actions button:hover {
+            color: var(--text-light);
+        }
+        .result-actions button.copied {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .error-text {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+        .error-text.show {
+            display: block;
+        }
+        .graph-container {
+            margin-top: 16px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, .2);
+            position: relative;
+        }
+        body.light-mode .graph-container {
+            background: rgba(0, 0, 0, .04);
+            border-color: rgba(0, 0, 0, .08);
+        }
+        .graph-container canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .theme-switcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .05);
+            backdrop-filter: var(--glass);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 20px;
+            display: grid;
+            place-items: center;
+            transition: all .3s;
+            z-index: 100;
+        }
+        body.light-mode .theme-switcher {
+            background: rgba(255, 255, 255, .7);
+            border-color: rgba(0, 0, 0, .08);
+            color: var(--text-light);
+        }
+        .theme-switcher:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+        }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, .85);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 16px;
+            font-size: 15px;
+            z-index: 99999;
+            opacity: 0;
+            transition: all .4s cubic-bezier(.2, .8, .2, 1);
+            border: 1px solid rgba(255, 255, 255, .1);
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+            font-family: VazirmatnLocal, sans-serif;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .preset-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .preset-btns button {
+            padding: 3px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .03);
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+        body.light-mode .preset-btns button {
+            background: rgba(0, 0, 0, .03);
+            border-color: rgba(0, 0, 0, .06);
+            color: var(--muted-light);
+        }
+        .preset-btns button:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        body.light-mode .preset-btns button:hover {
+            color: var(--text-light);
+        }
+        .matrix-input {
+            display: grid;
+            gap: 6px;
+        }
+        .matrix-input .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 6px;
+        }
+        .matrix-input .row input {
+            padding: 8px 6px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .matrix-input .row .label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px;
+        }
+        body.light-mode .matrix-input .row .label {
+            color: var(--muted-light);
+        }
+        @media(max-width: 500px) {
+            .panel {
+                padding: 16px;
+                border-radius: 20px;
+            }
+            .tool-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .tool-title h1 {
+                font-size: 20px;
+            }
+            .result-box .result-value {
+                font-size: 20px;
+            }
+            .theme-switcher {
+                bottom: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+            .mode-tab {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            .matrix-input .row {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="panel">
+            <a href="index.html" class="back-link"><i class="fa fa-arrow-right"></i> بازگشت به لانچر</a>
+
+            <div class="tool-header">
+                <div class="tool-icon"><i class="fa fa-infinity"></i></div>
+                <div class="tool-title">
+                    <h1>حل‌کننده پیشرفته معادلات</h1>
+                    <p>حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار</p>
+                </div>
+            </div>
+
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="equation"><i class="fa fa-x"></i> معادله</button>
+                <button class="mode-tab" data-mode="system"><i class="fa fa-braces"></i> دستگاه</button>
+                <button class="mode-tab" data-mode="derivative"><i class="fa fa-chart-line"></i> مشتق</button>
+                <button class="mode-tab" data-mode="integral"><i class="fa fa-calculator"></i> انتگرال</button>
+                <button class="mode-tab" data-mode="limit"><i class="fa fa-arrow-trend-up"></i> حد</button>
+                <button class="mode-tab" data-mode="graph"><i class="fa fa-chart-simple"></i> نمودار</button>
+            </div>
+
+            <!-- ========== معادله ========== -->
+            <div class="mode-content active" id="mode-equation">
+                <div class="form-group">
+                    <label>درجه معادله</label>
+                    <select id="eq-degree">
+                        <option value="1">درجه ۱ (خطی)</option>
+                        <option value="2" selected>درجه ۲ (درجه دوم)</option>
+                        <option value="3">درجه ۳ (مکعب)</option>
+                        <option value="4">درجه ۴ (چهارم)</option>
+                    </select>
+                </div>
+                <div class="form-row" id="eq-coeffs">
+                    <div class="form-group"><label>a (xⁿ)</label><input type="number" id="eq-a" step="any" placeholder="1" value="1" /></div>
+                    <div class="form-group"><label>b (xⁿ⁻¹)</label><input type="number" id="eq-b" step="any" placeholder="0" value="0" /></div>
+                    <div class="form-group"><label>c (xⁿ⁻²)</label><input type="number" id="eq-c" step="any" placeholder="0" value="-3" /></div>
+                    <div class="form-group"><label>d (xⁿ⁻³)</label><input type="number" id="eq-d" step="any" placeholder="0" value="0" /></div>
+                    <div class="form-group"><label>e (ثابت)</label><input type="number" id="eq-e" step="any" placeholder="0" value="2" /></div>
+                </div>
+                <div class="preset-btns">
+                    <span style="font-size:11px;color:var(--muted);margin-left:6px;">پیش‌تنظیم:</span>
+                    <button onclick="setEquationPreset(1,0,-3,0,2)">x² - 3x + 2 = 0</button>
+                    <button onclick="setEquationPreset(1,0,0,-1,0)">x³ - 1 = 0</button>
+                    <button onclick="setEquationPreset(2,-3,1,0,0)">2x² - 3x + 1 = 0</button>
+                    <button onclick="setEquationPreset(1,0,-4,0,4)">x² - 4x + 4 = 0</button>
+                </div>
+                <div class="error-text" id="error-equation">لطفاً ضرایب معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="solveEquation()"><i class="fa fa-x"></i> حل معادله</button>
+                <div class="result-box" id="result-equation">
+                    <div class="result-title">ریشه‌های معادله</div>
+                    <div class="result-value" id="eq-result">--</div>
+                    <div class="result-detail" id="eq-detail">جزئیات</div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('eq-result','eq-copy-btn')" id="eq-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== دستگاه ========== -->
+            <div class="mode-content" id="mode-system">
+                <div class="form-group">
+                    <label>اندازه دستگاه</label>
+                    <select id="sys-size" onchange="updateSystemInputs()">
+                        <option value="2">۲×۲</option>
+                        <option value="3">۳×۳</option>
+                    </select>
+                </div>
+                <div id="system-inputs">
+                    <div class="matrix-input" id="matrix-2x2">
+                        <div class="row"><span class="label">معادله ۱:</span><input type="number" id="s11" step="any" value="2" placeholder="a₁"/><input type="number" id="s12" step="any" value="3" placeholder="b₁"/><input type="number" id="s1r" step="any" value="8" placeholder="c₁"/></div>
+                        <div class="row"><span class="label">معادله ۲:</span><input type="number" id="s21" step="any" value="1" placeholder="a₂"/><input type="number" id="s22" step="any" value="-2" placeholder="b₂"/><input type="number" id="s2r" step="any" value="-1" placeholder="c₂"/></div>
+                    </div>
+                    <div class="matrix-input" id="matrix-3x3" style="display:none;">
+                        <div class="row"><span class="label">معادله ۱:</span><input type="number" id="s31" step="any" value="1" placeholder="a₁"/><input type="number" id="s32" step="any" value="2" placeholder="b₁"/><input type="number" id="s33" step="any" value="3" placeholder="c₁"/><input type="number" id="s3r1" step="any" value="6" placeholder="d₁"/></div>
+                        <div class="row"><span class="label">معادله ۲:</span><input type="number" id="s41" step="any" value="2" placeholder="a₂"/><input type="number" id="s42" step="any" value="-1" placeholder="b₂"/><input type="number" id="s43" step="any" value="1" placeholder="c₂"/><input type="number" id="s4r1" step="any" value="3" placeholder="d₂"/></div>
+                        <div class="row"><span class="label">معادله ۳:</span><input type="number" id="s51" step="any" value="3" placeholder="a₃"/><input type="number" id="s52" step="any" value="2" placeholder="b₃"/><input type="number" id="s53" step="any" value="-2" placeholder="c₃"/><input type="number" id="s5r1" step="any" value="1" placeholder="d₃"/></div>
+                    </div>
+                </div>
+                <div class="error-text" id="error-system">دستگاه معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="solveSystem()"><i class="fa fa-braces"></i> حل دستگاه</button>
+                <div class="result-box" id="result-system">
+                    <div class="result-title">جواب دستگاه</div>
+                    <div class="result-value" id="sys-result">--</div>
+                    <div class="result-detail" id="sys-detail">جزئیات</div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('sys-result','sys-copy-btn')" id="sys-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== مشتق ========== -->
+            <div class="mode-content" id="mode-derivative">
+                <div class="form-group">
+                    <label>تابع f(x) =</label>
+                    <input type="text" id="deriv-func" placeholder="مثلاً 3*x^2 + 2*x - 5" value="3*x^2 + 2*x - 5" />
+                    <div class="hint">از * برای ضرب، ^ برای توان استفاده کنید. مثال: 3*x^2 + 2*x - 5</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>نقطه x₀ (اختیاری)</label><input type="number" id="deriv-point" step="any" placeholder="مثلاً 2" value="2" /></div>
+                    <div class="form-group"><label>مرتبه مشتق</label><select id="deriv-order"><option value="1">مرتبه ۱</option><option value="2">مرتبه ۲</option></select></div>
+                </div>
+                <div class="error-text" id="error-derivative">تابع معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="calcDerivative()"><i class="fa fa-chart-line"></i> محاسبه مشتق</button>
+                <div class="result-box" id="result-derivative">
+                    <div class="result-title">مشتق</div>
+                    <div class="result-value" id="deriv-result">--</div>
+                    <div class="result-detail" id="deriv-detail">جزئیات</div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('deriv-result','deriv-copy-btn')" id="deriv-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== انتگرال ========== -->
+            <div class="mode-content" id="mode-integral">
+                <div class="form-group">
+                    <label>تابع f(x) =</label>
+                    <input type="text" id="integ-func" placeholder="مثلاً 2*x" value="2*x" />
+                    <div class="hint">از * برای ضرب، ^ برای توان استفاده کنید. مثال: 2*x + 3</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>از (حد پایین)</label><input type="number" id="integ-low" step="any" value="0" /></div>
+                    <div class="form-group"><label>تا (حد بالا)</label><input type="number" id="integ-high" step="any" value="3" /></div>
+                </div>
+                <div class="error-text" id="error-integral">تابع یا بازه معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="calcIntegral()"><i class="fa fa-calculator"></i> محاسبه انتگرال</button>
+                <div class="result-box" id="result-integral">
+                    <div class="result-title">انتگرال معین</div>
+                    <div class="result-value" id="integ-result">--</div>
+                    <div class="result-detail" id="integ-detail">جزئیات</div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('integ-result','integ-copy-btn')" id="integ-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== حد ========== -->
+            <div class="mode-content" id="mode-limit">
+                <div class="form-group">
+                    <label>تابع f(x) =</label>
+                    <input type="text" id="limit-func" placeholder="مثلاً (x^2 - 1)/(x - 1)" value="(x^2 - 1)/(x - 1)" />
+                    <div class="hint">از * برای ضرب، ^ برای توان، / برای تقسیم استفاده کنید.</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>نقطه x →</label><input type="number" id="limit-point" step="any" value="1" /></div>
+                    <div class="form-group"><label>سمت</label><select id="limit-side"><option value="both">هر دو سمت</option><option value="left">چپ</option><option value="right">راست</option></select></div>
+                </div>
+                <div class="error-text" id="error-limit">تابع معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="calcLimit()"><i class="fa fa-arrow-trend-up"></i> محاسبه حد</button>
+                <div class="result-box" id="result-limit">
+                    <div class="result-title">حد تابع</div>
+                    <div class="result-value" id="limit-result">--</div>
+                    <div class="result-detail" id="limit-detail">جزئیات</div>
+                    <div class="result-actions">
+                        <button onclick="copyResult('limit-result','limit-copy-btn')" id="limit-copy-btn"><i class="fa fa-copy"></i> کپی</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== نمودار ========== -->
+            <div class="mode-content" id="mode-graph">
+                <div class="form-group">
+                    <label>تابع f(x) =</label>
+                    <input type="text" id="graph-func" placeholder="مثلاً x^2 - 3*x + 2" value="x^2 - 3*x + 2" />
+                    <div class="hint">از * برای ضرب، ^ برای توان استفاده کنید. مثال: x^2 - 3*x + 2</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>حداقل x</label><input type="number" id="graph-xmin" step="any" value="-5" /></div>
+                    <div class="form-group"><label>حداکثر x</label><input type="number" id="graph-xmax" step="any" value="5" /></div>
+                </div>
+                <div class="error-text" id="error-graph">تابع معتبر وارد کنید.</div>
+                <button class="calc-btn" onclick="drawGraph()"><i class="fa fa-chart-simple"></i> رسم نمودار</button>
+                <div class="graph-container" id="graph-container">
+                    <canvas id="graphCanvas" width="700" height="350"></canvas>
+                </div>
+                <div class="result-box" id="result-graph" style="margin-top:12px;">
+                    <div class="result-title">نمودار تابع</div>
+                    <div class="result-value" id="graph-result" style="font-size:16px;">نمودار رسم شد ✓</div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم">
+        <i class="fa fa-moon" id="themeIcon"></i>
+    </button>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ========== Theme ==========
+        function getTheme() {
+            return localStorage.getItem('sa-apps-theme') || 'dark';
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.toggle('light-mode', theme === 'light');
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'light' ? 'fa fa-sun' : 'fa fa-moon';
+            }
+            localStorage.setItem('sa-apps-theme', theme);
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            applyTheme(isLight ? 'light' : 'dark');
+        }
+
+        // ========== Tabs ==========
+        document.querySelectorAll('.mode-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const mode = this.dataset.mode;
+                document.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('mode-' + mode).classList.add('active');
+                document.querySelectorAll('.result-box').forEach(r => r.classList.remove('show'));
+                if (mode === 'graph') {
+                    setTimeout(() => drawGraph(), 300);
+                }
+            });
+        });
+
+        // ========== Toast ==========
+        let toastTimer;
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ========== Copy ==========
+        function copyResult(resultId, btnId) {
+            const el = document.getElementById(resultId);
+            const text = el.textContent;
+            if (!text || text === '--') {
+                showToast('نتیجه‌ای برای کپی وجود ندارد');
+                return;
+            }
+            const btn = document.getElementById(btnId);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.classList.add('copied');
+                    btn.innerHTML = '<i class="fa fa-check"></i> کپی شد';
+                    showToast('نتیجه کپی شد');
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.innerHTML = '<i class="fa fa-copy"></i> کپی';
+                    }, 2000);
+                }).catch(() => fallbackCopy(text, btn));
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                btn.classList.add('copied');
+                btn.innerHTML = '<i class="fa fa-check"></i> کپی شد';
+                showToast('نتیجه کپی شد');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<i class="fa fa-copy"></i> کپی';
+                }, 2000);
+            } catch (e) {
+                showToast('کپی نشد! لطفاً دستی کپی کنید');
+            }
+            document.body.removeChild(ta);
+        }
+
+        // ========== Equation Preset ==========
+        function setEquationPreset(a, b, c, d, e) {
+            document.getElementById('eq-a').value = a;
+            document.getElementById('eq-b').value = b;
+            document.getElementById('eq-c').value = c;
+            document.getElementById('eq-d').value = d;
+            document.getElementById('eq-e').value = e;
+            showToast('پیش‌تنظیم اعمال شد');
+            solveEquation();
+        }
+
+        // ========== System Inputs ==========
+        function updateSystemInputs() {
+            const size = parseInt(document.getElementById('sys-size').value);
+            document.getElementById('matrix-2x2').style.display = size === 2 ? '' : 'none';
+            document.getElementById('matrix-3x3').style.display = size === 3 ? '' : 'none';
+            document.querySelectorAll('#result-system, #error-system').forEach(el => {
+                el.classList.remove('show');
+            });
+        }
+
+        // ========== Equation Solver ==========
+        function solveEquation() {
+            const a = parseFloat(document.getElementById('eq-a').value) || 0;
+            const b = parseFloat(document.getElementById('eq-b').value) || 0;
+            const c = parseFloat(document.getElementById('eq-c').value) || 0;
+            const d = parseFloat(document.getElementById('eq-d').value) || 0;
+            const e = parseFloat(document.getElementById('eq-e').value) || 0;
+            const deg = parseInt(document.getElementById('eq-degree').value);
+            const err = document.getElementById('error-equation');
+            const resultBox = document.getElementById('result-equation');
+            const resultEl = document.getElementById('eq-result');
+            const detailEl = document.getElementById('eq-detail');
+
+            // ساخت ضرایب بر اساس درجه
+            let coeffs = [];
+            if (deg === 1) coeffs = [b, e];
+            else if (deg === 2) coeffs = [a, b, e];
+            else if (deg === 3) coeffs = [a, b, c, e];
+            else if (deg === 4) coeffs = [a, b, c, d, e];
+
+            // حذف صفرهای انتهایی
+            while (coeffs.length > 0 && Math.abs(coeffs[0]) < 1e-12) coeffs.shift();
+            if (coeffs.length === 0) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+                return;
+            }
+
+            err.classList.remove('show');
+
+            // حل با روش نیوتن-رافسون برای چندجمله‌ای‌ها
+            const roots = findPolynomialRoots(coeffs);
+            if (roots.length === 0) {
+                resultEl.textContent = '❌ هیچ ریشه‌ای پیدا نشد';
+                detailEl.textContent = 'معادله ممکن است ریشه حقیقی نداشته باشد.';
+            } else {
+                const uniqueRoots = [];
+                for (let r of roots) {
+                    let isDup = false;
+                    for (let u of uniqueRoots) {
+                        if (Math.abs(r - u) < 1e-8) { isDup = true; break; }
+                    }
+                    if (!isDup) uniqueRoots.push(r);
+                }
+                const rootStr = uniqueRoots.map(r => r.toFixed(6)).join(' , ');
+                resultEl.textContent = 'x = ' + rootStr;
+                detailEl.textContent = 'تعداد ریشه: ' + uniqueRoots.length + ' | معادله: ' + formatPolynomial(coeffs) + ' = 0';
+            }
+            resultBox.classList.add('show');
+        }
+
+        function formatPolynomial(coeffs) {
+            const terms = [];
+            const n = coeffs.length - 1;
+            for (let i = 0; i < coeffs.length; i++) {
+                const c = coeffs[i];
+                if (Math.abs(c) < 1e-12) continue;
+                const exp = n - i;
+                let term = '';
+                if (Math.abs(c - 1) > 1e-12 && Math.abs(c + 1) > 1e-12) term += c.toFixed(2);
+                else if (c < 0) term += '-';
+                if (exp > 1) term += 'x^' + exp;
+                else if (exp === 1) term += 'x';
+                else if (exp === 0) term += Math.abs(c).toFixed(2);
+                if (term === '' || term === '-') term += '1';
+                terms.push(term);
+            }
+            return terms.join(' + ').replace(/\+ -/g, '- ');
+        }
+
+        function findPolynomialRoots(coeffs) {
+            // روش نیوتن-رافسون با چند نقطه شروع
+            const roots = [];
+            const n = coeffs.length - 1;
+            if (n === 1) {
+                // خطی: ax + b = 0
+                if (Math.abs(coeffs[0]) < 1e-12) return [];
+                return [-coeffs[1] / coeffs[0]];
+            }
+
+            // تابع ارزیابی
+            function evalPoly(x) {
+                let sum = 0;
+                for (let i = 0; i < coeffs.length; i++) {
+                    sum += coeffs[i] * Math.pow(x, coeffs.length - 1 - i);
+                }
+                return sum;
+            }
+
+            function evalPolyDeriv(x) {
+                let sum = 0;
+                for (let i = 0; i < coeffs.length - 1; i++) {
+                    const exp = coeffs.length - 1 - i;
+                    sum += coeffs[i] * exp * Math.pow(x, exp - 1);
+                }
+                return sum;
+            }
+
+            const starts = [];
+            // نقاط شروع مختلف
+            for (let i = -10; i <= 10; i += 0.5) starts.push(i);
+            starts.push(-100, 100);
+
+            for (let start of starts) {
+                let x = start;
+                for (let iter = 0; iter < 100; iter++) {
+                    const fx = evalPoly(x);
+                    const dfx = evalPolyDeriv(x);
+                    if (Math.abs(dfx) < 1e-14) break;
+                    const xNew = x - fx / dfx;
+                    if (Math.abs(xNew - x) < 1e-10) {
+                        x = xNew;
+                        break;
+                    }
+                    x = xNew;
+                }
+                if (Math.abs(evalPoly(x)) < 1e-6) {
+                    let isDup = false;
+                    for (let r of roots) {
+                        if (Math.abs(r - x) < 1e-6) { isDup = true; break; }
+                    }
+                    if (!isDup) roots.push(x);
+                }
+            }
+            return roots;
+        }
+
+        // ========== System Solver ==========
+        function solveSystem() {
+            const size = parseInt(document.getElementById('sys-size').value);
+            const err = document.getElementById('error-system');
+            const resultBox = document.getElementById('result-system');
+            const resultEl = document.getElementById('sys-result');
+            const detailEl = document.getElementById('sys-detail');
+
+            let matrix, rhs;
+            if (size === 2) {
+                const a11 = parseFloat(document.getElementById('s11').value) || 0;
+                const a12 = parseFloat(document.getElementById('s12').value) || 0;
+                const a21 = parseFloat(document.getElementById('s21').value) || 0;
+                const a22 = parseFloat(document.getElementById('s22').value) || 0;
+                const b1 = parseFloat(document.getElementById('s1r').value) || 0;
+                const b2 = parseFloat(document.getElementById('s2r').value) || 0;
+                matrix = [
+                    [a11, a12],
+                    [a21, a22]
+                ];
+                rhs = [b1, b2];
+            } else {
+                const a11 = parseFloat(document.getElementById('s31').value) || 0;
+                const a12 = parseFloat(document.getElementById('s32').value) || 0;
+                const a13 = parseFloat(document.getElementById('s33').value) || 0;
+                const a21 = parseFloat(document.getElementById('s41').value) || 0;
+                const a22 = parseFloat(document.getElementById('s42').value) || 0;
+                const a23 = parseFloat(document.getElementById('s43').value) || 0;
+                const a31 = parseFloat(document.getElementById('s51').value) || 0;
+                const a32 = parseFloat(document.getElementById('s52').value) || 0;
+                const a33 = parseFloat(document.getElementById('s53').value) || 0;
+                const b1 = parseFloat(document.getElementById('s3r1').value) || 0;
+                const b2 = parseFloat(document.getElementById('s4r1').value) || 0;
+                const b3 = parseFloat(document.getElementById('s5r1').value) || 0;
+                matrix = [
+                    [a11, a12, a13],
+                    [a21, a22, a23],
+                    [a31, a32, a33]
+                ];
+                rhs = [b1, b2, b3];
+            }
+
+            // حل با روش حذف گاوس
+            const sol = gaussElimination(matrix, rhs);
+            if (!sol) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+                return;
+            }
+            err.classList.remove('show');
+
+            const vars = size === 2 ? ['x', 'y'] : ['x', 'y', 'z'];
+            const resultStr = sol.map((v, i) => vars[i] + ' = ' + v.toFixed(6)).join(' , ');
+            resultEl.textContent = resultStr;
+            detailEl.textContent = 'دستگاه ' + size + '×' + size + ' با موفقیت حل شد.';
+            resultBox.classList.add('show');
+        }
+
+        function gaussElimination(A, b) {
+            const n = A.length;
+            const aug = A.map((row, i) => [...row, b[i]]);
+
+            // حذف گاوس
+            for (let i = 0; i < n; i++) {
+                // پیدا کردن pivot
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(aug[k][i]) > Math.abs(aug[maxRow][i])) maxRow = k;
+                }
+                [aug[i], aug[maxRow]] = [aug[maxRow], aug[i]];
+
+                if (Math.abs(aug[i][i]) < 1e-12) return null;
+
+                for (let k = i + 1; k < n; k++) {
+                    const factor = aug[k][i] / aug[i][i];
+                    for (let j = i; j <= n; j++) {
+                        aug[k][j] -= factor * aug[i][j];
+                    }
+                }
+            }
+
+            // پس‌رو
+            const x = new Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                x[i] = aug[i][n] / aug[i][i];
+                for (let k = i - 1; k >= 0; k--) {
+                    aug[k][n] -= aug[k][i] * x[i];
+                }
+            }
+            return x;
+        }
+
+        // ========== Derivative ==========
+        function calcDerivative() {
+            const funcStr = document.getElementById('deriv-func').value.trim();
+            const point = parseFloat(document.getElementById('deriv-point').value) || 0;
+            const order = parseInt(document.getElementById('deriv-order').value);
+            const err = document.getElementById('error-derivative');
+            const resultBox = document.getElementById('result-derivative');
+            const resultEl = document.getElementById('deriv-result');
+            const detailEl = document.getElementById('deriv-detail');
+
+            try {
+                const f = buildFunction(funcStr);
+                if (!f) throw new Error('تابع نامعتبر');
+
+                const h = 1e-7;
+                let df;
+                if (order === 1) {
+                    df = (x) => (f(x + h) - f(x - h)) / (2 * h);
+                } else {
+                    df = (x) => (f(x + h) - 2 * f(x) + f(x - h)) / (h * h);
+                }
+
+                const val = df(point);
+                err.classList.remove('show');
+                resultEl.textContent = "f" + ("'".repeat(order)) + "(" + point + ") = " + val.toFixed(8);
+                detailEl.textContent = 'مشتق ' + order + ' در نقطه x₀ = ' + point + ' محاسبه شد.';
+                resultBox.classList.add('show');
+            } catch (e) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+            }
+        }
+
+        // ========== Integral ==========
+        function calcIntegral() {
+            const funcStr = document.getElementById('integ-func').value.trim();
+            const low = parseFloat(document.getElementById('integ-low').value) || 0;
+            const high = parseFloat(document.getElementById('integ-high').value) || 1;
+            const err = document.getElementById('error-integral');
+            const resultBox = document.getElementById('result-integral');
+            const resultEl = document.getElementById('integ-result');
+            const detailEl = document.getElementById('integ-detail');
+
+            if (low >= high) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+                return;
+            }
+
+            try {
+                const f = buildFunction(funcStr);
+                if (!f) throw new Error('تابع نامعتبر');
+
+                // روش سیمپسون
+                const n = 1000;
+                const h = (high - low) / n;
+                let sum = f(low) + f(high);
+                for (let i = 1; i < n; i++) {
+                    const x = low + i * h;
+                    sum += (i % 2 === 0) ? 2 * f(x) : 4 * f(x);
+                }
+                const result = (h / 3) * sum;
+
+                err.classList.remove('show');
+                resultEl.textContent = '∫₀' + high + ' f(x) dx = ' + result.toFixed(8);
+                detailEl.textContent = 'بازه [' + low + ', ' + high + '] با روش سیمپسون (1000 بخش)';
+                resultBox.classList.add('show');
+            } catch (e) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+            }
+        }
+
+        // ========== Limit ==========
+        function calcLimit() {
+            const funcStr = document.getElementById('limit-func').value.trim();
+            const point = parseFloat(document.getElementById('limit-point').value) || 0;
+            const side = document.getElementById('limit-side').value;
+            const err = document.getElementById('error-limit');
+            const resultBox = document.getElementById('result-limit');
+            const resultEl = document.getElementById('limit-result');
+            const detailEl = document.getElementById('limit-detail');
+
+            try {
+                const f = buildFunction(funcStr);
+                if (!f) throw new Error('تابع نامعتبر');
+
+                const h = 1e-8;
+                let val;
+                if (side === 'both') {
+                    const left = f(point - h);
+                    const right = f(point + h);
+                    if (Math.abs(left - right) < 1e-6) {
+                        val = (left + right) / 2;
+                    } else {
+                        resultEl.textContent = '⚠️ حد چپ و راست برابر نیستند';
+                        detailEl.textContent = 'چپ: ' + left.toFixed(6) + ' | راست: ' + right.toFixed(6);
+                        resultBox.classList.add('show');
+                        return;
+                    }
+                } else if (side === 'left') {
+                    val = f(point - h);
+                } else {
+                    val = f(point + h);
+                }
+
+                err.classList.remove('show');
+                resultEl.textContent = 'lim(x→' + point + ') = ' + val.toFixed(8);
+                detailEl.textContent = 'سمت: ' + (side === 'both' ? 'هر دو' : side === 'left' ? 'چپ' : 'راست');
+                resultBox.classList.add('show');
+            } catch (e) {
+                err.classList.add('show');
+                resultBox.classList.remove('show');
+            }
+        }
+
+        // ========== Graph ==========
+        function drawGraph() {
+            const funcStr = document.getElementById('graph-func').value.trim();
+            const xmin = parseFloat(document.getElementById('graph-xmin').value) || -5;
+            const xmax = parseFloat(document.getElementById('graph-xmax').value) || 5;
+            const err = document.getElementById('error-graph');
+
+            if (xmin >= xmax) {
+                err.textContent = 'حداقل x باید کوچکتر از حداکثر x باشد';
+                err.classList.add('show');
+                return;
+            }
+
+            try {
+                const f = buildFunction(funcStr);
+                if (!f) throw new Error('تابع نامعتبر');
+
+                err.classList.remove('show');
+
+                const canvas = document.getElementById('graphCanvas');
+                const rect = canvas.parentElement.getBoundingClientRect();
+                const width = canvas.width = Math.min(700, canvas.parentElement.clientWidth || 700);
+                const height = canvas.height = Math.max(300, width * 0.5);
+                const ctx = canvas.getContext('2d');
+
+                // پیدا کردن محدوده y
+                const steps = 200;
+                let ymin = Infinity,
+                    ymax = -Infinity;
+                const points = [];
+                for (let i = 0; i <= steps; i++) {
+                    const x = xmin + (xmax - xmin) * i / steps;
+                    try {
+                        const y = f(x);
+                        if (isFinite(y)) {
+                            points.push({ x, y });
+                            if (y < ymin) ymin = y;
+                            if (y > ymax) ymax = y;
+                        } else {
+                            points.push({ x, y: null });
+                        }
+                    } catch (e) {
+                        points.push({ x, y: null });
+                    }
+                }
+
+                if (ymin === Infinity) {
+                    document.getElementById('graph-result').textContent = '❌ تابع در این بازه قابل رسم نیست';
+                    return;
+                }
+
+                const padding = 30;
+                const margin = 10;
+                const yRange = ymax - ymin || 1;
+                const yPad = yRange * 0.1;
+                const yMin = ymin - yPad;
+                const yMax = ymax + yPad;
+
+                // Clear
+                ctx.clearRect(0, 0, width, height);
+
+                // Background
+                const isLight = document.body.classList.contains('light-mode');
+                ctx.fillStyle = isLight ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)';
+                ctx.fillRect(0, 0, width, height);
+
+                // Grid
+                ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i <= 10; i++) {
+                    const x = xmin + (xmax - xmin) * i / 10;
+                    const px = padding + (x - xmin) / (xmax - xmin) * (width - 2 * padding);
+                    ctx.beginPath();
+                    ctx.moveTo(px, padding);
+                    ctx.lineTo(px, height - padding);
+                    ctx.stroke();
+                    const y = ymin + (ymax - ymin) * i / 10;
+                    const py = height - padding - (y - yMin) / (yMax - yMin) * (height - 2 * padding);
+                    ctx.beginPath();
+                    ctx.moveTo(padding, py);
+                    ctx.lineTo(width - padding, py);
+                    ctx.stroke();
+                }
+
+                // Axes
+                ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 1.5;
+                // x-axis
+                const x0 = padding + (0 - xmin) / (xmax - xmin) * (width - 2 * padding);
+                if (x0 >= padding && x0 <= width - padding) {
+                    ctx.beginPath();
+                    ctx.moveTo(x0, padding);
+                    ctx.lineTo(x0, height - padding);
+                    ctx.stroke();
+                }
+                // y-axis
+                const y0 = height - padding - (0 - yMin) / (yMax - yMin) * (height - 2 * padding);
+                if (y0 >= padding && y0 <= height - padding) {
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y0);
+                    ctx.lineTo(width - padding, y0);
+                    ctx.stroke();
+                }
+
+                // Plot
+                ctx.strokeStyle = '#6ea8fe';
+                ctx.lineWidth = 2.5;
+                ctx.shadowColor = 'rgba(110,168,254,0.3)';
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                let started = false;
+                for (let i = 0; i < points.length; i++) {
+                    const p = points[i];
+                    if (p.y === null || !isFinite(p.y)) {
+                        started = false;
+                        continue;
+                    }
+                    const px = padding + (p.x - xmin) / (xmax - xmin) * (width - 2 * padding);
+                    const py = height - padding - (p.y - yMin) / (yMax - yMin) * (height - 2 * padding);
+                    if (!started) {
+                        ctx.moveTo(px, py);
+                        started = true;
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // Labels
+                ctx.fillStyle = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.4)';
+                ctx.font = '10px VazirmatnLocal, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(xmin.toFixed(1), padding, height - padding + 16);
+                ctx.fillText(xmax.toFixed(1), width - padding, height - padding + 16);
+                ctx.textAlign = 'right';
+                ctx.fillText(ymin.toFixed(1), padding - 4, height - padding);
+                ctx.fillText(ymax.toFixed(1), padding - 4, padding + 4);
+
+                document.getElementById('graph-result').textContent = '✅ نمودار تابع ' + funcStr + ' در بازه [' + xmin +
+                    ', ' + xmax + ']';
+                document.getElementById('result-graph').classList.add('show');
+
+            } catch (e) {
+                err.textContent = 'تابع نامعتبر: ' + e.message;
+                err.classList.add('show');
+                document.getElementById('result-graph').classList.remove('show');
+            }
+        }
+
+        // ========== Function Builder ==========
+        function buildFunction(funcStr) {
+            // تبدیل به تابع قابل ارزیابی
+            const sanitized = funcStr
+                .replace(/x/g, 'x')
+                .replace(/\^/g, '**')
+                .replace(/Math\./g, 'Math.')
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/log\(/g, 'Math.log(')
+                .replace(/ln\(/g, 'Math.log(')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/abs\(/g, 'Math.abs(')
+                .replace(/exp\(/g, 'Math.exp(')
+                .replace(/pi/g, 'Math.PI')
+                .replace(/PI/g, 'Math.PI')
+                .replace(/e/g, 'Math.E');
+
+            try {
+                const fn = new Function('x', 'return ' + sanitized + ';');
+                // تست
+                fn(0);
+                return fn;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // ========== Enter key support ==========
+        document.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const activeTab = document.querySelector('.mode-content.active');
+                    if (activeTab) {
+                        const id = activeTab.id;
+                        if (id === 'mode-equation') solveEquation();
+                        else if (id === 'mode-system') solveSystem();
+                        else if (id === 'mode-derivative') calcDerivative();
+                        else if (id === 'mode-integral') calcIntegral();
+                        else if (id === 'mode-limit') calcLimit();
+                        else if (id === 'mode-graph') drawGraph();
+                    }
+                }
+            });
+        });
+
+        // ========== Init ==========
+        applyTheme(getTheme());
+        updateSystemInputs();
+
+        // رسم نمودار پیش‌فرض بعد از بارگذاری
+        setTimeout(() => {
+            if (document.querySelector('.mode-tab.active')?.dataset.mode === 'graph') {
+                drawGraph();
+            }
+        }, 500);
+    </script>
+</body>
+  </html>
