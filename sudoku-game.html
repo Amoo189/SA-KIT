@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سودوکو | SA-APPS</title>
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+    <style>
+        /* ===== تم دارک/لایت ===== */
+        :root {
+            --bg: #0b1220;
+            --bg2: #0f172a;
+            --text: #e8eefc;
+            --muted: #9fb0d0;
+            --accent: #6ea8fe;
+            --accent2: #8b5cf6;
+            --border: rgba(255, 255, 255, .08);
+            --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+            --glass: blur(14px);
+            --radius: 24px;
+            --card-bg: rgba(255, 255, 255, .04);
+            --cell-bg: rgba(255, 255, 255, .04);
+            --cell-selected: rgba(110, 168, 254, .25);
+            --cell-same: rgba(110, 168, 254, .12);
+            --cell-error: rgba(255, 80, 80, .25);
+            --cell-given: #b0c4e8;
+            --cell-user: #e8eefc;
+            --btn-bg: rgba(255, 255, 255, .05);
+            --btn-hover: rgba(110, 168, 254, .2);
+        }
+
+        body.light-mode {
+            --bg: #eef2f7;
+            --bg2: #d5dee8;
+            --text: #1a202c;
+            --muted: #5a6a7e;
+            --border: rgba(0, 0, 0, .1);
+            --shadow: 0 10px 30px rgba(0, 0, 0, .08);
+            --card-bg: rgba(255, 255, 255, .7);
+            --cell-bg: rgba(255, 255, 255, .6);
+            --cell-selected: rgba(110, 168, 254, .3);
+            --cell-same: rgba(110, 168, 254, .15);
+            --cell-given: #2d3748;
+            --cell-user: #1a202c;
+            --btn-bg: rgba(0, 0, 0, .04);
+            --btn-hover: rgba(110, 168, 254, .15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'VazirmatnLocal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 560px;
+            background: var(--card-bg);
+            backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        /* ===== هدر ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-actions button {
+            background: var(--btn-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-actions button:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        /* ===== وضعیت بازی ===== */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--cell-bg);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-bar .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+        }
+
+        .status-bar .stat i {
+            color: var(--accent);
+        }
+
+        .status-bar .stat .value {
+            color: var(--text);
+            font-weight: 700;
+            min-width: 24px;
+        }
+
+        /* ===== جدول سودوکو ===== */
+        .board-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 1/1;
+            background: var(--border);
+            border: 3px solid var(--accent);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .cell {
+            background: var(--cell-bg);
+            aspect-ratio: 1/1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(18px, 4.5vw, 32px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            user-select: none;
+            position: relative;
+            color: var(--cell-user);
+        }
+
+        /* ضخیم‌تر کردن خطوط ۳×۳ */
+        .cell:nth-child(3n) {
+            border-left: 3px solid var(--accent);
+        }
+        .cell:nth-child(9n) {
+            border-left: none;
+        }
+        .cell:nth-child(n+19):nth-child(-n+27) {
+            border-top: 3px solid var(--accent);
+        }
+        .cell:nth-child(n+46):nth-child(-n+54) {
+            border-top: 3px solid var(--accent);
+        }
+
+        .cell.given {
+            color: var(--cell-given);
+            font-weight: 700;
+        }
+
+        .cell.user {
+            color: var(--cell-user);
+        }
+
+        .cell.selected {
+            background: var(--cell-selected) !important;
+            box-shadow: inset 0 0 0 2px var(--accent);
+        }
+
+        .cell.same-number {
+            background: var(--cell-same);
+        }
+
+        .cell.error {
+            background: var(--cell-error) !important;
+            color: #f87171 !important;
+        }
+
+        .cell.hint-highlight {
+            background: rgba(251, 191, 36, 0.25) !important;
+            animation: pulse-hint 0.6s ease 2;
+        }
+
+        @keyframes pulse-hint {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* ===== کیبورد مجازی ===== */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .numpad button {
+            background: var(--btn-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 0;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .numpad button:hover {
+            background: var(--btn-hover);
+            transform: scale(1.04);
+        }
+
+        .numpad button.erase {
+            color: #f87171;
+            font-size: 16px;
+        }
+
+        /* ===== دکمه‌های پایین ===== */
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .actions button {
+            background: var(--btn-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .actions button:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+
+        .actions button.primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .actions button.primary:hover {
+            background: var(--accent2);
+            border-color: var(--accent2);
+        }
+
+        /* ===== مودال پیروزی ===== */
+        .win-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s;
+        }
+
+        .win-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .win-box {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px 28px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            transform: scale(0.9);
+            transition: transform 0.4s;
+        }
+
+        .win-overlay.show .win-box {
+            transform: scale(1);
+        }
+
+        .win-box i {
+            font-size: 56px;
+            color: #fbbf24;
+            margin-bottom: 12px;
+        }
+
+        .win-box h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .win-box p {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .win-box button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.25s;
+        }
+
+        .win-box button:hover {
+            background: var(--accent2);
+            transform: scale(1.04);
+        }
+
+        /* ===== واکنش‌گرا ===== */
+        @media (max-width: 500px) {
+            .game-container {
+                padding: 16px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .header-actions button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .status-bar {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+            .numpad button {
+                font-size: 16px;
+                padding: 8px 0;
+            }
+            .actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .actions button {
+                font-size: 12px;
+                padding: 8px 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .numpad {
+                gap: 4px;
+            }
+            .numpad button {
+                font-size: 14px;
+                padding: 6px 0;
+            }
+            .cell {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- هدر -->
+        <div class="header">
+            <h1><i class="fa fa-puzzle-piece"></i> سودوکو</h1>
+            <div class="header-actions">
+                <button onclick="toggleTheme()" class="theme-toggle" title="تغییر تم">
+                    <i class="fa fa-moon" id="themeIcon"></i>
+                </button>
+                <button onclick="resetGame()"><i class="fa fa-rotate-right"></i> جدید</button>
+            </div>
+        </div>
+
+        <!-- نوار وضعیت -->
+        <div class="status-bar">
+            <div class="stat"><i class="fa fa-clock"></i> <span class="value" id="timer">00:00</span></div>
+            <div class="stat"><i class="fa fa-lightbulb"></i> راهنما: <span class="value" id="hintCount">3</span></div>
+            <div class="stat"><i class="fa fa-triangle-exclamation"></i> خطا: <span class="value" id="errorCount">0</span></div>
+        </div>
+
+        <!-- جدول -->
+        <div class="board-wrapper">
+            <div id="board"></div>
+        </div>
+
+        <!-- کیبورد مجازی -->
+        <div class="numpad" id="numpad">
+            <button data-num="1">1</button>
+            <button data-num="2">2</button>
+            <button data-num="3">3</button>
+            <button data-num="4">4</button>
+            <button data-num="5">5</button>
+            <button data-num="6">6</button>
+            <button data-num="7">7</button>
+            <button data-num="8">8</button>
+            <button data-num="9">9</button>
+        </div>
+
+        <!-- دکمه‌های پایین -->
+        <div class="actions">
+            <button onclick="undoMove()"><i class="fa fa-arrow-rotate-left"></i> بازگشت</button>
+            <button onclick="useHint()"><i class="fa fa-lightbulb"></i> راهنما</button>
+            <button onclick="checkBoard()"><i class="fa fa-check"></i> بررسی</button>
+            <button class="primary" onclick="resetGame()"><i class="fa fa-play"></i> بازی جدید</button>
+        </div>
+    </div>
+
+    <!-- مودال پیروزی -->
+    <div class="win-overlay" id="winOverlay">
+        <div class="win-box">
+            <i class="fa fa-trophy"></i>
+            <h2>تبریک! 🎉</h2>
+            <p>سودوکو رو با موفقیت حل کردی!</p>
+            <p style="font-size:14px;color:var(--muted);" id="winStats"></p>
+            <button onclick="closeWin(); resetGame();">بازی جدید</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  تولید کننده سودوکو (با الگوریتم عقب‌گرد)
+        // ============================================================
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function isValid(grid, row, col, num) {
+            for (let i = 0; i < 9; i++) {
+                if (grid[row][i] === num) return false;
+                if (grid[i][col] === num) return false;
+            }
+            const br = Math.floor(row / 3) * 3,
+                bc = Math.floor(col / 3) * 3;
+            for (let i = br; i < br + 3; i++) {
+                for (let j = bc; j < bc + 3; j++) {
+                    if (grid[i][j] === num) return false;
+                }
+            }
+            return true;
+        }
+
+        function solveSudoku(grid) {
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (grid[r][c] === 0) {
+                        const nums = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+                        for (let n of nums) {
+                            if (isValid(grid, r, c, n)) {
+                                grid[r][c] = n;
+                                if (solveSudoku(grid)) return true;
+                                grid[r][c] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function generatePuzzle(difficulty) {
+            // 0 = آسان, 1 = متوسط, 2 = سخت, 3 = خیلی سخت
+            const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
+            solveSudoku(grid);
+            const solution = grid.map(row => [...row]);
+
+            const blanks = [36, 45, 52, 58][difficulty] || 40;
+            const positions = [];
+            for (let i = 0; i < 9; i++)
+                for (let j = 0; j < 9; j++) positions.push([i, j]);
+            shuffleArray(positions);
+            for (let k = 0; k < blanks && k < positions.length; k++) {
+                const [r, c] = positions[k];
+                grid[r][c] = 0;
+            }
+            return { puzzle: grid, solution };
+        }
+
+        // ============================================================
+        //  هسته بازی
+        // ============================================================
+        let board = [];
+        let solution = [];
+        let given = [];
+        let selectedCell = null; // { row, col }
+        let errorCount = 0;
+        let hintCount = 3;
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isGameOver = false;
+        let history = []; // برای Undo
+
+        const boardEl = document.getElementById('board');
+        const timerEl = document.getElementById('timer');
+        const hintCountEl = document.getElementById('hintCount');
+        const errorCountEl = document.getElementById('errorCount');
+
+        function formatTime(sec) {
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            return m + ':' + s;
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerSeconds = 0;
+            timerEl.textContent = '00:00';
+            timerInterval = setInterval(() => {
+                if (!isGameOver) {
+                    timerSeconds++;
+                    timerEl.textContent = formatTime(timerSeconds);
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function initGame(difficulty) {
+            stopTimer();
+            isGameOver = false;
+            errorCount = 0;
+            hintCount = 3;
+            history = [];
+            selectedCell = null;
+            errorCountEl.textContent = '0';
+            hintCountEl.textContent = '3';
+
+            const data = generatePuzzle(difficulty);
+            board = data.puzzle;
+            solution = data.solution;
+            given = board.map(row => row.map(v => v !== 0));
+            renderBoard();
+            startTimer();
+            document.getElementById('winOverlay').classList.remove('show');
+        }
+
+        function renderBoard() {
+            boardEl.innerHTML = '';
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    if (given[r][c]) {
+                        cell.classList.add('given');
+                        cell.textContent = board[r][c];
+                    } else if (board[r][c] !== 0) {
+                        cell.classList.add('user');
+                        cell.textContent = board[r][c];
+                    }
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.addEventListener('click', () => selectCell(r, c));
+                    boardEl.appendChild(cell);
+                }
+            }
+            applySelection();
+            applySameNumberHighlight();
+        }
+
+        function getCellEl(row, col) {
+            return boardEl.children[row * 9 + col];
+        }
+
+        function selectCell(row, col) {
+            if (isGameOver) return;
+            if (given[row][col]) {
+                // اگر خانه ثابت بود، فقط انتخابش کن
+                selectedCell = { row, col };
+                applySelection();
+                return;
+            }
+            selectedCell = { row, col };
+            applySelection();
+            applySameNumberHighlight();
+        }
+
+        function applySelection() {
+            const cells = boardEl.children;
+            for (let i = 0; i < 81; i++) cells[i].classList.remove('selected');
+            if (selectedCell) {
+                const idx = selectedCell.row * 9 + selectedCell.col;
+                if (cells[idx]) cells[idx].classList.add('selected');
+            }
+        }
+
+        function applySameNumberHighlight() {
+            const cells = boardEl.children;
+            for (let i = 0; i < 81; i++) cells[i].classList.remove('same-number');
+            if (!selectedCell) return;
+            const val = board[selectedCell.row][selectedCell.col];
+            if (val === 0) return;
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (board[r][c] === val && !(r === selectedCell.row && c === selectedCell.col)) {
+                        const idx = r * 9 + c;
+                        if (cells[idx]) cells[idx].classList.add('same-number');
+                    }
+                }
+            }
+        }
+
+        function clearHighlights() {
+            const cells = boardEl.children;
+            for (let i = 0; i < 81; i++) {
+                cells[i].classList.remove('same-number', 'error', 'hint-highlight');
+            }
+        }
+
+        function inputNumber(num) {
+            if (isGameOver || !selectedCell) return;
+            const { row, col } = selectedCell;
+            if (given[row][col]) return;
+
+            // بررسی آیا عدد درسته
+            if (num === solution[row][col]) {
+                board[row][col] = num;
+                history.push({ row, col, oldVal: 0 });
+                renderBoard();
+                selectCell(row, col);
+                if (checkWin()) return;
+            } else {
+                // خطا
+                errorCount++;
+                errorCountEl.textContent = errorCount;
+                const cell = getCellEl(row, col);
+                cell.classList.add('error');
+                setTimeout(() => cell.classList.remove('error'), 500);
+                // محدودیت خطا: ۵ تا
+                if (errorCount >= 5) {
+                    showToast('تعداد خطاها از ۵ بیشتر شد! بازی رو دوباره شروع کن.');
+                    resetGame();
+                }
+            }
+        }
+
+        function useHint() {
+            if (isGameOver) return;
+            if (hintCount <= 0) {
+                showToast('راهنمایی باقی نمونده!');
+                return;
+            }
+            // پیدا کردن اولین خانه خالی
+            let found = false;
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (board[r][c] === 0) {
+                        board[r][c] = solution[r][c];
+                        given[r][c] = true; // تبدیل به خانه ثابت
+                        history.push({ row: r, col: c, oldVal: 0 });
+                        hintCount--;
+                        hintCountEl.textContent = hintCount;
+                        renderBoard();
+                        const cell = getCellEl(r, c);
+                        cell.classList.add('hint-highlight');
+                        setTimeout(() => cell.classList.remove('hint-highlight'), 1200);
+                        found = true;
+                        if (checkWin()) return;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            if (!found) showToast('هیچ خانه خالی‌ای نیست!');
+        }
+
+        function undoMove() {
+            if (isGameOver || history.length === 0) return;
+            const last = history.pop();
+            board[last.row][last.col] = 0;
+            given[last.row][last.col] = false;
+            renderBoard();
+            if (selectedCell) selectCell(selectedCell.row, selectedCell.col);
+        }
+
+        function checkBoard() {
+            if (isGameOver) return;
+            let hasError = false;
+            const cells = boardEl.children;
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const idx = r * 9 + c;
+                    if (board[r][c] !== 0 && board[r][c] !== solution[r][c]) {
+                        cells[idx].classList.add('error');
+                        hasError = true;
+                    } else {
+                        cells[idx].classList.remove('error');
+                    }
+                }
+            }
+            if (!hasError) {
+                // بررسی کامل بودن
+                let complete = true;
+                for (let r = 0; r < 9; r++) {
+                    for (let c = 0; c < 9; c++) {
+                        if (board[r][c] === 0) { complete = false; break; }
+                    }
+                    if (!complete) break;
+                }
+                if (complete) {
+                    showToast('🎉 همه چی درسته! شما برنده شدی!');
+                    winGame();
+                } else {
+                    showToast('✅ همه اعداد فعلی درست هستن!');
+                }
+            } else {
+                showToast('❌ بعضی از اعداد اشتباه هستن (قرمز مشخص شدن).');
+                setTimeout(() => {
+                    for (let i = 0; i < 81; i++) cells[i].classList.remove('error');
+                }, 2000);
+            }
+        }
+
+        function checkWin() {
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (board[r][c] !== solution[r][c]) return false;
+                }
+            }
+            winGame();
+            return true;
+        }
+
+        function winGame() {
+            isGameOver = true;
+            stopTimer();
+            document.getElementById('winStats').textContent =
+                `زمان: ${formatTime(timerSeconds)} | خطاها: ${errorCount}`;
+            document.getElementById('winOverlay').classList.add('show');
+        }
+
+        function closeWin() {
+            document.getElementById('winOverlay').classList.remove('show');
+        }
+
+        function resetGame() {
+            const diff = parseInt(localStorage.getItem('sudoku_difficulty') || '0');
+            initGame(diff);
+        }
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.style.cssText =
+                'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:14px 28px;border-radius:16px;font-size:15px;z-index:9999;backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);max-width:90%;text-align:center;transition:all .4s;opacity:0;';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            requestAnimationFrame(() => { t.style.opacity = '1'; });
+            setTimeout(() => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 400);
+            }, 2500);
+        }
+
+        // ============================================================
+        //  تم
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('light-mode')) {
+                icon.className = 'fa fa-sun';
+            } else {
+                icon.className = 'fa fa-moon';
+            }
+            localStorage.setItem('sudoku-theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('sudoku-theme') || 'dark';
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeIcon').className = 'fa fa-sun';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('themeIcon').className = 'fa fa-moon';
+            }
+        }
+
+        // ============================================================
+        //  انتخاب سطح دشواری (با دکمه‌های مخفی در منو)
+        // ============================================================
+        // با کلیک روی عنوان بازی، منوی سطح باز میشه
+        document.querySelector('.header h1').addEventListener('click', function() {
+            const levels = ['آسان', 'متوسط', 'سخت', 'خیلی سخت'];
+            const idx = parseInt(localStorage.getItem('sudoku_difficulty') || '0');
+            const choice = prompt(
+                'سطح دشواری رو انتخاب کن (۰ تا ۳):\n' +
+                '0 = آسان\n1 = متوسط\n2 = سخت\n3 = خیلی سخت\n\n' +
+                `سطح فعلی: ${levels[idx]}`,
+                idx
+            );
+            if (choice !== null) {
+                const val = parseInt(choice);
+                if (!isNaN(val) && val >= 0 && val <= 3) {
+                    localStorage.setItem('sudoku_difficulty', String(val));
+                    initGame(val);
+                    showToast(`سطح: ${levels[val]}`);
+                } else {
+                    showToast('عدد ۰ تا ۳ وارد کن.');
+                }
+            }
+        });
+
+        // ============================================================
+        //  رویدادهای کیبورد مجازی
+        // ============================================================
+        document.querySelectorAll('.numpad button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const num = parseInt(this.dataset.num);
+                if (!isNaN(num)) inputNumber(num);
+            });
+        });
+
+        // کیبورد فیزیکی
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '1' && e.key <= '9') {
+                inputNumber(parseInt(e.key));
+            } else if (e.key === 'Backspace' || e.key === 'Delete') {
+                if (selectedCell && !given[selectedCell.row][selectedCell.col]) {
+                    const { row, col } = selectedCell;
+                    board[row][col] = 0;
+                    history.push({ row, col, oldVal: 0 });
+                    renderBoard();
+                    selectCell(row, col);
+                }
+            } else if (e.key === 'h' || e.key === 'H') {
+                useHint();
+            } else if (e.key === 'z' || e.key === 'Z') {
+                undoMove();
+            }
+        });
+
+        // ============================================================
+        //  راه‌اندازی
+        // ============================================================
+        loadTheme();
+        const savedDiff = parseInt(localStorage.getItem('sudoku_difficulty') || '0');
+        initGame(savedDiff);
+
+        // دکمه‌های اضافی برای پشتیبانی از تم در بدنه
+        console.log('🎮 سودوکو آماده است!');
+    </script>
+
+</body>
+  </html>
