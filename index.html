@@ -8,13 +8,14 @@
 <style>
 @font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
-:root{--bg:#0b1220;--bg2:#0f172a;--text:#e8eefc;--muted:#9fb0d0;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 50px rgba(0,0,0,.45);--glass:blur(14px);--radius:24px;--bg-light:#eef2f7;--bg2-light:#d5dee8;--text-light:#1a202c;--muted-light:#5a6a7e;--border-light:rgba(0,0,0,.1);--shadow-light:0 10px 30px rgba(0,0,0,.08);--tab-bg:rgba(255,255,255,.04);--tab-active:rgba(110,168,254,.15);--card-bg:rgba(255,255,255,.04);--card-bg-light:rgba(255,255,255,.7)}
+:root{--bg:#0b1220;--bg2:#0f172a;--text:#e8eefc;--muted:#9fb0d0;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 50px rgba(0,0,0,.45);--glass:blur(14px);--radius:24px;--bg-light:#eef2f7;--bg2-light:#d5dee8;--text-light:#1a202c;--muted-light:#5a6a7e;--border-light:rgba(0,0,0,.1);--shadow-light:0 10px 30px rgba(0,0,0,.08);--tab-bg:rgba(255,255,255,.04);--tab-active:rgba(110,168,254,.15);--card-bg:rgba(255,255,255,.04);--card-bg-light:rgba(255,255,255,.7);--online-color:#4ade80;--offline-color:#f87171}
 body.light-mode{--bg:var(--bg-light);--bg2:var(--bg2-light);--text:var(--text-light);--muted:var(--muted-light);--border:var(--border-light);--shadow:var(--shadow-light);--tab-bg:rgba(0,0,0,.04);--tab-active:rgba(110,168,254,.12);--card-bg:rgba(255,255,255,.7);background:#eef2f7}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{min-height:100vh;font-family:VazirmatnLocal,sans-serif;background:#0b1220;background-image:radial-gradient(circle at top left,rgba(110,168,254,.2),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.18),transparent 34%);background-attachment:fixed;color:var(--text);transition:all .3s}
 body.light-mode{background:#eef2f7;background-image:radial-gradient(circle at top left,rgba(110,168,254,.08),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.06),transparent 34%)}
-.container{width:min(1120px,100%);margin:auto;padding:20px;position:relative}
+.container{width:min(1120px,100%);margin:auto;padding:20px;position:relative;opacity:0;transition:opacity .6s ease}
+.container.loaded{opacity:1}
 .orb{position:absolute;border-radius:50%;filter:blur(30px);opacity:.35;pointer-events:none;z-index:0;transition:opacity .3s}
 body.light-mode .orb{opacity:.1}
 .orb1{width:170px;height:170px;background:linear-gradient(135deg,var(--accent),transparent);top:-40px;right:20px}
@@ -35,14 +36,14 @@ body.light-mode .search-input{background:rgba(255,255,255,.8);border-color:rgba(
 body.light-mode .search-input::placeholder{color:#999}
 .search-input:focus{width:320px;outline:none;background:rgba(255,255,255,.08);border-color:var(--accent)}
 body.light-mode .search-input:focus{background:rgba(255,255,255,.95);border-color:var(--accent)}
-.theme-switcher,.about-btn,.help-btn,.back-top-btn{border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);color:var(--text);border-radius:14px;cursor:pointer;font-family:inherit;transition:all .3s}
-body.light-mode .theme-switcher,body.light-mode .about-btn,body.light-mode .help-btn,body.light-mode .back-top-btn{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);color:var(--text-light)}
-body.light-mode .theme-switcher:hover,body.light-mode .about-btn:hover,body.light-mode .help-btn:hover,body.light-mode .back-top-btn:hover{background:rgba(255,255,255,.9);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.theme-switcher,.about-btn,.help-btn,.refresh-btn,.back-top-btn{border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);color:var(--text);border-radius:14px;cursor:pointer;font-family:inherit;transition:all .3s}
+body.light-mode .theme-switcher,body.light-mode .about-btn,body.light-mode .help-btn,body.light-mode .refresh-btn,body.light-mode .back-top-btn{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);color:var(--text-light)}
+body.light-mode .theme-switcher:hover,body.light-mode .about-btn:hover,body.light-mode .help-btn:hover,body.light-mode .refresh-btn:hover,body.light-mode .back-top-btn:hover{background:rgba(255,255,255,.9);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
 .theme-switcher{width:48px;height:48px;display:grid;place-items:center}
-.theme-switcher:hover,.about-btn:hover,.help-btn:hover,.back-top-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.theme-switcher:hover,.about-btn:hover,.help-btn:hover,.refresh-btn:hover,.back-top-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.16)}
 .theme-switcher .icon{width:20px;height:20px}
-.about-btn,.help-btn,.back-top-btn{padding:11px 16px;font-size:14px;display:flex;align-items:center;gap:6px}
-.help-btn i,.back-top-btn i{font-size:16px}
+.about-btn,.help-btn,.refresh-btn,.back-top-btn{padding:11px 16px;font-size:14px;display:flex;align-items:center;gap:6px}
+.help-btn i,.refresh-btn i,.back-top-btn i{font-size:16px}
 .filter-wrapper{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;padding:0 6px}
 .filter-label{font-size:13px;color:var(--muted);transition:color .3s}
 body.light-mode .filter-label{color:var(--muted-light)}
@@ -97,21 +98,23 @@ body.light-mode .pill{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.04);co
 body.light-mode #emptyState{border-color:rgba(0,0,0,.08);color:var(--muted-light)}
 .footer{text-align:center;padding:24px 0;margin-top:40px;font-size:13px;color:var(--muted);border-top:1px solid var(--border);transition:all .3s;background:transparent!important}
 body.light-mode .footer{color:var(--muted-light);border-color:rgba(0,0,0,.08);background:transparent!important}
-.about-modal,.help-modal{position:fixed;inset:0;background:rgba(0,0,0,.44);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .38s,visibility .38s;z-index:5000}
-.about-modal.show,.help-modal.show{opacity:1;visibility:visible;pointer-events:auto}
-.about-box,.help-box{width:min(560px,100%);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid var(--border);border-radius:26px;padding:26px;backdrop-filter:var(--glass);box-shadow:var(--shadow);transform:translateY(18px) scale(.96);opacity:0;transition:all .42s cubic-bezier(.2,.8,.2,1);max-height:90vh;overflow-y:auto}
-body.light-mode .about-box,body.light-mode .help-box{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.08);box-shadow:0 10px 40px rgba(0,0,0,.1)}
-.about-modal.show .about-box,.help-modal.show .help-box{transform:translateY(0) scale(1);opacity:1}
-.about-header,.help-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.about-logo,.help-logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,168,254,.3),rgba(139,92,246,.24));border:1px solid rgba(255,255,255,.1);font-size:20px;font-weight:800;flex-shrink:0;transition:all .3s}
-body.light-mode .about-logo,body.light-mode .help-logo{background:linear-gradient(135deg,rgba(110,168,254,.15),rgba(139,92,246,.1));border-color:rgba(0,0,0,.06)}
-.help-logo i{font-size:24px;color:var(--accent)}
-.about-title h2,.help-title h2{margin:0;font-size:22px;transition:color .3s}
-body.light-mode .about-title h2,body.light-mode .help-title h2{color:var(--text-light)}
-.about-title p,.help-title p{margin:4px 0 0;color:var(--muted);font-size:13px;transition:color .3s}
-body.light-mode .about-title p,body.light-mode .help-title p{color:var(--muted-light)}
-.about-content p,.help-content p{color:var(--muted);line-height:1.95;font-size:14px;margin:0 0 14px;transition:color .3s}
-body.light-mode .about-content p,body.light-mode .help-content p{color:var(--muted-light)}
+.about-modal,.help-modal,.offline-modal{position:fixed;inset:0;background:rgba(0,0,0,.44);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .38s,visibility .38s;z-index:5000}
+.about-modal.show,.help-modal.show,.offline-modal.show{opacity:1;visibility:visible;pointer-events:auto}
+.about-box,.help-box,.offline-box{width:min(560px,100%);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid var(--border);border-radius:26px;padding:26px;backdrop-filter:var(--glass);box-shadow:var(--shadow);transform:translateY(18px) scale(.96);opacity:0;transition:all .42s cubic-bezier(.2,.8,.2,1);max-height:90vh;overflow-y:auto}
+body.light-mode .about-box,body.light-mode .help-box,body.light-mode .offline-box{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.08);box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.about-modal.show .about-box,.help-modal.show .help-box,.offline-modal.show .offline-box{transform:translateY(0) scale(1);opacity:1}
+.about-header,.help-header,.offline-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.about-logo,.help-logo,.offline-logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,168,254,.3),rgba(139,92,246,.24));border:1px solid rgba(255,255,255,.1);font-size:20px;font-weight:800;flex-shrink:0;transition:all .3s}
+body.light-mode .about-logo,body.light-mode .help-logo,body.light-mode .offline-logo{background:linear-gradient(135deg,rgba(110,168,254,.15),rgba(139,92,246,.1));border-color:rgba(0,0,0,.06)}
+.help-logo i,.offline-logo i{font-size:24px;color:var(--accent)}
+.about-title h2,.help-title h2,.offline-title h2{margin:0;font-size:22px;transition:color .3s}
+body.light-mode .about-title h2,body.light-mode .help-title h2,body.light-mode .offline-title h2{color:var(--text-light)}
+.about-title p,.help-title p,.offline-title p{margin:4px 0 0;color:var(--muted);font-size:13px;transition:color .3s}
+body.light-mode .about-title p,body.light-mode .help-title p,body.light-mode .offline-title p{color:var(--muted-light)}
+.about-content p,.help-content p,.offline-content p{color:var(--muted);line-height:1.95;font-size:14px;margin:0 0 14px;transition:color .3s}
+body.light-mode .about-content p,body.light-mode .help-content p,body.light-mode .offline-content p{color:var(--muted-light)}
+.offline-content .offline-icon{font-size:64px;text-align:center;display:block;margin:10px 0;color:var(--offline-color)}
+.offline-content .offline-icon i{font-size:64px}
 .help-content ul{list-style:none;padding:0;margin:0 0 16px 0}
 .help-content li{color:var(--muted);font-size:14px;line-height:1.8;padding:6px 12px;border-right:3px solid var(--accent);margin-bottom:6px;background:rgba(255,255,255,.03);border-radius:0 8px 8px 0;transition:all .3s}
 body.light-mode .help-content li{background:rgba(0,0,0,.03);color:var(--muted-light)}
@@ -151,22 +154,6 @@ body.light-mode .action-btn.primary{background:linear-gradient(135deg,rgba(110,1
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @keyframes ripple{to{transform:scale(4);opacity:0}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b1220;transition:opacity .8s,visibility .8s;overflow:hidden}
-#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
-#splash canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-.splash-wrapper{display:flex;flex-direction:column;align-items:center;gap:28px;z-index:1;position:relative}
-.splash-logo{width:110px;height:110px;border-radius:30px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);display:grid;place-items:center;font-size:44px;font-weight:800;color:#fff;box-shadow:0 20px 60px rgba(110,168,254,.3);position:relative;animation:splashPulse 1.8s ease-in-out infinite}
-.splash-logo::before{content:'';position:absolute;inset:-6px;border-radius:36px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);z-index:-1;opacity:.2;filter:blur(20px);animation:splashGlow 2s ease-in-out infinite}
-.splash-logo::after{content:'⚡';position:absolute;top:-12px;right:-8px;font-size:18px;animation:splashSpark 1.2s ease-in-out infinite}
-.splash-text{color:rgba(255,255,255,.5);font-size:14px;letter-spacing:3px;font-weight:300;text-transform:uppercase}
-.splash-loader{width:160px;height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;position:relative}
-.splash-loader .bar{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#6ea8fe,#8b5cf6,#6ea8fe);border-radius:999px;animation:splashLoad 1.4s ease-in-out infinite;background-size:200% 100%}
-.splash-loader .bar2{position:absolute;top:0;right:0;height:100%;width:30%;background:rgba(255,255,255,.1);border-radius:999px;animation:splashShimmer 1s ease-in-out infinite}
-@keyframes splashPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-@keyframes splashGlow{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
-@keyframes splashSpark{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(20deg)}}
-@keyframes splashLoad{0%{width:0%;left:0%}50%{width:60%;left:20%}100%{width:0%;left:100%}}
-@keyframes splashShimmer{0%{transform:translateX(0);opacity:0}50%{opacity:1}100%{transform:translateX(-200px);opacity:0}}
 .help-scroll{max-height:55vh;overflow-y:auto;padding-left:4px}
 .help-scroll::-webkit-scrollbar{width:4px}
 .help-scroll::-webkit-scrollbar-track{background:transparent}
@@ -176,25 +163,77 @@ body.light-mode .action-btn.primary{background:linear-gradient(135deg,rgba(110,1
 .back-top-btn:hover{transform:translateY(-4px) scale(1.05);background:rgba(110,168,254,.3)}
 body.light-mode .back-top-btn{background:rgba(110,168,254,.12);border-color:rgba(110,168,254,.2);color:var(--text-light)}
 body.light-mode .back-top-btn:hover{background:rgba(110,168,254,.2)}
-@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:1fr}.meta-grid{grid-template-columns:1fr}.search-input{width:100%;max-width:320px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:20px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:8px 14px;font-size:13px}.filter-wrapper{justify-content:center}.about-btn,.help-btn,.back-top-btn{padding:8px 12px;font-size:12px}.help-box{padding:18px}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}}
+.connection-status{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:13px;color:var(--muted);transition:all .3s;white-space:nowrap}
+body.light-mode .connection-status{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
+.connection-status .status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;transition:all .3s}
+.connection-status .status-dot.online{background:var(--online-color);box-shadow:0 0 12px rgba(74,222,128,.3)}
+.connection-status .status-dot.offline{background:var(--offline-color);box-shadow:0 0 12px rgba(248,113,113,.3)}
+.connection-status .status-dot.measuring{background:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.3);animation:pulse-dot 1s ease-in-out infinite}
+.connection-status .speed-text{font-size:11px;opacity:.7}
+@keyframes pulse-dot{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.offline-box .offline-actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.offline-box .offline-actions .action-btn i{margin-left:6px}
+
+/* ===== اسپلش اسکرین جدید ===== */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b1220;transition:opacity .5s ease,visibility .5s ease;overflow:hidden}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+body.light-mode #splash{background:#eef2f7}
+#splash canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.splash-wrapper{display:flex;flex-direction:column;align-items:center;gap:30px;z-index:1;position:relative}
+.splash-logo{width:100px;height:100px;border-radius:28px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);display:grid;place-items:center;font-size:40px;font-weight:800;color:#fff;box-shadow:0 20px 60px rgba(110,168,254,.35);position:relative;transition:all .3s}
+.splash-logo .logo-glow{position:absolute;inset:-8px;border-radius:34px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);z-index:-1;opacity:.25;filter:blur(25px);animation:glowPulse 1.6s ease-in-out infinite}
+.splash-logo .sparkle{position:absolute;top:-10px;right:-6px;font-size:20px;animation:sparkleAnim 1.2s ease-in-out infinite}
+.splash-progress{width:200px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.splash-progress .progress-track{width:100%;height:3px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;position:relative}
+.splash-progress .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#6ea8fe,#8b5cf6,#6ea8fe);background-size:200% 100%;border-radius:999px;transition:width .15s ease;animation:progressShine 1.2s ease-in-out infinite}
+.splash-progress .progress-text{color:rgba(255,255,255,.4);font-size:12px;letter-spacing:2px;font-weight:300;font-family:inherit}
+.splash-progress .progress-text .percent{color:rgba(255,255,255,.7);font-weight:500}
+.splash-dots{display:flex;gap:8px}
+.splash-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
+.splash-dots .dot.active{background:var(--accent);box-shadow:0 0 16px rgba(110,168,254,.4)}
+.splash-dots .dot.done{background:#4ade80;box-shadow:0 0 12px rgba(74,222,128,.3)}
+@keyframes glowPulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.5;transform:scale(1.15)}}
+@keyframes sparkleAnim{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(25deg)}}
+@keyframes progressShine{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:1fr}.meta-grid{grid-template-columns:1fr}.search-input{width:100%;max-width:320px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:20px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:8px 14px;font-size:13px}.filter-wrapper{justify-content:center}.about-btn,.help-btn,.refresh-btn,.back-top-btn{padding:8px 12px;font-size:12px}.help-box{padding:18px}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:11px;padding:4px 10px}.connection-status .status-dot{width:8px;height:8px}.splash-logo{width:80px;height:80px;font-size:32px;border-radius:22px}.splash-progress{width:160px}}
 </style>
 </head>
 <body>
+<!-- اسپلش اسکرین جدید -->
 <div id="splash">
 <canvas id="splashCanvas"></canvas>
 <div class="splash-wrapper">
-<div class="splash-logo">SA</div>
-<div class="splash-text">بارگذاری ...</div>
-<div class="splash-loader"><div class="bar"></div><div class="bar2"></div></div>
+<div class="splash-logo">
+<span>SA</span>
+<div class="logo-glow"></div>
+<span class="sparkle">⚡</span>
+</div>
+<div class="splash-progress">
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+<div class="progress-text">بارگذاری <span class="percent" id="progressPercent">۰</span>%</div>
+</div>
+<div class="splash-dots" id="splashDots">
+<span class="dot active"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+<span class="dot"></span>
 </div>
 </div>
-<div class="container">
+</div>
+
+<div class="container" id="mainContainer">
 <div class="orb orb1"></div><div class="orb orb2"></div>
 <section class="panel">
 <div class="topbar">
 <div class="topbar-left"><div class="brand-badge">SA</div><div class="brand-title"><h1>برنامه‌های SA</h1><p>لانچر اصلی ابزارهای SA</p></div></div>
 <div class="topbar-right">
 <div class="search-input-container"><input type="text" class="search-input" id="searchInput" placeholder="جستجو در برنامه‌ها..." autocomplete="off" /></div>
+<div class="connection-status" id="connectionStatus">
+<span class="status-dot measuring" id="statusDot"></span>
+<span id="statusText">در حال بررسی...</span>
+<span class="speed-text" id="speedText"></span>
+</div>
+<button class="refresh-btn" onclick="refreshPage()" aria-label="رفرش صفحه"><i class="fa fa-rotate"></i> رفرش</button>
 <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2.5V5.5M12 18.5V21.5M5.5 12H2.5M21.5 12H18.5M18.364 5.636l-2 2M7.636 16.364l-2 2M16.364 16.364l2 2M5.636 5.636l2 2"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button>
 <button class="help-btn" onclick="openHelp()"><i class="fa-regular fa-circle-question"></i> راهنما</button>
 <button class="about-btn" onclick="openAbout()">درباره ما</button>
@@ -229,13 +268,198 @@ body.light-mode .back-top-btn:hover{background:rgba(110,168,254,.2)}
 </div></div>
 <div class="about-actions"><button class="action-btn primary" onclick="closeHelp()">متوجه شدم</button></div>
 </div></div>
+<div id="offlineModal" class="offline-modal" onclick="closeOfflineOnBackdrop(event)">
+<div class="offline-box">
+<div class="offline-header"><div class="offline-logo"><i class="fa fa-wifi"></i></div><div class="offline-title"><h2>اتصال اینترنت قطع شد</h2><p>لطفاً اتصال خود را بررسی کنید</p></div></div>
+<div class="offline-content">
+<span class="offline-icon"><i class="fa fa-wifi"></i></span>
+<p style="text-align:center;font-size:16px;">برای ادامه کار با SA‑APPS به اتصال اینترنت نیاز دارید.</p>
+<p style="text-align:center;font-size:14px;color:var(--muted);">لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.</p>
+<div class="offline-actions">
+<button class="action-btn primary" onclick="refreshPage()"><i class="fa fa-rotate"></i> تلاش مجدد</button>
+</div>
+</div>
+</div></div>
 <div id="toast" class="toast"></div>
 <script>
+// ====== پیکربندی ======
 var config={version:"v16.4.0",siteUrl:"https://amoo189.github.io/Saleh-Amoo/",githubRepo:"https://github.com/Amoo189",contactEmail:"salehamoo1389@gmail.com",theme:localStorage.getItem("sa-apps-theme")||"dark"};
 var currentFilter="all";
 var historyLog=[];
-(function(){var c=document.getElementById("splashCanvas");if(!c)return;var ctx=c.getContext("2d");var W,H,particles=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}resize();window.addEventListener("resize",resize);for(var i=0;i<60;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+1,dx:(Math.random()-0.5)*0.8,dy:(Math.random()-0.5)*0.8,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.15)"})}function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}draw()})();
-// ======== ابزارهای در حال توسعه (newTools) ========
+var isOnline=true;
+
+// ====== اسپلش اسکرین با پیشرفت ======
+(function() {
+    var splash=document.getElementById("splash");
+    var container=document.getElementById("mainContainer");
+    var progressBar=document.getElementById("progressBar");
+    var progressPercent=document.getElementById("progressPercent");
+    var dots=document.querySelectorAll("#splashDots .dot");
+    var steps=[
+        {label:"راه‌اندازی",weight:20},
+        {label:"بارگذاری داده‌ها",weight:30},
+        {label:"آماده‌سازی ابزارها",weight:30},
+        {label:"راه‌اندازی کامل",weight:20}
+    ];
+    var currentStep=0;
+    var progress=0;
+    var totalWeight=steps.reduce(function(sum,s){return sum+s.weight},0);
+    var dotInterval;
+
+    // Canvas زمینه
+    var c=document.getElementById("splashCanvas");
+    if(c) {
+        var ctx=c.getContext("2d");
+        var W,H,particles=[];
+        function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+        resize();window.addEventListener("resize",resize);
+        for(var i=0;i<50;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.5,dx:(Math.random()-0.5)*0.6,dy:(Math.random()-0.5)*0.6,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.12)"})}
+        function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}
+        draw();
+    }
+
+    function updateProgress() {
+        var pct=Math.min(100,Math.round(progress));
+        progressBar.style.width=pct+"%";
+        progressPercent.textContent=pct;
+        
+        // به‌روزرسانی نقطه‌ها
+        var activeIndex=Math.min(3,Math.floor(pct/25));
+        dots.forEach(function(dot,idx){
+            dot.className="dot";
+            if(idx<activeIndex) dot.classList.add("done");
+            else if(idx===activeIndex) dot.classList.add("active");
+        });
+    }
+
+    function advanceStep() {
+        if(currentStep>=steps.length) return;
+        var step=steps[currentStep];
+        var target=0;
+        for(var i=0;i<=currentStep;i++){target+=steps[i].weight}
+        target=Math.min(100,Math.round((target/totalWeight)*100));
+        
+        var start=progress;
+        var diff=target-start;
+        var duration=currentStep===0?200:currentStep===1?250:currentStep===2?200:150;
+        var startTime=Date.now();
+        
+        function animate() {
+            var elapsed=Date.now()-startTime;
+            var t=Math.min(1,elapsed/duration);
+            var ease=1-Math.pow(1-t,3);
+            progress=start+(diff*ease);
+            updateProgress();
+            if(t<1){requestAnimationFrame(animate)}else{
+                progress=target;
+                updateProgress();
+                currentStep++;
+                if(currentStep<steps.length){setTimeout(advanceStep,currentStep===0?80:currentStep===1?60:50)}
+            }
+        }
+        animate();
+    }
+
+    // شروع انیمیشن
+    setTimeout(advanceStep,100);
+
+    // مخفی کردن اسپلش بعد از تکمیل
+    function hideSplash() {
+        splash.classList.add("hide");
+        container.classList.add("loaded");
+    }
+
+    // وقتی پیشرفت به 100% رسید، اسپلش را مخفی کن
+    var checkComplete=setInterval(function(){
+        if(progress>=100) {
+            clearInterval(checkComplete);
+            setTimeout(hideSplash,200);
+        }
+    },50);
+
+    // حداکثر زمان برای مخفی شدن (در صورت بروز خطا)
+    setTimeout(function(){
+        if(!splash.classList.contains("hide")){
+            progress=100;
+            updateProgress();
+            setTimeout(hideSplash,150);
+        }
+    },3000);
+})();
+
+// ====== توابع اصلی ======
+function checkConnection() {
+    var statusDot=document.getElementById("statusDot");
+    var statusText=document.getElementById("statusText");
+    var speedText=document.getElementById("speedText");
+    var offlineModal=document.getElementById("offlineModal");
+
+    if(!navigator.onLine) {
+        isOnline=false;
+        statusDot.className="status-dot offline";
+        statusText.textContent="آفلاین";
+        speedText.textContent="";
+        offlineModal.classList.add("show");
+        return;
+    }
+    isOnline=true;
+    statusDot.className="status-dot measuring";
+    statusText.textContent="در حال اندازه‌گیری...";
+    speedText.textContent="";
+    offlineModal.classList.remove("show");
+
+    measureSpeed(function(speed) {
+        if(!navigator.onLine) {
+            isOnline=false;
+            statusDot.className="status-dot offline";
+            statusText.textContent="آفلاین";
+            speedText.textContent="";
+            offlineModal.classList.add("show");
+            return;
+        }
+        isOnline=true;
+        statusDot.className="status-dot online";
+        statusText.textContent="آنلاین";
+        if(speed!==null){
+            speedText.textContent=speed<1 ? (speed*1000).toFixed(0)+" Kbps" : speed.toFixed(1)+" Mbps";
+        } else {
+            speedText.textContent="";
+        }
+    });
+}
+
+function measureSpeed(callback) {
+    var startTime,endTime;
+    var downloadSize=200000;
+    var url="https://www.google.com/images/phd/px.gif?cache="+Date.now();
+    var xhr=new XMLHttpRequest();
+    xhr.open("GET",url,true);
+    xhr.responseType="arraybuffer";
+    xhr.onloadstart=function(){startTime=Date.now()};
+    xhr.onload=function(){
+        if(xhr.status===200){
+            endTime=Date.now();
+            var duration=(endTime-startTime)/1000;
+            if(duration>0){
+                var bitsLoaded=downloadSize*8;
+                var speedBps=bitsLoaded/duration;
+                var speedMbps=speedBps/(1024*1024);
+                if(speedMbps<0.001){callback(speedMbps*1000/1024)}else{callback(speedMbps)}
+            }else{callback(null)}
+        }else{callback(null)}
+    };
+    xhr.onerror=function(){callback(null)};
+    xhr.ontimeout=function(){callback(null)};
+    xhr.timeout=5000;
+    xhr.send();
+}
+
+function showOfflineModal(){document.getElementById("offlineModal").classList.add("show")}
+function hideOfflineModal(){document.getElementById("offlineModal").classList.remove("show")}
+function closeOfflineOnBackdrop(e){if(e.target===e.currentTarget&&navigator.onLine){hideOfflineModal()}}
+function refreshPage(){if(navigator.onLine){hideOfflineModal();window.location.reload()}else{checkConnection();showToast("هنوز اتصال برقرار نیست، دوباره تلاش کنید")}}
+
+// ====== ابزارهای در حال توسعه ======
 var newTools={
 "شیمی":[{name:"محاسبه‌گر pH",icon:"fa-flask",desc:"محاسبه pH اسیدها و بازها"},{name:"وزن مولکولی",icon:"fa-weight-scale",desc:"محاسبه وزن مولکولی ترکیبات"},{name:"تبدیل واحد شیمی",icon:"fa-arrows-left-right",desc:"تبدیل مول، گرم و حجم"},{name:"جدول حلالیت",icon:"fa-table",desc:"جدول حلالیت ترکیبات یونی"},{name:"ترازوی الکترونیکی",icon:"fa-scale-balanced",desc:"ترازوی دیجیتال برای آزمایشگاه"}],
 "ریاضی":[{name:"حل‌کننده ماتریس",icon:"fa-table",desc:"عملیات روی ماتریس‌ها"},{name:"محاسبه‌گر احتمال",icon:"fa-dice",desc:"محاسبه احتمالات"},{name:"آمار توصیفی",icon:"fa-chart-pie",desc:"محاسبه میانگین، میانه و واریانس"},{name:"حل‌کننده معادله دیفرانسیل",icon:"fa-wave-square",desc:"حل معادلات دیفرانسیل"},{name:"مثلثات‌یاب",icon:"fa-circle",desc:"محاسبه توابع مثلثاتی"}],
@@ -253,7 +477,8 @@ var newTools={
 "طراحی":[{name:"ویرایشگر تصویر",icon:"fa-image",desc:"ویرایش ساده تصاویر"},{name:"نقاشی با ماوس",icon:"fa-paintbrush",desc:"نقاشی با ماوس"},{name:"تولید لوگو",icon:"fa-pen-nib",desc:"تولید لوگوی ساده"},{name:"فونت‌یاب",icon:"fa-font",desc:"پیدا کردن فونت"}],
 "بازی‌ها":[{name:"مار",icon:"fa-arrow-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
 };
-// ======== ابزارهای فعال (mainTools) ========
+
+// ====== ابزارهای فعال ======
 var mainTools={
 "شیمی":[{name:"موازنه‌گر شیمیایی",icon:"fa-flask",desc:"موازنه معادلات شیمیایی با رابط کاربری مدرن",link:"b.html"},{name:"جدول تناوبی",icon:"fa-table",desc:"جدول تناوبی مناسب موبایل و استفاده سریع",link:"pt.html"},{name:"محاسبه‌گر غلظت محلول",icon:"fa-flask",desc:"محاسبه غلظت مولی، درصدی و رقت‌سازی",link:"concentration-calculator.html"}],
 "ریاضی":[{name:"حل‌کننده چندجمله‌ای",icon:"fa-square-root-variable",desc:"حل معادلات ریاضی از درجه ۱ تا ۲۰",link:"ps.html"},{name:"حل‌کننده نامعادله",icon:"fa-chart-line",desc:"حل نامعادله با نمایش نمودار آن",link:"ls.html"},{name:"ماشین حساب مهندسی",icon:"fa-calculator",desc:"ماشین حساب پیشرفته با قابلیت حل معادله",link:"calcu.html"},{name:"محاسبه‌گر درصد",icon:"fa-percent",desc:"محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی",link:"percent-calculator.html"},{name:"ابزار حرفه ای ریاضی",icon:"fa-infinity",desc:"مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین",link:"math-solver-pro.html"},{name:"حل‌کننده پیشرفته معادلات",icon:"fa-infinity",desc:"حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار",link:"equation-solver-pro.html"}],
@@ -272,7 +497,8 @@ var mainTools={
 "طراحی":[{name:"پالت‌ساز رنگ",icon:"fa-palette",desc:"تولید رنگ تصادفی و کپی سریع کد Hex",link:"palette.html"},{name:"گرادینت‌ساز CSS",icon:"fa-rainbow",desc:"ساخت گرادینت با پیش‌نمایش زنده و کپی کد",link:"gradient-generator.html"}],
 "بازی‌ها":[{name:"بازی حافظه",icon:"fa-brain",desc:"کارت‌های مشابه را پیدا کنید",link:"memory-match.html"},{name:"سودوکو",icon:"fa-th",desc:"جدول ۹×۹ را با اعداد ۱ تا ۹ کامل کنید",link:"sudoku-game.html"},{name:"شطرنج",icon:"fa-chess",desc:"بازی شطرنج آفلاین دونفره",link:"chess.html"},{name:"تتریس",icon:"fa-cubes",desc:"بازی تتریس نئونی",link:"tet.html"},{name:"بازی دوز",icon:"fa-x",desc:"دوز با قابلیت بازی دونفره و رقابت با ربات",link:"ttt.html"}]
 };
-var historyTools={name:"تاریخچه",icon:"fa-clock-rotate-left",desc:"آخرین ابزارهای بازدید شده",items:[]};
+
+// ====== توابع کمکی ======
 function addToHistory(name){if(!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
 function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var count=historyLog.length;h.querySelector(".count").textContent=count;var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(count===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" onclick="showToast(\''+(found.link?'باز شدن '+found.name:'این ابزار در نسخه های بعدی کامل می‌شود')+'\')"';if(found.link){html+=' onclick="cardClickHandler(event)" href="'+found.link+'"';}else{html+=' onclick="showToast(\'این ابزار در نسخه های بعدی کامل می‌شود\')"';}html+='>'+(isDev?'<span class="dev-badge"><i class="fa fa-gear"></i> در حال توسعه</span>':'<span class="active-badge"><i class="fa fa-check-circle"></i> فعال</span>')+'<div class="card-top"><div class="icon-badge"><i class="fa '+found.icon+'"></i></div></div><h2>'+found.name+'</h2><p>'+found.desc+'</p><div class="card-footer"><span class="pill">'+found.cat+'</span><span class="open">ورود ←</span></div></div>';grid.innerHTML+=html}})}}}}
 function buildHistoryTab(){var c=document.getElementById("tabsContainer");var h=document.createElement("button");h.className="tab-btn";h.dataset.tab="history";h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';c.appendChild(h);h.addEventListener("click",function(){var tab=this.dataset.tab;document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)})});var grid=document.getElementById("appGrid");var section=document.createElement("section");section.className="category hidden-cat";section.dataset.tab="history";section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2><span class="category-count">0</span></div><div class="grid"></div>';grid.appendChild(section)}
@@ -298,7 +524,42 @@ function openHelp(){document.getElementById("helpModal").classList.add("show");d
 function closeHelp(){document.getElementById("helpModal").classList.remove("show");document.body.style.overflow=""}
 function closeHelpOnBackdrop(e){if(e.target===e.currentTarget)closeHelp()}
 function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
-document.addEventListener("DOMContentLoaded",function(){initBridge();applyTheme(config.theme);document.getElementById("versionDisplay").textContent="نسخه: "+config.version;document.getElementById("modalVersion").textContent=config.version;document.getElementById("githubLinkText").textContent=config.siteUrl.replace(/^https?:\/\//,"");document.getElementById("contactEmailLink").textContent=config.contactEmail;buildCards();buildTabs();document.getElementById("searchInput").addEventListener("input",applyFilterAndSearch);var backBtn=document.getElementById("backTopBtn");window.addEventListener("scroll",function(){if(window.scrollY>300){backBtn.classList.add("visible")}else{backBtn.classList.remove("visible")}});setTimeout(function(){var s=document.getElementById("splash");if(s)s.classList.add("hide")},1800)});
+
+// ====== راه‌اندازی ======
+document.addEventListener("DOMContentLoaded",function(){
+    initBridge();
+    applyTheme(config.theme);
+    document.getElementById("versionDisplay").textContent="نسخه: "+config.version;
+    document.getElementById("modalVersion").textContent=config.version;
+    document.getElementById("githubLinkText").textContent=config.siteUrl.replace(/^https?:\/\//,"");
+    document.getElementById("contactEmailLink").textContent=config.contactEmail;
+    buildCards();
+    buildTabs();
+    document.getElementById("searchInput").addEventListener("input",applyFilterAndSearch);
+    
+    var backBtn=document.getElementById("backTopBtn");
+    window.addEventListener("scroll",function(){
+        if(window.scrollY>300){backBtn.classList.add("visible")}else{backBtn.classList.remove("visible")}
+    });
+    
+    // بررسی اتصال اینترنت
+    setTimeout(checkConnection,500);
+    setInterval(checkConnection,30000);
+    
+    window.addEventListener("online",function(){
+        checkConnection();
+        hideOfflineModal();
+        showToast("اتصال اینترنت برقرار شد");
+    });
+    window.addEventListener("offline",function(){
+        isOnline=false;
+        document.getElementById("statusDot").className="status-dot offline";
+        document.getElementById("statusText").textContent="آفلاین";
+        document.getElementById("speedText").textContent="";
+        showOfflineModal();
+        showToast("اتصال اینترنت قطع شد");
+    });
+});
 </script>
 </body>
   </html>
