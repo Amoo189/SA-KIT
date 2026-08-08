@@ -67,6 +67,7 @@ body.light-mode .category-title{color:var(--text-light)}
 /* ===== کارت‌ها با اندازه بزرگ‌تر ===== */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:16px 10px;margin-top:6px}
 
+/* ===== استایل کارت با انیمیشن ریپل ===== */
 .card{
     display:flex;
     flex-direction:column;
@@ -85,6 +86,34 @@ body.light-mode .category-title{color:var(--text-light)}
     height:130px;
     min-height:130px;
     max-height:130px;
+    overflow:hidden;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+/* انیمیشن ریپل */
+.card .ripple-effect{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(110,168,254,.35);
+    transform:scale(0);
+    animation:rippleAnim 0.7s ease-out forwards;
+    pointer-events:none;
+    will-change:transform,opacity;
+}
+body.light-mode .card .ripple-effect{
+    background:rgba(110,168,254,.2);
+}
+
+@keyframes rippleAnim{
+    0%{transform:scale(0);opacity:1}
+    100%{transform:scale(4);opacity:0}
+}
+
+/* انیمیشن کلیک کارت (فشرده شدن) */
+.card:active .card-icon{
+    transform:scale(0.85);
+    transition:transform 0.12s ease;
 }
 
 .card .card-icon{
@@ -101,6 +130,8 @@ body.light-mode .category-title{color:var(--text-light)}
     transition:all .3s ease;
     margin-bottom:6px;
     flex-shrink:0;
+    position:relative;
+    z-index:1;
 }
 body.light-mode .card .card-icon{background:rgba(0,0,0,.04)}
 .card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 8px 20px rgba(110,168,254,.3)}
@@ -119,6 +150,8 @@ body.light-mode .card .card-icon{background:rgba(0,0,0,.04)}
     max-height:34px;
     word-break:break-word;
     font-weight:500;
+    position:relative;
+    z-index:1;
 }
 body.light-mode .card .card-name{color:var(--muted-light)}
 
@@ -133,6 +166,30 @@ body.light-mode .card .card-name{color:var(--muted-light)}
     white-space:nowrap;
     flex-shrink:0;
     line-height:1.5;
+    position:relative;
+    z-index:1;
+}
+
+/* انیمیشن fade-in برای کارت‌ها */
+.card{
+    animation:cardFadeIn 0.4s ease both;
+}
+.card:nth-child(1){animation-delay:0.02s}
+.card:nth-child(2){animation-delay:0.04s}
+.card:nth-child(3){animation-delay:0.06s}
+.card:nth-child(4){animation-delay:0.08s}
+.card:nth-child(5){animation-delay:0.10s}
+.card:nth-child(6){animation-delay:0.12s}
+.card:nth-child(7){animation-delay:0.14s}
+.card:nth-child(8){animation-delay:0.16s}
+.card:nth-child(9){animation-delay:0.18s}
+.card:nth-child(10){animation-delay:0.20s}
+.card:nth-child(11){animation-delay:0.22s}
+.card:nth-child(12){animation-delay:0.24s}
+
+@keyframes cardFadeIn{
+    0%{opacity:0;transform:translateY(12px) scale(0.96)}
+    100%{opacity:1;transform:translateY(0) scale(1)}
 }
 
 #emptyState{display:none;margin-top:20px;padding:28px 18px;text-align:center;border:1px dashed var(--border);border-radius:22px;color:var(--muted);transition:all .3s}
@@ -598,18 +655,69 @@ var mainTools={
 
 // ====== توابع کمکی ======
 function addToHistory(name){if(!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
-function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var count=historyLog.length;h.querySelector(".count").textContent=count;var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(count===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" ';if(found.link){html+='onclick="cardClickHandler(event)" href="'+found.link+'"';}else{html+='onclick="showToast(\'این ابزار در نسخه های بعدی کامل می‌شود\')"';}html+=' data-name="'+found.name+'">';html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';html+='<span class="card-name">'+found.name+'</span>';if(isDev){html+='<span class="dev-badge-grid">در حال توسعه</span>'}html+='</div>';grid.innerHTML+=html}})}}}}
+function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var count=historyLog.length;h.querySelector(".count").textContent=count;var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(count===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" ';if(found.link){html+='data-link="'+found.link+'"';}html+=' data-name="'+found.name+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';html+='<span class="card-name">'+found.name+'</span>';if(isDev){html+='<span class="dev-badge-grid">در حال توسعه</span>'}html+='</div>';grid.innerHTML+=html}})}}}}
 function buildHistoryTab(){var c=document.getElementById("tabsContainer");var h=document.createElement("button");h.className="tab-btn";h.dataset.tab="history";h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';c.appendChild(h);h.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});applyFilterAndSearch()});var grid=document.getElementById("appGrid");var section=document.createElement("section");section.className="category hidden-cat";section.dataset.tab="history";section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2></div><div class="grid"></div>';grid.appendChild(section)}
 function copyToClipboard(text,e){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){showCopyFeedback(e)})["catch"](function(){fallbackCopy(text,e)})}else{fallbackCopy(text,e)}}
 function fallbackCopy(text,e){var t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.opacity="0";t.style.left="-9999px";document.body.appendChild(t);t.select();try{document.execCommand("copy");showCopyFeedback(e)}catch(err){showToast("کپی نشد! لطفاً دستی کپی کنید")}document.body.removeChild(t)}
 function showCopyFeedback(e){e.classList.add("copied");var t=e.innerHTML;e.innerHTML='<i class="fa fa-check"></i> کپی شد';showToast("متن با موفقیت کپی شد");setTimeout(function(){e.classList.remove("copied");e.innerHTML=t},2000)}
 function applyFilterAndSearch(){var q=document.getElementById("searchInput").value.trim().toLowerCase();var cats=document.querySelectorAll(".category");var total=0;cats.forEach(function(cat){var cards=cat.querySelectorAll(".card");var visible=0;var catName=cat.dataset.category?cat.dataset.category.toLowerCase():"";cards.forEach(function(card){var isDev=!!card.querySelector(".dev-badge-grid");var isActive=!isDev;var fm=true;if(currentFilter==="active")fm=isActive;else if(currentFilter==="dev")fm=isDev;var txt=(card.querySelector(".card-name")?.textContent||"")+(card.getAttribute("title")||"");var sm=txt.toLowerCase().includes(q)||catName.includes(q);var show=fm&&sm;card.style.display=show?"":"none";if(show)visible++});total+=visible;var ce=cat.querySelector(".category-count");if(ce)ce.textContent=visible+" ابزار";var at=document.querySelector(".tab-btn.active")?.dataset.tab;if(at&&at!=="all")cat.classList.toggle("hidden-cat",cat.dataset.tab!==at)});document.getElementById("emptyState").style.display=total?"none":"block"}
-function buildCards(){var grid=document.getElementById("appGrid");var html="";Object.keys(mainTools).forEach(function(cat){var mc=mainTools[cat]||[],nc=newTools[cat]||[];if(mc.length===0&&nc.length===0)return;html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'">';html+='<div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2></div>';html+='<div class="grid">';mc.forEach(function(t){html+='<a href="'+t.link+'" class="card" onclick="cardClickHandler(event)" data-name="'+t.name+'" title="'+t.desc+'">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='</a>'});nc.forEach(function(t){html+='<div class="card" onclick="showToast(\'این ابزار در نسخه های بعدی کامل می‌شود\')" data-name="'+t.name+'" title="'+t.desc+'">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='<span class="dev-badge-grid">در حال توسعه</span>';html+='</div>'});html+='</div></section>'});grid.innerHTML=html}
+function buildCards(){var grid=document.getElementById("appGrid");var html="";Object.keys(mainTools).forEach(function(cat){var mc=mainTools[cat]||[],nc=newTools[cat]||[];if(mc.length===0&&nc.length===0)return;html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'">';html+='<div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2></div>';html+='<div class="grid">';mc.forEach(function(t){html+='<div class="card" data-link="'+t.link+'" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='</div>'});nc.forEach(function(t){html+='<div class="card" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='<span class="dev-badge-grid">در حال توسعه</span>';html+='</div>'});html+='</div></section>'});grid.innerHTML=html}
 function buildTabs(){var c=document.getElementById("tabsContainer");var html='<button class="tab-btn active" data-tab="all">همه</button>';Object.keys(mainTools).forEach(function(k){var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);if(count>0){html+='<button class="tab-btn" data-tab="'+k+'">'+k+'</button>'}});html+='<button class="tab-btn" data-tab="history">تاریخچه</button>';c.innerHTML=html;c.querySelectorAll(".tab-btn").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});if(tab==='history'){updateHistoryTab()}applyFilterAndSearch()})})}
 var toastTimer;function showToast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},3000)}
 function initBridge(){try{if(window.WebView?.isReady||window.jsBridge||window.webkit?.messageHandlers||window.android){return true}return false}catch(e){return false}}
 function openLinkWithBridge(u){try{if(window.WebView?.isReady){window.WebView.platform.openUrl(u);return true}if(window.jsBridge?.openUrl){window.jsBridge.openUrl(u);return true}if(window.webkit?.messageHandlers?.openUrl){window.webkit.messageHandlers.openUrl.postMessage({url:u});return true}if(window.android?.openUrl){window.android.openUrl(u);return true}return false}catch(e){return false}}
-function cardClickHandler(e){e.preventDefault();var card=e.currentTarget;var href=card.getAttribute("href");var name=card.dataset.name||"";if(name)addToHistory(name);if(!href)return;var ripple=document.createElement("span");ripple.className="card-ripple";card.appendChild(ripple);var rect=card.getBoundingClientRect();var size=Math.max(rect.width,rect.height);var x=e.clientX-rect.left-size/2;var y=e.clientY-rect.top-size/2;ripple.style.width=ripple.style.height=size+"px";ripple.style.left=x+"px";ripple.style.top=y+"px";setTimeout(function(){var used=openLinkWithBridge(href);if(!used)window.location.assign(href)},380);ripple.addEventListener("animationend",function(){ripple.remove()})}
+
+// ====== هندلر کلیک کارت با انیمیشن ریپل ======
+function cardClickHandler(e) {
+    e.preventDefault();
+    var card = e.currentTarget;
+    var name = card.dataset.name || "";
+    var link = card.dataset.link || "";
+    
+    // اضافه کردن به تاریخچه
+    if(name) addToHistory(name);
+    
+    // ====== انیمیشن ریپل ======
+    var rect = card.getBoundingClientRect();
+    var size = Math.max(rect.width, rect.height);
+    var x = e.clientX - rect.left - size/2;
+    var y = e.clientY - rect.top - size/2;
+    
+    var ripple = document.createElement("span");
+    ripple.className = "ripple-effect";
+    ripple.style.width = size + "px";
+    ripple.style.height = size + "px";
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+    card.appendChild(ripple);
+    
+    // ====== انیمیشن فشرده شدن ======
+    var icon = card.querySelector(".card-icon");
+    if(icon) {
+        icon.style.transform = "scale(0.85)";
+        setTimeout(function() {
+            icon.style.transform = "";
+        }, 150);
+    }
+    
+    // ====== حرکت به صفحه بعد ======
+    setTimeout(function() {
+        if(link) {
+            var used = openLinkWithBridge(link);
+            if(!used) {
+                window.location.assign(link);
+            }
+        } else {
+            showToast("این ابزار در نسخه‌های بعدی کامل می‌شود");
+        }
+    }, 300);
+    
+    // حذف ریپل بعد از انیمیشن
+    ripple.addEventListener("animationend", function() {
+        ripple.remove();
+    });
+}
+
 function applyTheme(t){document.body.classList.toggle("light-mode",t==="light");localStorage.setItem("sa-apps-theme",t)}
 function toggleTheme(){var isLight=document.body.classList.toggle("light-mode");localStorage.setItem("sa-apps-theme",isLight?"light":"dark")}
 function openAbout(){document.getElementById("aboutModal").classList.add("show");document.body.style.overflow="hidden"}
@@ -660,4 +768,4 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 </body>
-  </html>
+    </html>
