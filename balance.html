@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#0b1220"/>
   <title>SA-CB</title>
+  <!-- Font Awesome 6 (Free) -->
   <link rel="stylesheet" href="fontawesome/css/all.min.css">
   <style>
-  @font-face{
+    @font-face{
       font-family:"VazirmatnLocal";
       src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
       font-weight:400;
@@ -503,6 +504,7 @@
       align-items: center;
       gap: 10px;
       font-size: 1.6rem;
+      font-family:"VazirmatnLocal", sans-serif;
     }
     .modal-box h2 i {
       color: var(--accent);
@@ -549,6 +551,14 @@
     }
     .modal-box .dev-info a:hover {
       text-decoration: underline;
+    }
+    .modal-box code {
+      background: rgba(110,168,254,.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: .9rem;
+      color: var(--accent);
+      font-family:"VazirmatnLocal", sans-serif;
     }
 
     @media (max-width: 700px){
@@ -1269,7 +1279,7 @@
     </div>
   `;
 
-  // help content
+  // help content با اضافه شدن راهنمای آفلاین
   const helpHTML = `
     <h2><i class="fas fa-question-circle"></i> راهنما</h2>
     <ul>
@@ -1280,6 +1290,15 @@
       <li>ضرایب به صورت خودکار محاسبه و نمایش داده می‌شوند.</li>
       <li>با کلیک روی نمونه‌ها، معادله‌های آماده را امتحان کنید.</li>
       <li>تاریخچه معادلات اخیر شما ذخیره می‌شود.</li>
+    </ul>
+    
+    <h2 style="margin-top:20px; font-size:1.3rem;"><i class="fas fa-wifi"></i> راهنمای استفاده‌ی آفلاین</h2>
+    <p>
+      پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:
+    </p>
+    <ul>
+      <li>برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
+      <li>اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، این عمل را باری دیگر انجام بدهید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
     </ul>
   `;
 
