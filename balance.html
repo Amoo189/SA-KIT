@@ -90,7 +90,7 @@
       transition: background .3s ease, color .3s ease;
     }
 
-    /* ===== PRELOADER جدید و پیشرفته ===== */
+    /* ===== PRELOADER پیشرفته و مدرن ===== */
     #preloader{
       position:fixed;
       inset:0;
@@ -99,9 +99,9 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:28px;
+      gap:32px;
       background:var(--preloader-bg);
-      transition: background .3s ease, opacity .6s ease, visibility .6s ease;
+      transition: background .3s ease, opacity .7s ease, visibility .7s ease;
       opacity:1;
       visibility:visible;
     }
@@ -110,90 +110,237 @@
       visibility:hidden;
     }
 
-    .loader-ring {
+    /* حلقه‌های چرخان متعدد */
+    .loader-wrapper {
       position:relative;
-      width:100px;
-      height:100px;
-    }
-    .loader-ring svg {
-      width:100%;
-      height:100%;
-      transform:rotate(-90deg);
-    }
-    .loader-ring .bg-circle {
-      fill:none;
-      stroke:rgba(255,255,255,.06);
-      stroke-width:4;
-    }
-    .loader-ring .progress-circle {
-      fill:none;
-      stroke:url(#loaderGrad);
-      stroke-width:4;
-      stroke-linecap:round;
-      stroke-dasharray: 283;
-      stroke-dashoffset: 283;
-      animation: loaderSpin 1.8s ease-in-out infinite;
-      filter:drop-shadow(0 0 12px rgba(110,168,254,.3));
-    }
-    @keyframes loaderSpin {
-      0% { stroke-dashoffset: 283; }
-      50% { stroke-dashoffset: 70; }
-      100% { stroke-dashoffset: 283; }
+      width:120px;
+      height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
 
-    .loader-text {
-      font-size:1.8rem;
+    .loader-ring {
+      position:absolute;
+      border-radius:50%;
+      border:3px solid transparent;
+      animation: spin var(--duration) linear infinite;
+    }
+
+    .loader-ring:nth-child(1) {
+      width:120px;
+      height:120px;
+      border-top-color:var(--accent);
+      border-right-color:var(--accent);
+      --duration:1.2s;
+      animation-delay:0s;
+    }
+    .loader-ring:nth-child(2) {
+      width:92px;
+      height:92px;
+      border-bottom-color:var(--accent2);
+      border-left-color:var(--accent2);
+      --duration:1.6s;
+      animation-delay:0.2s;
+    }
+    .loader-ring:nth-child(3) {
+      width:64px;
+      height:64px;
+      border-top-color:rgba(110,168,254,.4);
+      border-right-color:rgba(110,168,254,.4);
+      --duration:2s;
+      animation-delay:0.4s;
+    }
+    .loader-ring:nth-child(4) {
+      width:36px;
+      height:36px;
+      border-bottom-color:rgba(139,92,246,.4);
+      border-left-color:rgba(139,92,246,.4);
+      --duration:2.4s;
+      animation-delay:0.6s;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* افکت پالس در مرکز */
+    .loader-pulse {
+      position:absolute;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      animation: pulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(110,168,254,.3);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity:1; }
+      50% { transform: scale(1.6); opacity:0.4; }
+    }
+
+    /* متن لوگو با انیمیشن */
+    .loader-brand {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+    }
+    .loader-brand .main {
+      font-size:2.2rem;
       font-weight:900;
-      letter-spacing:3px;
-      background:linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
-      background-size:200% 100%;
+      letter-spacing:4px;
+      background:linear-gradient(90deg, var(--accent), var(--accent2), var(--accent), var(--accent2));
+      background-size:300% 100%;
       -webkit-background-clip:text;
       background-clip:text;
       color:transparent;
-      animation: textShimmer 2.5s linear infinite;
-      text-shadow:0 0 30px rgba(110,168,254,.15);
+      animation: gradientMove 3s ease-in-out infinite;
+      text-shadow:0 0 40px rgba(110,168,254,.1);
     }
-    @keyframes textShimmer {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+    .loader-brand .sub {
+      font-size:.85rem;
+      color:var(--muted);
+      letter-spacing:6px;
+      opacity:0.6;
+      animation: fadePulse 2s ease-in-out infinite;
     }
 
+    @keyframes gradientMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes fadePulse {
+      0%, 100% { opacity:0.4; }
+      50% { opacity:0.9; }
+    }
+
+    /* دایره‌های کوچک متحرک */
     .loader-dots {
       display:flex;
-      gap:10px;
-      margin-top:-8px;
+      gap:14px;
+      margin-top:4px;
     }
     .loader-dots span {
-      width:12px;
-      height:12px;
+      width:10px;
+      height:10px;
       border-radius:50%;
+      animation: dotWave 1.4s ease-in-out infinite;
+    }
+    .loader-dots span:nth-child(1) {
       background:var(--accent);
-      animation: dotBounce 1.4s ease-in-out infinite;
+      animation-delay:0s;
     }
     .loader-dots span:nth-child(2) {
-      animation-delay:0.15s;
       background:var(--accent2);
+      animation-delay:0.2s;
     }
     .loader-dots span:nth-child(3) {
-      animation-delay:0.3s;
       background:var(--accent);
+      animation-delay:0.4s;
     }
-    @keyframes dotBounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity:0.3; }
-      40% { transform: scale(1); opacity:1; }
+    .loader-dots span:nth-child(4) {
+      background:var(--accent2);
+      animation-delay:0.6s;
+    }
+    .loader-dots span:nth-child(5) {
+      background:var(--accent);
+      animation-delay:0.8s;
+    }
+    @keyframes dotWave {
+      0%, 40%, 100% { 
+        transform: translateY(0) scale(0.6);
+        opacity:0.3;
+      }
+      20% { 
+        transform: translateY(-14px) scale(1);
+        opacity:1;
+      }
     }
 
-    body.light-mode .loader-ring .bg-circle {
-      stroke:rgba(0,0,0,.08);
+    /* particles background */
+    .loader-particles {
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
     }
-    body.light-mode .loader-ring .progress-circle {
-      filter:drop-shadow(0 0 12px rgba(59,130,246,.2));
+    .loader-particles span {
+      position:absolute;
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:var(--accent);
+      opacity:0;
+      animation: particleFloat var(--dur) ease-in-out infinite;
+      animation-delay:var(--delay);
     }
-    body.light-mode .loader-text {
-      background:linear-gradient(90deg, #2563eb, #8b5cf6, #2563eb);
-      background-size:200% 100%;
-      -webkit-background-clip:text;
-      background-clip:text;
+    @keyframes particleFloat {
+      0% {
+        opacity:0;
+        transform:translateY(0) scale(0);
+      }
+      20% {
+        opacity:0.8;
+        transform:translateY(-20px) scale(1);
+      }
+      80% {
+        opacity:0.8;
+        transform:translateY(-60px) scale(0.8);
+      }
+      100% {
+        opacity:0;
+        transform:translateY(-80px) scale(0);
+      }
+    }
+
+    .loader-progress-bar {
+      width:200px;
+      height:2px;
+      background:rgba(255,255,255,.06);
+      border-radius:4px;
+      overflow:hidden;
+      position:relative;
+    }
+    .loader-progress-bar .fill {
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:4px;
+      animation: progressFill 2.5s ease-in-out forwards;
+    }
+    @keyframes progressFill {
+      0% { width:0%; }
+      50% { width:65%; }
+      80% { width:85%; }
+      100% { width:100%; }
+    }
+
+    body.light-mode .loader-ring:nth-child(1) {
+      border-top-color:var(--accent);
+      border-right-color:var(--accent);
+    }
+    body.light-mode .loader-ring:nth-child(2) {
+      border-bottom-color:var(--accent2);
+      border-left-color:var(--accent2);
+    }
+    body.light-mode .loader-ring:nth-child(3) {
+      border-top-color:rgba(59,130,246,.4);
+      border-right-color:rgba(59,130,246,.4);
+    }
+    body.light-mode .loader-ring:nth-child(4) {
+      border-bottom-color:rgba(139,92,246,.4);
+      border-left-color:rgba(139,92,246,.4);
+    }
+    body.light-mode .loader-pulse {
+      box-shadow: 0 0 30px rgba(59,130,246,.2);
+    }
+    body.light-mode .loader-progress-bar {
+      background:rgba(0,0,0,.08);
+    }
+    body.light-mode .loader-particles span {
+      background:var(--accent);
     }
 
     .container{
@@ -651,12 +798,31 @@
         padding: 8px 14px;
         font-size: .85rem;
       }
-      .loader-ring {
+      .loader-wrapper {
+        width:90px;
+        height:90px;
+      }
+      .loader-ring:nth-child(1) {
+        width:90px;
+        height:90px;
+      }
+      .loader-ring:nth-child(2) {
         width:70px;
         height:70px;
       }
-      .loader-text {
-        font-size:1.4rem;
+      .loader-ring:nth-child(3) {
+        width:50px;
+        height:50px;
+      }
+      .loader-ring:nth-child(4) {
+        width:30px;
+        height:30px;
+      }
+      .loader-brand .main {
+        font-size:1.6rem;
+      }
+      .loader-progress-bar {
+        width:150px;
       }
       .modal-box {
         max-height: 90vh;
@@ -900,25 +1066,38 @@
   </div>
 </div>
 
-<!-- ===== PRELOADER جدید ===== -->
+<!-- ===== PRELOADER پیشرفته و مدرن ===== -->
 <div id="preloader">
-  <div class="loader-ring">
-    <svg viewBox="0 0 100 100">
-      <defs>
-        <linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="var(--accent)" />
-          <stop offset="100%" stop-color="var(--accent2)" />
-        </linearGradient>
-      </defs>
-      <circle class="bg-circle" cx="50" cy="50" r="45" />
-      <circle class="progress-circle" cx="50" cy="50" r="45" />
-    </svg>
+  <!-- ذرات پس‌زمینه -->
+  <div class="loader-particles" id="particles"></div>
+
+  <!-- حلقه‌های چرخان -->
+  <div class="loader-wrapper">
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-pulse"></div>
   </div>
-  <div class="loader-text">SA-CB</div>
+
+  <!-- برند -->
+  <div class="loader-brand">
+    <div class="main">SA-CB</div>
+    <div class="sub">CHEMICAL BALANCER</div>
+  </div>
+
+  <!-- دایره‌های موج‌دار -->
   <div class="loader-dots">
     <span></span>
     <span></span>
     <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- نوار پیشرفت -->
+  <div class="loader-progress-bar">
+    <div class="fill"></div>
   </div>
 </div>
 
@@ -994,11 +1173,37 @@
 </div>
 
 <script>
+  // ===== ایجاد ذرات برای پری‌لودر =====
+  (function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      const span = document.createElement('span');
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const size = 2 + Math.random() * 4;
+      const dur = 3 + Math.random() * 4;
+      const delay = Math.random() * 3;
+      span.style.cssText = `
+        left:${x}%;
+        top:${y}%;
+        width:${size}px;
+        height:${size}px;
+        --dur:${dur}s;
+        --delay:${delay}s;
+        animation-delay:${delay}s;
+        animation-duration:${dur}s;
+      `;
+      container.appendChild(span);
+    }
+  })();
+
   // Preloader - با تاخیر و انیمیشن محو
   window.addEventListener("load", () => {
     setTimeout(() => {
       document.getElementById("preloader").classList.add("hidden");
-    }, 1600);
+    }, 2800);
   });
 
   function gcd(a, b) {
