@@ -1,743 +1,1633 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SA-APPS</title>
-<link rel="stylesheet" href="fontawesome/css/all.min.css">
-<style>
-@font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
-:root{--bg:#0b1220;--bg2:#0f172a;--text:#e8eefc;--muted:#9fb0d0;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 50px rgba(0,0,0,.45);--glass:blur(14px);--radius:24px;--bg-light:#eef2f7;--bg2-light:#d5dee8;--text-light:#1a202c;--muted-light:#5a6a7e;--border-light:rgba(0,0,0,.1);--shadow-light:0 10px 30px rgba(0,0,0,.08);--tab-bg:rgba(255,255,255,.04);--tab-active:rgba(110,168,254,.15);--card-bg:rgba(255,255,255,.04);--card-bg-light:rgba(255,255,255,.7);--online-color:#4ade80;--offline-color:#f87171}
-body.light-mode{--bg:var(--bg-light);--bg2:var(--bg2-light);--text:var(--text-light);--muted:var(--muted-light);--border:var(--border-light);--shadow:var(--shadow-light);--tab-bg:rgba(0,0,0,.04);--tab-active:rgba(110,168,254,.12);--card-bg:rgba(255,255,255,.7);background:#eef2f7}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{min-height:100vh;font-family:VazirmatnLocal,sans-serif;background:#0b1220;background-image:radial-gradient(circle at top left,rgba(110,168,254,.2),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.18),transparent 34%);background-attachment:fixed;color:var(--text);transition:all .3s}
-body.light-mode{background:#eef2f7;background-image:radial-gradient(circle at top left,rgba(110,168,254,.08),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.06),transparent 34%)}
-.container{width:min(1120px,100%);margin:auto;padding:20px;position:relative;opacity:0;transition:opacity .8s ease}
-.container.loaded{opacity:1}
-.orb{position:absolute;border-radius:50%;filter:blur(30px);opacity:.35;pointer-events:none;z-index:0;transition:opacity .3s}
-body.light-mode .orb{opacity:.1}
-.orb1{width:170px;height:170px;background:linear-gradient(135deg,var(--accent),transparent);top:-40px;right:20px}
-.orb2{width:200px;height:200px;background:linear-gradient(135deg,var(--accent2),transparent);bottom:-60px;left:10px}
-.panel{position:relative;z-index:1;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--border);backdrop-filter:var(--glass);border-radius:32px;box-shadow:var(--shadow);padding:28px;transition:all .3s}
-body.light-mode .panel{background:rgba(255,255,255,.75);border-color:rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(0,0,0,.06)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.topbar-left{display:flex;align-items:center;gap:14px;flex-shrink:0}
-.brand-badge{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,168,254,.28),rgba(139,92,246,.24));border:1px solid rgba(255,255,255,.1);font-weight:800;font-size:20px;box-shadow:0 10px 30px rgba(0,0,0,.18);flex-shrink:0;transition:all .3s}
-body.light-mode .brand-badge{background:linear-gradient(135deg,rgba(110,168,254,.2),rgba(139,92,246,.15));border-color:rgba(0,0,0,.06);box-shadow:0 10px 20px rgba(0,0,0,.06)}
-.brand-title h1{margin:0;font-size:24px;transition:color .3s}
-.brand-title p{margin:0;color:var(--muted);font-size:14px;transition:color .3s}
-body.light-mode .brand-title p{color:var(--muted-light)}
-.topbar-right{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
-.search-input{width:200px;padding:10px 14px;border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);border-radius:14px;color:var(--text);font-size:14px;transition:all .3s;font-family:inherit}
-.search-input::placeholder{color:var(--muted);transition:color .3s}
-body.light-mode .search-input{background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.1);color:var(--text-light)}
-body.light-mode .search-input::placeholder{color:#999}
-.search-input:focus{width:260px;outline:none;background:rgba(255,255,255,.08);border-color:var(--accent)}
-body.light-mode .search-input:focus{background:rgba(255,255,255,.95);border-color:var(--accent)}
-.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn,.back-top-btn{border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);color:var(--text);border-radius:14px;cursor:pointer;font-family:inherit;transition:all .3s;display:inline-flex;align-items:center;justify-content:center;gap:0;white-space:nowrap;width:42px;height:42px;padding:0;font-size:16px;flex-shrink:0}
-body.light-mode .theme-switcher,body.light-mode .about-btn-icon,body.light-mode .help-btn,body.light-mode .refresh-btn,body.light-mode .back-top-btn{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);color:var(--text-light)}
-body.light-mode .theme-switcher:hover,body.light-mode .about-btn-icon:hover,body.light-mode .help-btn:hover,body.light-mode .refresh-btn:hover,body.light-mode .back-top-btn:hover{background:rgba(255,255,255,.9);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
-.theme-switcher:hover,.about-btn-icon:hover,.help-btn:hover,.refresh-btn:hover,.back-top-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.16)}
-.theme-switcher .icon{width:20px;height:20px}
-.about-btn-icon .about-tooltip{position:relative;display:inline-block}
-.about-btn-icon .tooltip-text{visibility:hidden;width:auto;min-width:160px;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);color:#fff;text-align:center;padding:5px 10px;border-radius:8px;position:absolute;bottom:110%;right:50%;transform:translateX(50%);font-size:11px;font-weight:400;white-space:nowrap;border:1px solid rgba(255,255,255,.1);opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
-body.light-mode .about-btn-icon .tooltip-text{background:rgba(255,255,255,.95);color:var(--text-light);border-color:rgba(0,0,0,.08)}
-.about-btn-icon .tooltip-text::after{content:'';position:absolute;top:100%;right:50%;transform:translateX(50%);border:6px solid transparent;border-top-color:rgba(0,0,0,.85)}
-body.light-mode .about-btn-icon .tooltip-text::after{border-top-color:rgba(255,255,255,.95)}
-.about-btn-icon:hover .tooltip-text{visibility:visible;opacity:1}
-.filter-wrapper{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;padding:0 6px}
-.filter-label{font-size:13px;color:var(--muted);transition:color .3s}
-body.light-mode .filter-label{color:var(--muted-light)}
-.filter-btn{padding:6px 16px;border-radius:999px;border:1px solid var(--border);background:var(--tab-bg);color:var(--muted);font-family:inherit;font-size:13px;cursor:pointer;transition:all .25s}
-body.light-mode .filter-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
-body.light-mode .filter-btn:hover{border-color:var(--accent);color:var(--text-light)}
-body.light-mode .filter-btn.active{background:rgba(110,168,254,.12);border-color:var(--accent);color:var(--text-light)}
-.filter-btn:hover{border-color:var(--accent);color:var(--text)}
-.filter-btn.active{background:var(--tab-active);border-color:var(--accent);color:var(--text)}
-.tabs-wrapper{margin-bottom:24px;overflow-x:auto;scrollbar-width:none}
-.tabs-wrapper::-webkit-scrollbar{display:none}
-.tabs{display:flex;gap:8px;padding:4px 0;flex-wrap:nowrap;min-width:max-content}
-.tab-btn{padding:10px 20px;border-radius:999px;border:1px solid var(--border);background:var(--tab-bg);color:var(--muted);font-family:inherit;font-size:14px;cursor:pointer;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:8px}
-body.light-mode .tab-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
-body.light-mode .tab-btn:hover{border-color:var(--accent);color:var(--text-light)}
-body.light-mode .tab-btn.active{background:rgba(110,168,254,.12);border-color:var(--accent);color:var(--text-light);box-shadow:0 0 20px rgba(110,168,254,.08)}
-.tab-btn:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--text)}
-.tab-btn.active{background:var(--tab-active);border-color:var(--accent);color:var(--text);box-shadow:0 0 20px rgba(110,168,254,.15)}
-.tab-btn .count{font-size:11px;background:rgba(255,255,255,.06);padding:0 8px;border-radius:999px;color:var(--muted);transition:all .3s}
-body.light-mode .tab-btn .count{background:rgba(0,0,0,.05);color:var(--muted-light)}
-.category{animation:fadeUp .45s ease both}
-.category.hidden-cat{display:none!important}
-.category-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 6px 18px;flex-wrap:wrap}
-.category-title{margin:0;font-size:18px;color:var(--muted);font-weight:700;padding-right:6px;transition:color .3s}
-body.light-mode .category-title{color:var(--muted-light)}
-.category-title i{margin-left:8px}
-.category-count{font-size:12px;color:var(--text);background:rgba(255,255,255,.05);border:1px solid var(--border);padding:6px 10px;border-radius:999px;transition:all .3s}
-body.light-mode .category-count{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.06);color:var(--text-light)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
-.card{position:relative;display:block;text-decoration:none;color:inherit;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .3s;cursor:pointer;animation:fadeUp .45s ease both;overflow:hidden}
-body.light-mode .card{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.06);box-shadow:0 2px 8px rgba(0,0,0,.02)}
-body.light-mode .card:hover{border-color:rgba(110,168,254,.3);box-shadow:0 18px 40px rgba(0,0,0,.06);transform:translateY(-4px)}
-.card:hover{transform:translateY(-6px);border-color:rgba(110,168,254,.35);box-shadow:0 18px 40px rgba(0,0,0,.22)}
-.card .dev-badge{position:absolute;top:12px;left:12px;background:rgba(255,200,0,.15);color:#fbbf24;font-size:11px;padding:4px 12px;border-radius:999px;border:1px solid rgba(255,200,0,.2);z-index:2;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px)}
-.card .dev-badge i{animation:spin 2s linear infinite}
-.card .active-badge{position:absolute;top:12px;left:12px;background:rgba(34,197,94,.15);color:#4ade80;font-size:11px;padding:4px 12px;border-radius:999px;border:1px solid rgba(34,197,94,.2);z-index:2;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px)}
-@keyframes spin{100%{transform:rotate(360deg)}}
-.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;position:relative;z-index:1}
-.icon-badge{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--accent);font-size:24px;transition:all .3s}
-body.light-mode .icon-badge{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.06)}
-.icon-badge i{font-size:22px;display:inline-block;vertical-align:middle}
-.card h2{margin:0 0 8px;font-size:19px;position:relative;z-index:1;transition:color .3s}
-body.light-mode .card h2{color:var(--text-light)}
-.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.7;position:relative;z-index:1;min-height:48px;transition:color .3s}
-body.light-mode .card p{color:var(--muted-light)}
-.card-footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;gap:10px}
-.pill{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;border:1px solid rgba(255,255,255,.04);white-space:nowrap;transition:all .3s}
-body.light-mode .pill{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.04);color:var(--muted-light)}
-.open{color:var(--accent);font-weight:700;font-size:13px;white-space:nowrap}
-.card-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.2);transform:scale(0);animation:ripple .6s linear;pointer-events:none}
-#emptyState{display:none;margin-top:26px;padding:28px 18px;text-align:center;border:1px dashed var(--border);border-radius:22px;color:var(--muted);transition:all .3s}
-body.light-mode #emptyState{border-color:rgba(0,0,0,.08);color:var(--muted-light)}
-.footer{text-align:center;padding:24px 0;margin-top:40px;font-size:13px;color:var(--muted);border-top:1px solid var(--border);transition:all .3s;background:transparent!important}
-body.light-mode .footer{color:var(--muted-light);border-color:rgba(0,0,0,.08);background:transparent!important}
-.about-modal,.help-modal,.offline-modal{position:fixed;inset:0;background:rgba(0,0,0,.44);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .38s,visibility .38s;z-index:5000}
-.about-modal.show,.help-modal.show,.offline-modal.show{opacity:1;visibility:visible;pointer-events:auto}
-.about-box,.help-box,.offline-box{width:min(560px,100%);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid var(--border);border-radius:26px;padding:26px;backdrop-filter:var(--glass);box-shadow:var(--shadow);transform:translateY(18px) scale(.96);opacity:0;transition:all .42s cubic-bezier(.2,.8,.2,1);max-height:90vh;overflow-y:auto}
-body.light-mode .about-box,body.light-mode .help-box,body.light-mode .offline-box{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.08);box-shadow:0 10px 40px rgba(0,0,0,.1)}
-.about-modal.show .about-box,.help-modal.show .help-box,.offline-modal.show .offline-box{transform:translateY(0) scale(1);opacity:1}
-.about-header,.help-header,.offline-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.about-logo,.help-logo,.offline-logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,168,254,.3),rgba(139,92,246,.24));border:1px solid rgba(255,255,255,.1);font-size:20px;font-weight:800;flex-shrink:0;transition:all .3s}
-body.light-mode .about-logo,body.light-mode .help-logo,body.light-mode .offline-logo{background:linear-gradient(135deg,rgba(110,168,254,.15),rgba(139,92,246,.1));border-color:rgba(0,0,0,.06)}
-.help-logo i,.offline-logo i{font-size:24px;color:var(--accent)}
-.about-title h2,.help-title h2,.offline-title h2{margin:0;font-size:22px;transition:color .3s}
-body.light-mode .about-title h2,body.light-mode .help-title h2,body.light-mode .offline-title h2{color:var(--text-light)}
-.about-title p,.help-title p,.offline-title p{margin:4px 0 0;color:var(--muted);font-size:13px;transition:color .3s}
-body.light-mode .about-title p,body.light-mode .help-title p,body.light-mode .offline-title p{color:var(--muted-light)}
-.about-content p,.help-content p,.offline-content p{color:var(--muted);line-height:1.95;font-size:14px;margin:0 0 14px;transition:color .3s}
-body.light-mode .about-content p,body.light-mode .help-content p,body.light-mode .offline-content p{color:var(--muted-light)}
-.offline-content .offline-icon{font-size:64px;text-align:center;display:block;margin:10px 0;color:var(--offline-color)}
-.offline-content .offline-icon i{font-size:64px}
-.offline-content .offline-message{text-align:center;font-size:16px;color:var(--text);margin:10px 0}
-body.light-mode .offline-content .offline-message{color:var(--text-light)}
-.offline-content .offline-sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px}
-.help-content ul{list-style:none;padding:0;margin:0 0 16px 0}
-.help-content li{color:var(--muted);font-size:14px;line-height:1.8;padding:6px 12px;border-right:3px solid var(--accent);margin-bottom:6px;background:rgba(255,255,255,.03);border-radius:0 8px 8px 0;transition:all .3s}
-body.light-mode .help-content li{background:rgba(0,0,0,.03);color:var(--muted-light)}
-.help-content li i{margin-left:10px;color:var(--accent);width:20px;text-align:center}
-.help-content .warning-box{background:rgba(255,200,0,.08);border:1px solid rgba(255,200,0,.15);border-radius:12px;padding:14px 16px;margin:12px 0;transition:all .3s}
-body.light-mode .help-content .warning-box{background:rgba(255,200,0,.05);border-color:rgba(255,200,0,.1)}
-.help-content .warning-box strong{color:#fbbf24;display:block;margin-bottom:6px}
-.help-content .warning-box p{margin:0;color:var(--muted);font-size:13px}
-.help-content .warning-box i{color:#fbbf24;margin-left:8px}
-.help-content .danger-box{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.15);border-radius:12px;padding:14px 16px;margin:12px 0;transition:all .3s}
-body.light-mode .help-content .danger-box{background:rgba(255,80,80,.05);border-color:rgba(255,80,80,.1)}
-.help-content .danger-box strong{color:#f87171;display:block;margin-bottom:6px}
-.help-content .danger-box p{margin:0;color:var(--muted);font-size:13px}
-.help-content .danger-box i{color:#f87171;margin-left:8px}
-.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
-.meta-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;transition:all .3s}
-body.light-mode .meta-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.06)}
-.meta-label{font-size:12px;color:var(--muted);margin-bottom:6px;transition:color .3s}
-body.light-mode .meta-label{color:var(--muted-light)}
-.meta-value{font-size:14px;color:var(--text);font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;transition:color .3s}
-body.light-mode .meta-value{color:var(--text-light)}
-.meta-value a{color:var(--accent);text-decoration:none;cursor:pointer;font-weight:500}
-.meta-value .action-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(110,168,254,.12);padding:3px 10px;border-radius:999px;font-size:12px;color:var(--accent);border:1px solid rgba(110,168,254,.15);cursor:pointer;transition:all .2s;font-weight:400;white-space:nowrap}
-body.light-mode .meta-value .action-chip{background:rgba(110,168,254,.08);border-color:rgba(110,168,254,.12)}
-.meta-value .action-chip:hover{background:rgba(110,168,254,.2);transform:scale(1.02)}
-.meta-value .action-chip.copied{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.2);color:#4ade80}
-body.light-mode .meta-value .action-chip.copied{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.15);color:#22c55e}
-.about-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px;flex-wrap:wrap}
-.action-btn{padding:10px 16px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;transition:all .25s}
-body.light-mode .action-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--text-light)}
-body.light-mode .action-btn:hover{border-color:rgba(110,168,254,.38)}
-.action-btn:hover{transform:translateY(-2px);border-color:rgba(110,168,254,.38)}
-.action-btn.primary{background:linear-gradient(135deg,rgba(110,168,254,.2),rgba(139,92,246,.18));border-color:rgba(110,168,254,.28)}
-body.light-mode .action-btn.primary{background:linear-gradient(135deg,rgba(110,168,254,.12),rgba(139,92,246,.08));border-color:rgba(110,168,254,.15)}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(0,0,0,.85);backdrop-filter:blur(12px);color:#fff;padding:14px 28px;border-radius:16px;font-size:15px;z-index:99999;opacity:0;transition:all .4s cubic-bezier(.2,.8,.2,1);border:1px solid rgba(255,255,255,.1);pointer-events:none;text-align:center;max-width:90%}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@keyframes ripple{to{transform:scale(4);opacity:0}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.help-scroll{max-height:55vh;overflow-y:auto;padding-left:4px}
-.help-scroll::-webkit-scrollbar{width:4px}
-.help-scroll::-webkit-scrollbar-track{background:transparent}
-.help-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
-.back-top-btn{position:fixed;bottom:30px;right:30px;z-index:100;padding:14px 18px;border-radius:50%;background:rgba(110,168,254,.2);border:1px solid rgba(110,168,254,.3);color:var(--text);cursor:pointer;font-size:20px;transition:all .3s;opacity:0;transform:translateY(20px);backdrop-filter:blur(10px)}
-.back-top-btn.visible{opacity:1;transform:translateY(0)}
-.back-top-btn:hover{transform:translateY(-4px) scale(1.05);background:rgba(110,168,254,.3)}
-body.light-mode .back-top-btn{background:rgba(110,168,254,.12);border-color:rgba(110,168,254,.2);color:var(--text-light)}
-body.light-mode .back-top-btn:hover{background:rgba(110,168,254,.2)}
-.connection-status{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:12px;color:var(--muted);transition:all .3s;white-space:nowrap;flex-shrink:0}
-body.light-mode .connection-status{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
-.connection-status .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;transition:all .3s;flex-shrink:0}
-.connection-status .status-dot.online{background:var(--online-color);box-shadow:0 0 12px rgba(74,222,128,.3)}
-.connection-status .status-dot.offline{background:var(--offline-color);box-shadow:0 0 12px rgba(248,113,113,.3)}
-.connection-status .status-dot.measuring{background:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.3);animation:pulse-dot 1s ease-in-out infinite}
-.connection-status .status-text{font-size:11px}
-.connection-status .speed-text{font-size:10px;opacity:.6;margin-right:4px}
-@keyframes pulse-dot{0%,100%{transform:scale(1)}50%{transform:scale(1.5)}}
-.offline-box .offline-actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
-.offline-box .offline-actions .action-btn i{margin-left:6px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0b1220"/>
+  <title>SA-CB</title>
+  <!-- Font Awesome 6 (Free) -->
+  <link rel="stylesheet" href="fontawesome/css/all.min.css">
+  <style>
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --accent:#6ea8fe;
+      --accent2:#8b5cf6;
+      --border:rgba(255,255,255,.08);
+      --success:#35d07f;
+      --danger:#ff6b6b;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --logo-bg1: rgb(35,46,64);
+      --logo-bg2: rgb(27,37,53);
+      --logo-bg3: rgb(18,28,42);
+      --logo-text: #289CFF;
+      --badge-bg1: rgba(40,52,72,.95);
+      --badge-bg2: rgba(22,29,42,.98);
+      --preloader-bg: linear-gradient(180deg, #09111d, #0b1220);
+      --body-bg1: #09111d;
+      --body-bg2: #0b1220;
+      --body-bg3: #08101a;
+      --input-bg: rgba(6,12,22,.72);
+      --footer-color: #9fb0d0;
+    }
 
-/* ===== اسپلش اسکرین ===== */
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b1220;transition:opacity .8s ease,visibility .8s ease;overflow:hidden}
-#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
-#splash.hide .splash-wrapper{transform:scale(1.08);opacity:0}
-body.light-mode #splash{background:#eef2f7}
-#splash canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-.splash-wrapper{display:flex;flex-direction:column;align-items:center;gap:36px;z-index:1;position:relative;transition:all .8s ease}
-.splash-logo{width:140px;height:140px;border-radius:36px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);display:grid;place-items:center;font-size:58px;font-weight:800;color:#fff;box-shadow:0 30px 80px rgba(110,168,254,.45);position:relative;animation:logoFloat 2.8s ease-in-out infinite}
-.splash-logo .glow-ring{position:absolute;inset:-12px;border-radius:44px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);z-index:-1;opacity:.25;filter:blur(40px);animation:ringPulse 2.2s ease-in-out infinite}
-.splash-logo .glow-ring-2{position:absolute;inset:-25px;border-radius:60px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);z-index:-2;opacity:.1;filter:blur(60px);animation:ringPulse 3s ease-in-out infinite reverse}
-.splash-logo .sparkle-top{position:absolute;top:-16px;right:-10px;font-size:26px;animation:sparkleAnim 1.5s ease-in-out infinite}
-.splash-logo .sparkle-bottom{position:absolute;bottom:-12px;left:-8px;font-size:20px;animation:sparkleAnim 2s ease-in-out infinite reverse}
-.splash-logo .logo-shine{position:absolute;inset:0;border-radius:36px;background:linear-gradient(135deg,rgba(255,255,255,.3) 0%,transparent 50%,rgba(255,255,255,.15) 100%);pointer-events:none}
-.splash-logo .logo-shine-2{position:absolute;inset:0;border-radius:36px;background:linear-gradient(180deg,rgba(255,255,255,.2) 0%,transparent 60%);pointer-events:none}
-.splash-progress{width:280px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.splash-progress .track{width:100%;height:5px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;position:relative}
-.splash-progress .bar{height:100%;width:0%;background:linear-gradient(90deg,#6ea8fe,#8b5cf6,#6ea8fe);background-size:200% 100%;border-radius:999px;transition:width .2s ease;animation:barShine 1.5s ease-in-out infinite}
-.splash-progress .label{color:rgba(255,255,255,.4);font-size:14px;letter-spacing:3px;font-weight:300;font-family:inherit}
-.splash-progress .label .pct{color:rgba(255,255,255,.8);font-weight:600;font-size:16px}
-.splash-steps{display:flex;gap:10px;margin-top:6px}
-.splash-steps .step{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.08);transition:all .4s ease;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:transparent}
-.splash-steps .step.active{background:var(--accent);border-color:rgba(110,168,254,.4);box-shadow:0 0 30px rgba(110,168,254,.35);transform:scale(1.15);color:#fff}
-.splash-steps .step.done{background:#4ade80;border-color:rgba(74,222,128,.3);box-shadow:0 0 20px rgba(74,222,128,.2);color:#fff}
-.splash-steps .step.done::after{content:'✓';font-size:9px}
-.splash-subtitle{color:rgba(255,255,255,.2);font-size:11px;letter-spacing:4px;font-weight:300;margin-top:-8px;font-family:inherit}
-body.light-mode .splash-subtitle{color:rgba(0,0,0,.15)}
-@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-@keyframes ringPulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
-@keyframes sparkleAnim{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(40deg)}}
-@keyframes barShine{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+    body.light-mode{
+      --bg:#f2f6ff;
+      --card:#ffffff;
+      --text:#0b1220;
+      --muted:#445566;
+      --accent:#3b82f6;
+      --accent2:#8b5cf6;
+      --border:rgba(0,0,0,.12);
+      --success:#059669;
+      --danger:#dc2626;
+      --shadow:0 18px 45px rgba(0,0,0,.12);
+      --logo-bg1: #e8edf5;
+      --logo-bg2: #d5dde8;
+      --logo-bg3: #c5cfdd;
+      --logo-text: #2563eb;
+      --badge-bg1: rgba(230,240,255,.95);
+      --badge-bg2: rgba(200,215,240,.98);
+      --preloader-bg: linear-gradient(180deg, #eef3ff, #f8fbff);
+      --body-bg1: #f2f6ff;
+      --body-bg2: #f8fbff;
+      --body-bg3: #eef3ff;
+      --input-bg: rgba(255,255,255,.8);
+      --footer-color: #556677;
+    }
 
-/* ===== دکمه تغییر چیدمان - کاملاً مجزا و بدون تداخل ===== */
-.layout-btn-wrapper{position:fixed;top:20px;right:20px;z-index:9998;display:block}
-.layout-btn-wrapper .layout-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(15,23,42,.9);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;transition:all .3s;box-shadow:0 8px 30px rgba(0,0,0,.3)}
-body.light-mode .layout-btn-wrapper .layout-btn{background:rgba(255,255,255,.9);color:var(--text-light);border-color:rgba(0,0,0,.08)}
-.layout-btn-wrapper .layout-btn:hover{transform:scale(1.03);box-shadow:0 12px 40px rgba(0,0,0,.4)}
-.layout-btn-wrapper .layout-btn i{font-size:14px;color:var(--accent)}
-.layout-btn-wrapper .dropdown-content{display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:200px;background:rgba(15,23,42,.95);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:9999}
-body.light-mode .layout-btn-wrapper .dropdown-content{background:rgba(255,255,255,.95);border-color:rgba(0,0,0,.08)}
-.layout-btn-wrapper .dropdown-content.show{display:block;animation:fadeUp .25s ease both}
-.layout-btn-wrapper .dropdown-item{padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);direction:rtl}
-body.light-mode .layout-btn-wrapper .dropdown-item{color:var(--muted-light)}
-.layout-btn-wrapper .dropdown-item:hover{background:rgba(110,168,254,.12);color:var(--text)}
-body.light-mode .layout-btn-wrapper .dropdown-item:hover{background:rgba(110,168,254,.08);color:var(--text-light)}
-.layout-btn-wrapper .dropdown-item.active-layout{background:rgba(110,168,254,.18);color:var(--accent);border-right:3px solid var(--accent)}
-body.light-mode .layout-btn-wrapper .dropdown-item.active-layout{background:rgba(110,168,254,.1)}
-.layout-btn-wrapper .dropdown-item i{margin-left:6px;width:18px;text-align:center;font-size:13px}
-.layout-btn-wrapper .dropdown-item .check{display:none;margin-right:auto;color:var(--accent);font-size:12px}
-.layout-btn-wrapper .dropdown-item.active-layout .check{display:inline}
-.layout-btn-wrapper .dropdown-item .hint-text{font-size:10px;color:var(--muted);margin-right:auto;opacity:.6;display:none}
-.layout-btn-wrapper .dropdown-item.active-layout .hint-text{display:inline}
+    *{box-sizing:border-box}
+    html,body{
+      min-height:100%;
+      height:auto;
+    }
 
-/* ===== لودینگ انتقال ===== */
-.transition-overlay{position:fixed;inset:0;z-index:10000;background:rgba(11,18,32,.92);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s ease;padding:20px}
-body.light-mode .transition-overlay{background:rgba(238,242,247,.92)}
-.transition-overlay.show{opacity:1;visibility:visible}
-.transition-overlay .spinner{width:60px;height:60px;border-radius:50%;border:4px solid rgba(110,168,254,.1);border-top-color:var(--accent);animation:spin 1s linear infinite;margin-bottom:30px}
-.transition-overlay .msg-box{max-width:500px;width:100%;text-align:center}
-.transition-overlay .msg-box .msg{color:var(--text);font-size:16px;line-height:1.8;padding:16px 24px;background:rgba(255,255,255,.05);border-radius:16px;border:1px solid var(--border);min-height:90px;display:flex;align-items:center;justify-content:center;transition:all .3s}
-body.light-mode .transition-overlay .msg-box .msg{background:rgba(255,255,255,.8);color:var(--text-light);border-color:rgba(0,0,0,.08)}
-.transition-overlay .msg-box .msg i{margin-left:12px;color:var(--accent);font-size:18px}
-.transition-overlay .hint{color:var(--muted);font-size:12px;margin-top:16px;opacity:.6}
+    body{
+      margin:0;
+      font-family:"VazirmatnLocal", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,.14), transparent 35%),
+        linear-gradient(180deg, var(--body-bg1), var(--body-bg2) 55%, var(--body-bg3));
+      overflow-x:hidden;
+      transition: background .3s ease, color .3s ease;
+    }
 
-@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:1fr}.meta-grid{grid-template-columns:1fr}.search-input{width:100%;max-width:160px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:12px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:8px 14px;font-size:13px}.filter-wrapper{justify-content:center}.help-box{padding:18px}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:11px;padding:4px 10px}.connection-status .status-dot{width:7px;height:7px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:38px;height:38px;font-size:14px}.layout-btn-wrapper{top:12px;right:12px}.layout-btn-wrapper .layout-btn{padding:6px 10px;font-size:11px}.layout-btn-wrapper .layout-btn i{font-size:12px}.layout-btn-wrapper .dropdown-content{min-width:160px;right:-5px}}
-</style>
+    /* ===== PRELOADER پیشرفته و مدرن ===== */
+    #preloader{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:32px;
+      background:var(--preloader-bg);
+      transition: background .3s ease, opacity .7s ease, visibility .7s ease;
+      opacity:1;
+      visibility:visible;
+    }
+    #preloader.hidden {
+      opacity:0;
+      visibility:hidden;
+    }
+
+    /* حلقه‌های چرخان متعدد */
+    .loader-wrapper {
+      position:relative;
+      width:120px;
+      height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .loader-ring {
+      position:absolute;
+      border-radius:50%;
+      border:3px solid transparent;
+      animation: spin var(--duration) linear infinite;
+    }
+
+    .loader-ring:nth-child(1) {
+      width:120px;
+      height:120px;
+      border-top-color:var(--accent);
+      border-right-color:var(--accent);
+      --duration:1.2s;
+      animation-delay:0s;
+    }
+    .loader-ring:nth-child(2) {
+      width:92px;
+      height:92px;
+      border-bottom-color:var(--accent2);
+      border-left-color:var(--accent2);
+      --duration:1.6s;
+      animation-delay:0.2s;
+    }
+    .loader-ring:nth-child(3) {
+      width:64px;
+      height:64px;
+      border-top-color:rgba(110,168,254,.4);
+      border-right-color:rgba(110,168,254,.4);
+      --duration:2s;
+      animation-delay:0.4s;
+    }
+    .loader-ring:nth-child(4) {
+      width:36px;
+      height:36px;
+      border-bottom-color:rgba(139,92,246,.4);
+      border-left-color:rgba(139,92,246,.4);
+      --duration:2.4s;
+      animation-delay:0.6s;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* افکت پالس در مرکز */
+    .loader-pulse {
+      position:absolute;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      animation: pulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(110,168,254,.3);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity:1; }
+      50% { transform: scale(1.6); opacity:0.4; }
+    }
+
+    /* متن لوگو با انیمیشن */
+    .loader-brand {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+    }
+    .loader-brand .main {
+      font-size:2.2rem;
+      font-weight:900;
+      letter-spacing:4px;
+      background:linear-gradient(90deg, var(--accent), var(--accent2), var(--accent), var(--accent2));
+      background-size:300% 100%;
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      animation: gradientMove 3s ease-in-out infinite;
+      text-shadow:0 0 40px rgba(110,168,254,.1);
+    }
+    .loader-brand .sub {
+      font-size:.85rem;
+      color:var(--muted);
+      letter-spacing:6px;
+      opacity:0.6;
+      animation: fadePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes gradientMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes fadePulse {
+      0%, 100% { opacity:0.4; }
+      50% { opacity:0.9; }
+    }
+
+    /* دایره‌های کوچک متحرک */
+    .loader-dots {
+      display:flex;
+      gap:14px;
+      margin-top:4px;
+    }
+    .loader-dots span {
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      animation: dotWave 1.4s ease-in-out infinite;
+    }
+    .loader-dots span:nth-child(1) {
+      background:var(--accent);
+      animation-delay:0s;
+    }
+    .loader-dots span:nth-child(2) {
+      background:var(--accent2);
+      animation-delay:0.2s;
+    }
+    .loader-dots span:nth-child(3) {
+      background:var(--accent);
+      animation-delay:0.4s;
+    }
+    .loader-dots span:nth-child(4) {
+      background:var(--accent2);
+      animation-delay:0.6s;
+    }
+    .loader-dots span:nth-child(5) {
+      background:var(--accent);
+      animation-delay:0.8s;
+    }
+    @keyframes dotWave {
+      0%, 40%, 100% { 
+        transform: translateY(0) scale(0.6);
+        opacity:0.3;
+      }
+      20% { 
+        transform: translateY(-14px) scale(1);
+        opacity:1;
+      }
+    }
+
+    /* particles background */
+    .loader-particles {
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+    }
+    .loader-particles span {
+      position:absolute;
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:var(--accent);
+      opacity:0;
+      animation: particleFloat var(--dur) ease-in-out infinite;
+      animation-delay:var(--delay);
+    }
+    @keyframes particleFloat {
+      0% {
+        opacity:0;
+        transform:translateY(0) scale(0);
+      }
+      20% {
+        opacity:0.8;
+        transform:translateY(-20px) scale(1);
+      }
+      80% {
+        opacity:0.8;
+        transform:translateY(-60px) scale(0.8);
+      }
+      100% {
+        opacity:0;
+        transform:translateY(-80px) scale(0);
+      }
+    }
+
+    .loader-progress-bar {
+      width:200px;
+      height:2px;
+      background:rgba(255,255,255,.06);
+      border-radius:4px;
+      overflow:hidden;
+      position:relative;
+    }
+    .loader-progress-bar .fill {
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:4px;
+      animation: progressFill 2.5s ease-in-out forwards;
+    }
+    @keyframes progressFill {
+      0% { width:0%; }
+      50% { width:65%; }
+      80% { width:85%; }
+      100% { width:100%; }
+    }
+
+    body.light-mode .loader-ring:nth-child(1) {
+      border-top-color:var(--accent);
+      border-right-color:var(--accent);
+    }
+    body.light-mode .loader-ring:nth-child(2) {
+      border-bottom-color:var(--accent2);
+      border-left-color:var(--accent2);
+    }
+    body.light-mode .loader-ring:nth-child(3) {
+      border-top-color:rgba(59,130,246,.4);
+      border-right-color:rgba(59,130,246,.4);
+    }
+    body.light-mode .loader-ring:nth-child(4) {
+      border-bottom-color:rgba(139,92,246,.4);
+      border-left-color:rgba(139,92,246,.4);
+    }
+    body.light-mode .loader-pulse {
+      box-shadow: 0 0 30px rgba(59,130,246,.2);
+    }
+    body.light-mode .loader-progress-bar {
+      background:rgba(0,0,0,.08);
+    }
+    body.light-mode .loader-particles span {
+      background:var(--accent);
+    }
+
+    .container{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px 40px;
+    }
+
+    .wrap{
+      width:min(760px, 100%);
+    }
+
+    header{
+      text-align:center;
+      margin-bottom:18px;
+      user-select:none;
+      position:relative;
+    }
+
+    header h1{
+      margin:0;
+      font-size:clamp(2rem, 4vw, 3rem);
+      line-height:1.1;
+      letter-spacing:.5px;
+      text-shadow:0 0 18px rgba(110,168,254,.18);
+      color:var(--text);
+      transition: color .3s ease;
+    }
+
+    header .brand{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.98rem;
+      transition: color .3s ease;
+    }
+
+    /* ===== دکمه رفرش بالا سمت راست ===== */
+    .refresh-btn {
+      position:fixed;
+      top:16px;
+      left:16px;
+      z-index:999;
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      font-size:1.2rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+      transition: all .25s ease;
+      backdrop-filter: blur(12px);
+    }
+    .refresh-btn:hover {
+      transform:rotate(60deg) scale(1.05);
+      border-color:var(--accent);
+      background:rgba(110,168,254,.12);
+    }
+    .refresh-btn:active {
+      transform:rotate(60deg) scale(0.92);
+    }
+    .refresh-btn i {
+      transition: transform .3s ease;
+    }
+    .refresh-btn:hover i {
+      transform:rotate(-60deg);
+    }
+
+    .card{
+      position:relative;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(14px);
+      padding:22px;
+      overflow:hidden;
+      transition: background .3s ease, border .3s ease, box-shadow .3s ease;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:24px;
+      padding:1px;
+      background:linear-gradient(135deg, rgba(110,168,254,.35), rgba(139,92,246,.25), rgba(110,168,254,.12));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events:none;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.6;
+      transition: color .3s ease;
+    }
+
+    .samples{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+    }
+
+    .chip{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.86rem;
+      cursor:pointer;
+      transition:.2s ease;
+      user-select:none;
+    }
+    .chip:hover{
+      transform:translateY(-1px);
+      border-color:rgba(110,168,254,.35);
+      background:rgba(110,168,254,.08);
+    }
+
+    .inputRow{
+      display:grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    input{
+      width:100%;
+      border:none;
+      outline:none;
+      background:var(--input-bg);
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:15px 16px;
+      font-size:1rem;
+      direction:ltr;
+      text-align:left;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      transition:.2s ease;
+    }
+
+    input:focus{
+      border-color:rgba(110,168,254,.45);
+      box-shadow:0 0 0 4px rgba(110,168,254,.08);
+    }
+
+    button{
+      border:none;
+      outline:none;
+      border-radius:16px;
+      padding:14px 16px;
+      cursor:pointer;
+      font-weight:700;
+      color:#fff;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 10px 24px rgba(110,168,254,.18);
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+
+    button:hover{ transform: translateY(-1px); }
+    button:active{ transform: translateY(0); }
+
+    .btnSecondary{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      box-shadow:none;
+      color:var(--text);
+    }
+    .btnSecondary:hover{
+      background:rgba(255,255,255,.08);
+    }
+
+    .resultBox{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      transition: background .3s ease, border .3s ease;
+    }
+
+    .resultLabel{
+      font-size:.9rem;
+      color:var(--muted);
+      margin-bottom:10px;
+      transition: color .3s ease;
+    }
+
+    .result{
+      font-size:1.25rem;
+      line-height:1.9;
+      font-weight:800;
+      word-break:break-word;
+      color:var(--text);
+      transition: color .3s ease;
+    }
+
+    .error{
+      margin-top:10px;
+      color:var(--danger);
+      font-size:.95rem;
+      min-height:1.4em;
+      line-height:1.6;
+      transition: color .3s ease;
+    }
+
+    .metaRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      color:var(--muted);
+      font-size:.88rem;
+      transition: color .3s ease;
+    }
+
+    .history{
+      margin-top:18px;
+      display:none;
+    }
+
+    .historyTitle{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:10px;
+      transition: color .3s ease;
+    }
+
+    .historyList{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .historyItem{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      cursor:pointer;
+      color:var(--text);
+      font-size:.85rem;
+      transition:.2s ease;
+    }
+    .historyItem:hover{
+      background:rgba(110,168,254,.09);
+      border-color:rgba(110,168,254,.35);
+    }
+
+    /* about & help sections */
+    .info-sections {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .info-sections .btnSecondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-size: .92rem;
+      border-radius: 40px;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: .2s;
+      text-decoration: none;
+    }
+    .info-sections .btnSecondary i {
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .info-sections .btnSecondary:hover {
+      background: rgba(255,255,255,.08);
+      border-color: var(--accent);
+    }
+
+    /* modal overlay with animation - با قابلیت اسکرول */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      color: var(--text);
+      position: relative;
+      transition: background .3s, border .3s, color .3s, transform .35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity .35s ease;
+      transform: scale(0.9) translateY(20px);
+      opacity: 0;
+    }
+    .modal-overlay.active .modal-box {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    
+    /* هدر مودال - ثابت */
+    .modal-header {
+      padding: 20px 24px 12px 24px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h2 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.4rem;
+      font-family:"VazirmatnLocal", sans-serif;
+    }
+    .modal-header h2 i {
+      color: var(--accent);
+    }
+    .modal-header .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0 8px;
+      box-shadow: none;
+      background: transparent;
+      line-height: 1;
+    }
+    .modal-header .close-btn:hover {
+      color: var(--text);
+      background: transparent;
+      transform: none;
+    }
+    
+    /* محتوای مودال - قابل اسکرول */
+    .modal-body {
+      padding: 16px 24px 24px 24px;
+      overflow-y: auto;
+      flex: 1;
+      direction: rtl;
+    }
+    .modal-body::-webkit-scrollbar {
+      width: 5px;
+    }
+    .modal-body::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.05);
+      border-radius: 10px;
+    }
+    .modal-body::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 10px;
+    }
+    
+    .modal-body p, .modal-body li {
+      line-height: 1.8;
+      color: var(--muted);
+    }
+    .modal-body ul {
+      padding-right: 20px;
+      margin: 8px 0;
+    }
+    .modal-body .dev-info {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modal-body .dev-info a {
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-body .dev-info a:hover {
+      text-decoration: underline;
+    }
+    .modal-body code {
+      background: rgba(110,168,254,.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: .9rem;
+      color: var(--accent);
+      font-family:"VazirmatnLocal", sans-serif;
+    }
+    .modal-body h3 {
+      font-size: 1.1rem;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    @media (max-width: 700px){
+      .card{ padding:16px; border-radius:20px; }
+      .inputRow{
+        grid-template-columns:1fr 1fr;
+      }
+      .inputRow input{
+        grid-column:1 / -1;
+      }
+      .topbar{
+        align-items:flex-start;
+      }
+      .result{ font-size:1.08rem; }
+      .info-sections .btnSecondary {
+        padding: 8px 14px;
+        font-size: .85rem;
+      }
+      .loader-wrapper {
+        width:90px;
+        height:90px;
+      }
+      .loader-ring:nth-child(1) {
+        width:90px;
+        height:90px;
+      }
+      .loader-ring:nth-child(2) {
+        width:70px;
+        height:70px;
+      }
+      .loader-ring:nth-child(3) {
+        width:50px;
+        height:50px;
+      }
+      .loader-ring:nth-child(4) {
+        width:30px;
+        height:30px;
+      }
+      .loader-brand .main {
+        font-size:1.6rem;
+      }
+      .loader-progress-bar {
+        width:150px;
+      }
+      .modal-box {
+        max-height: 90vh;
+        border-radius: 20px;
+      }
+      .modal-header {
+        padding: 16px 18px 10px 18px;
+      }
+      .modal-header h2 {
+        font-size: 1.2rem;
+      }
+      .modal-body {
+        padding: 12px 18px 18px 18px;
+      }
+      .refresh-btn {
+        width:38px;
+        height:38px;
+        top:12px;
+        left:12px;
+        font-size:1rem;
+      }
+    }
+
+    footer{
+      margin-top:14px;
+      color:var(--footer-color);
+      font-size:12px;
+      text-align:center;
+      transition: color .3s ease;
+    }
+
+    /* ===== LOGO ===== */
+    .sa-logo-center{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin:10px 0 20px 0;
+    }
+
+    .sa-logo{
+      width:80px;
+      height:80px;
+      position:relative;
+      border-radius:18px;
+      overflow:hidden;
+      user-select:none;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
+        radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+        linear-gradient(185deg, var(--logo-bg1) 0%, var(--logo-bg2) 58%, var(--logo-bg3) 100%);
+      box-shadow:
+        0 14px 28px rgba(0,0,0,.55),
+        0 5px 12px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.10),
+        inset 0 -12px 18px rgba(0,0,0,.55),
+        inset 10px 0 16px rgba(0,0,0,.20),
+        inset -10px 0 16px rgba(0,0,0,.20);
+      transition: background .3s ease, box-shadow .3s ease;
+    }
+
+    .sa-logo::before{
+      content:"";
+      position:absolute;
+      inset:2px;
+      border-radius:16px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.04),
+        inset 0 0 18px rgba(255,255,255,.03);
+      pointer-events:none;
+    }
+
+    .sa-text{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-42%);
+      font-family:"Arial Black", Arial, sans-serif;
+      font-size:46px;
+      font-weight:900;
+      letter-spacing:-7px;
+      color:var(--logo-text);
+      text-shadow:
+        0 7px 12px rgba(0,0,0,.44),
+        0 2px 4px rgba(0,0,0,.30),
+        0 0 14px rgba(40,156,255,.25),
+        0 0 28px rgba(40,156,255,.12),
+        0 -1px 3px rgba(255,255,255,.08);
+      transition: color .3s ease, text-shadow .3s ease;
+    }
+
+    .sa-badge{
+      position:absolute;
+      top:-3px;
+      right:10px;
+      padding:4px 10px;
+      font-size:13px;
+      font-weight:900;
+      border-radius:0 0 12px 12px;
+      color:var(--logo-text);
+      font-family:"Arial Black", Arial, sans-serif;
+      background:
+        linear-gradient(180deg, var(--badge-bg1) 0%, var(--badge-bg2) 100%);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:
+        0 8px 18px rgba(0,0,0,.50),
+        inset 0 -6px 9px rgba(0,0,0,.55),
+        inset 0 4px 6px rgba(255,255,255,.07),
+        0 3px 10px rgba(0,0,0,.35);
+      text-shadow:
+        0 2px 4px rgba(0,0,0,.35),
+        0 0 10px rgba(40,156,255,.18);
+      transition: color .3s ease, background .3s ease, box-shadow .3s ease;
+    }
+
+    /* ===== حالت روشن برای لوگو ===== */
+    body.light-mode .sa-logo {
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.50), transparent 40%),
+        radial-gradient(circle at 75% 88%, rgba(0,0,0,.06), transparent 45%),
+        linear-gradient(185deg, var(--logo-bg1) 0%, var(--logo-bg2) 58%, var(--logo-bg3) 100%);
+      box-shadow:
+        0 14px 28px rgba(0,0,0,.12),
+        0 5px 12px rgba(0,0,0,.08),
+        inset 0 1px 0 rgba(255,255,255,.60),
+        inset 0 -12px 18px rgba(0,0,0,.06),
+        inset 10px 0 16px rgba(0,0,0,.04),
+        inset -10px 0 16px rgba(0,0,0,.04);
+    }
+
+    body.light-mode .sa-logo::before {
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.40),
+        inset 0 0 18px rgba(255,255,255,.15);
+    }
+
+    body.light-mode .sa-text {
+      text-shadow:
+        0 4px 8px rgba(0,0,0,.10),
+        0 2px 4px rgba(0,0,0,.06),
+        0 0 20px rgba(37,99,235,.20),
+        0 0 40px rgba(37,99,235,.08);
+    }
+
+    body.light-mode .sa-badge {
+      background:
+        linear-gradient(180deg, var(--badge-bg1) 0%, var(--badge-bg2) 100%);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:
+        0 4px 12px rgba(0,0,0,.10),
+        inset 0 -4px 8px rgba(0,0,0,.05),
+        inset 0 2px 4px rgba(255,255,255,.50);
+      text-shadow:
+        0 1px 2px rgba(0,0,0,.08);
+    }
+
+    body.light-mode .historyItem {
+      background:rgba(0,0,0,.04);
+    }
+
+    body.light-mode .historyItem:hover {
+      background:rgba(59,130,246,.10);
+    }
+
+    body.light-mode .btnSecondary {
+      background:rgba(0,0,0,.05);
+    }
+
+    body.light-mode .btnSecondary:hover {
+      background:rgba(0,0,0,.10);
+    }
+
+    body.light-mode .chip {
+      background:rgba(0,0,0,.03);
+    }
+
+    body.light-mode .chip:hover {
+      background:rgba(59,130,246,.10);
+      border-color:rgba(59,130,246,.35);
+    }
+
+    body.light-mode .resultBox {
+      background:rgba(0,0,0,.02);
+    }
+
+    body.light-mode .card::before {
+      background:linear-gradient(135deg, rgba(59,130,246,.25), rgba(139,92,246,.18), rgba(59,130,246,.08));
+    }
+
+    /* modal light overrides */
+    body.light-mode .modal-overlay {
+      background: rgba(0,0,0,.3);
+    }
+    body.light-mode .modal-box {
+      background: #ffffff;
+      border-color: rgba(0,0,0,.1);
+      color: #0b1220;
+    }
+    body.light-mode .modal-header {
+      border-bottom-color: rgba(0,0,0,.1);
+    }
+    body.light-mode .modal-header .close-btn {
+      color: #445566;
+    }
+    body.light-mode .modal-header .close-btn:hover {
+      color: #0b1220;
+    }
+    body.light-mode .modal-body p,
+    body.light-mode .modal-body li {
+      color: #334455;
+    }
+    body.light-mode .modal-body .dev-info {
+      border-top-color: rgba(0,0,0,.1);
+    }
+    body.light-mode .modal-body::-webkit-scrollbar-track {
+      background: rgba(0,0,0,.05);
+    }
+    body.light-mode .refresh-btn {
+      background: #ffffff;
+      border-color: rgba(0,0,0,.1);
+      color: #0b1220;
+    }
+    body.light-mode .refresh-btn:hover {
+      border-color: var(--accent);
+      background: rgba(59,130,246,.08);
+    }
+  </style>
+
 </head>
 <body>
-<!-- اسپلش اسکرین -->
-<div id="splash">
-<canvas id="splashCanvas"></canvas>
-<div class="splash-wrapper">
-<div class="splash-logo">
-<span>SA</span>
-<div class="glow-ring"></div>
-<div class="glow-ring-2"></div>
-<div class="logo-shine"></div>
-<div class="logo-shine-2"></div>
-<span class="sparkle-top">✦</span>
-<span class="sparkle-bottom">✦</span>
-</div>
-<div class="splash-progress">
-<div class="track"><div class="bar" id="progressBar"></div></div>
-<div class="label">بارگذاری <span class="pct" id="progressPercent">۰</span>%</div>
-</div>
-<div class="splash-steps" id="splashSteps">
-<span class="step"></span>
-<span class="step"></span>
-<span class="step"></span>
-<span class="step"></span>
-</div>
-<div class="splash-subtitle">SA‑APPS v16.4.0</div>
-</div>
-</div>
 
-<!-- ===== دکمه تغییر چیدمان - کاملاً جدا ===== -->
-<div class="layout-btn-wrapper">
-<button class="layout-btn" id="layoutTopBtn">
-<i class="fa fa-layer-group"></i> تغییر چیدمان
-<div class="dropdown-content" id="layoutTopDropdown">
-<div class="dropdown-item active-layout" data-layout="1" onclick="selectLayout(1)">
-<i class="fa fa-th-large"></i> چیدمان ۱
-<span class="check"><i class="fa fa-check"></i></span>
-<span class="hint-text">شما در این چیدمان هستید</span>
-</div>
-<div class="dropdown-item" data-layout="2" onclick="selectLayout(2)">
-<i class="fa fa-th-list"></i> چیدمان ۲
-<span class="check"><i class="fa fa-check"></i></span>
-</div>
-<div class="dropdown-item" data-layout="3" onclick="selectLayout(3)">
-<i class="fa fa-th"></i> چیدمان ۳
-<span class="check"><i class="fa fa-check"></i></span>
-</div>
-</div>
+<!-- ===== دکمه رفرش بالا سمت راست ===== -->
+<button class="refresh-btn" onclick="location.reload()" title="رفرش صفحه">
+  <i class="fas fa-sync-alt"></i>
 </button>
+
+<div class="sa-logo-center">
+  <div class="sa-logo">
+    <div class="sa-text">SA</div>
+    <div class="sa-badge">CB</div>
+  </div>
 </div>
 
-<!-- لودینگ انتقال -->
-<div class="transition-overlay" id="transitionOverlay">
-<div class="spinner"></div>
-<div class="msg-box">
-<div class="msg" id="transitionMsg"><i class="fa fa-spinner fa-spin"></i> در حال انتقال...</div>
-</div>
-<div class="hint">از دکمه برگشت گوشی می‌توانید به چیدمان اصلی بازگردید</div>
+<!-- ===== PRELOADER پیشرفته و مدرن ===== -->
+<div id="preloader">
+  <!-- ذرات پس‌زمینه -->
+  <div class="loader-particles" id="particles"></div>
+
+  <!-- حلقه‌های چرخان -->
+  <div class="loader-wrapper">
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-pulse"></div>
+  </div>
+
+  <!-- برند -->
+  <div class="loader-brand">
+    <div class="main">SA-CB</div>
+    <div class="sub">CHEMICAL BALANCER</div>
+  </div>
+
+  <!-- دایره‌های موج‌دار -->
+  <div class="loader-dots">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- نوار پیشرفت -->
+  <div class="loader-progress-bar">
+    <div class="fill"></div>
+  </div>
 </div>
 
-<div class="container" id="mainContainer">
-<div class="orb orb1"></div><div class="orb orb2"></div>
-<section class="panel">
-<div class="topbar">
-<div class="topbar-left"><div class="brand-badge">SA</div><div class="brand-title"><h1>برنامه‌های SA</h1><p>لانچر اصلی ابزارهای SA</p></div></div>
-<div class="topbar-right">
-<div class="search-input-container"><input type="text" class="search-input" id="searchInput" placeholder="جستجو..." autocomplete="off" /></div>
-<div class="connection-status" id="connectionStatus">
-<i class="fa fa-wifi" id="statusIcon" style="font-size:13px;"></i>
-<span class="status-dot" id="statusDot"></span>
-<span class="status-text" id="statusText">در حال بررسی</span>
-<span class="speed-text" id="speedText"></span>
+<div class="container">
+  <div class="wrap">
+    <header>
+      <h1>SA-Chemical Balancer</h1>
+      <div class="brand">✦Saleh✦</div>
+    </header>
+
+    <div class="card">
+      <div class="topbar">
+        <div class="hint">
+          <b>معادله را مانند H2+O2=H2O وارد کنید میتوانید علاوه بر استفاده از = از ترکیب -> نیز استفاده کنید</b>
+        </div>
+        <div class="samples">
+          <div class="chip" onclick="setSample('Fe2(SO4)3 + KOH -> K2SO4 + Fe(OH)3')">نمونه ۱</div>
+          <div class="chip" onclick="setSample('C2H6 + O2 -> CO2 + H2O')">نمونه ۲</div>
+          <div class="chip" onclick="setSample('Al + HCl -> AlCl3 + H2')">نمونه ۳</div>
+          <button id="themeToggle" class="btnSecondary" style="padding:10px 14px; font-size:.9rem;">
+            <i class="fas fa-sun"></i><i class="fas fa-moon" style="margin-right:4px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="inputRow">
+        <input id="eq" type="text" placeholder="Fe2(SO4)3 + KOH = K2SO4 + Fe(OH)3" autocomplete="off" spellcheck="false"/>
+        <button onclick="balance()"><i class="fas fa-balance-scale" style="margin-left:6px;"></i>موازنه</button>
+        <button class="btnSecondary" onclick="copyResult()"><i class="fas fa-copy"></i></button>
+        <button class="btnSecondary" onclick="clearAll()"><i class="fas fa-trash-alt"></i></button>
+      </div>
+
+      <div class="resultBox">
+        <div class="resultLabel">نتیجه</div>
+        <div class="result" id="result">—</div>
+        <div class="error" id="error"></div>
+      </div>
+
+      <div class="metaRow">
+        <div id="status"><i class="fas fa-check-circle" style="margin-left:6px;color:var(--accent);"></i>آماده</div>
+        <div id="copyStatus"></div>
+      </div>
+
+      <div class="history" id="historyBox">
+        <div class="historyTitle"><i class="fas fa-history" style="margin-left:8px;"></i>تاریخچه‌ی معادلات اخیر</div>
+        <div class="historyList" id="historyList"></div>
+      </div>
+
+      <!-- about & help buttons -->
+      <div class="info-sections">
+        <button class="btnSecondary" id="helpBtn"><i class="fas fa-question-circle"></i> راهنما</button>
+        <button class="btnSecondary" id="aboutBtn"><i class="fas fa-info-circle"></i> درباره ما</button>
+      </div>
+    </div>
+  </div>
 </div>
-<button class="refresh-btn" onclick="refreshPage()" aria-label="رفرش"><i class="fa fa-rotate"></i></button>
-<button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2.5V5.5M12 18.5V21.5M5.5 12H2.5M21.5 12H18.5M18.364 5.636l-2 2M7.636 16.364l-2 2M16.364 16.364l2 2M5.636 5.636l2 2"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button>
-<button class="help-btn" onclick="openHelp()"><i class="fa-regular fa-circle-question"></i></button>
-<button class="about-btn-icon" onclick="openAbout()">
-<i class="fa fa-circle-info"></i>
-<span class="about-tooltip">
-<span class="tooltip-text">نسخه v16.4.0</span>
-</span>
-</button>
-</div></div>
-<div class="filter-wrapper"><span class="filter-label">وضعیت:</span><button class="filter-btn active" data-filter="all" onclick="setFilter('all')">همه</button><button class="filter-btn" data-filter="active" onclick="setFilter('active')">فعال</button><button class="filter-btn" data-filter="dev" onclick="setFilter('dev')">در حال توسعه</button></div>
-<div class="tabs-wrapper"><div class="tabs" id="tabsContainer"></div></div>
-<div id="appGrid"></div>
-<div id="emptyState">هیچ نتیجه‌ای پیدا نشد.</div>
-</section>
-<footer class="footer"><span id="versionDisplay"></span> | SA‑APPS &copy; 2026</footer>
+
+<footer>
+  Powered By Saleh Amoo
+</footer>
+
+<!-- Modal برای راهنما و درباره ما - با ساختار جدید قابل اسکرول -->
+<div class="modal-overlay" id="infoModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modalTitle"><i class="fas fa-info-circle"></i> عنوان</h2>
+      <button class="close-btn" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body" id="modalContent">
+      <!-- محتوای داینامیک توسط js جایگزین می‌شود -->
+    </div>
+  </div>
 </div>
-<button class="back-top-btn" id="backTopBtn" onclick="scrollToTop()" aria-label="بازگشت به بالا"><i class="fa fa-arrow-up"></i></button>
-<div id="aboutModal" class="about-modal" onclick="closeAboutOnBackdrop(event)">
-<div class="about-box">
-<div class="about-header"><div class="about-logo">SA</div><div class="about-title"><h2>درباره SA‑APPS</h2><p>لانچر ابزارهای کاربردی، آموزشی و سرگرمی</p></div></div>
-<div class="about-content"><p>SA‑APPS مجموعه‌ای از ابزارهای تحت وب است که با تمرکز بر سرعت، طراحی مدرن و دسترسی آسان ساخته شده است.</p></div>
-<div class="meta-grid">
-<div class="meta-card"><div class="meta-label">نسخه</div><div class="meta-value" id="modalVersion"></div></div>
-<div class="meta-card"><div class="meta-label">وضعیت</div><div class="meta-value">نسخه پایدار</div></div>
-<div class="meta-card"><div class="meta-label">سایت</div><div class="meta-value"><a href="javascript:void(0)" id="githubLinkText" onclick="openExternal(config.siteUrl)"></a><span class="action-chip" onclick="event.stopPropagation();copyToClipboard(config.siteUrl,this)"><i class="fa fa-copy"></i> کپی</span><span class="action-chip" onclick="event.stopPropagation();openExternal(config.siteUrl)"><i class="fa fa-external-link"></i> بازدید</span></div></div>
-<div class="meta-card"><div class="meta-label">ارتباط</div><div class="meta-value"><a href="javascript:void(0)" id="contactEmailLink" onclick="openEmail(config.contactEmail)"></a><span class="action-chip" onclick="event.stopPropagation();copyToClipboard(config.contactEmail,this)"><i class="fa fa-copy"></i> کپی</span><span class="action-chip" onclick="event.stopPropagation();openEmail(config.contactEmail)"><i class="fa fa-envelope"></i> ایمیل</span></div></div>
-</div>
-<div class="about-actions"><a class="action-btn primary" href="javascript:void(0)" id="githubLinkButton" onclick="openExternal(config.githubRepo)">مشاهده گیت هاب</a><button class="action-btn" onclick="closeAbout()">بستن</button></div>
-</div></div>
-<div id="helpModal" class="help-modal" onclick="closeHelpOnBackdrop(event)">
-<div class="help-box">
-<div class="help-header"><div class="help-logo"><i class="fa fa-question-circle"></i></div><div class="help-title"><h2>راهنما</h2><p>راهنمای استفاده از SA‑APPS</p></div></div>
-<div class="help-content"><div class="help-scroll">
-<div class="warning-box"><strong><i class="fa fa-lightbulb-o"></i> راهنما:</strong><ul><li><i class="fa fa-arrow-left"></i> برای بازگشت از ابزارها از دکمه برگشت گوشی استفاده کنید</li><li><i class="fa fa-wifi"></i> ابزارهایی که در توضیحات آن‌ها ذکر شده است که با اینترنت وارد شوید، بدین معناست که باید پیش از باز کردن ابزار اینترنت خود را روشن کنید</li></ul></div>
-<div class="warning-box"><strong><i class="fa fa-exclamation-triangle"></i> هشدار - برخی محدودیت‌ها:</strong><ul><li><i class="fa fa-file"></i> متأسفانه به یکسری دلایل امکان آپلود فایل وجود ندارد</li><li><i class="fa fa-image"></i> امکان دانلود فایل‌های خروجی همانند دانلود عکس وجود ندارد، اما شما می‌توانید از آن اسکرین‌شات بگیرید</li></ul></div>
-<div class="danger-box"><strong><i class="fa fa-exclamation-circle"></i> هشدار مهم:</strong><p>سرعت اجرای برنامه به سخت‌افزار شما بستگی دارد</p></div>
-</div></div>
-<div class="about-actions"><button class="action-btn primary" onclick="closeHelp()">متوجه شدم</button></div>
-</div></div>
-<div id="offlineModal" class="offline-modal" onclick="closeOfflineOnBackdrop(event)">
-<div class="offline-box">
-<div class="offline-header"><div class="offline-logo"><i class="fa fa-wifi"></i></div><div class="offline-title"><h2>اتصال اینترنت قطع شد</h2><p>لطفاً اتصال خود را بررسی کنید</p></div></div>
-<div class="offline-content">
-<span class="offline-icon"><i class="fa fa-wifi"></i></span>
-<p class="offline-message">برای استفاده از برنامه باید اینترنت وصل باشد</p>
-<p class="offline-sub">لطفاً اتصال اینترنت خود را بررسی کنید</p>
-<div class="offline-actions">
-<button class="action-btn primary" onclick="refreshPage()"><i class="fa fa-rotate"></i> تلاش مجدد</button>
-</div>
-</div>
-</div></div>
-<div id="toast" class="toast"></div>
+
 <script>
-// ====== پیکربندی ======
-var config={version:"v16.4.0",siteUrl:"https://amoo189.github.io/Saleh-Amoo/",githubRepo:"https://github.com/Amoo189",contactEmail:"salehamoo1389@gmail.com",theme:localStorage.getItem("sa-apps-theme")||"dark"};
-var currentFilter="all";
-var historyLog=[];
-var isOnline=true;
-var splashHidden=false;
-
-// ====== فقط متن‌های خودت ======
-var loadingMessages=[
-    "با دکمه برگشت گوشی میتوانید به چیدمان اصلی بازگردید",
-    "از طریق نظرات به ما اطلاع دهید که کدام چیدمان بیشتر مد نظر شماست",
-    "از طریق نظرات مشکلات برنامه و نقاط قوت برنامه را به ما اطلاع دهید"
-];
-
-// ====== بررسی اینکه آیا از قبل اسپلش نمایش داده شده ======
-if(sessionStorage.getItem("splashShown")) {
-    splashHidden=true;
-}
-
-// ====== اسپلش اسکرین ======
-(function() {
-    var splash=document.getElementById("splash");
-    var container=document.getElementById("mainContainer");
-    var progressBar=document.getElementById("progressBar");
-    var progressPercent=document.getElementById("progressPercent");
-    var steps=document.querySelectorAll("#splashSteps .step");
-    
-    if(splashHidden) {
-        splash.style.display="none";
-        container.classList.add("loaded");
-        return;
+  // ===== ایجاد ذرات برای پری‌لودر =====
+  (function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      const span = document.createElement('span');
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const size = 2 + Math.random() * 4;
+      const dur = 3 + Math.random() * 4;
+      const delay = Math.random() * 3;
+      span.style.cssText = `
+        left:${x}%;
+        top:${y}%;
+        width:${size}px;
+        height:${size}px;
+        --dur:${dur}s;
+        --delay:${delay}s;
+        animation-delay:${delay}s;
+        animation-duration:${dur}s;
+      `;
+      container.appendChild(span);
     }
-    
-    var progress=0;
-    var totalSteps=4;
-    var currentStep=0;
-    
-    var c=document.getElementById("splashCanvas");
-    if(c) {
-        var ctx=c.getContext("2d");
-        var W,H,particles=[];
-        function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-        resize();window.addEventListener("resize",resize);
-        for(var i=0;i<50;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+0.5,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.10)"})}
-        function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}
-        draw();
+  })();
+
+  // Preloader - با تاخیر و انیمیشن محو
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("preloader").classList.add("hidden");
+    }, 2800);
+  });
+
+  function gcd(a, b) {
+    a = Math.abs(a); b = Math.abs(b);
+    return b ? gcd(b, a % b) : a;
+  }
+  function lcm(a, b) {
+    return Math.abs(a * b) / gcd(a, b);
+  }
+
+  class Frac {
+    constructor(n, d = 1) {
+      if (d === 0) throw new Error("division by zero");
+      if (d < 0) n = -n, d = -d;
+      const g = gcd(Math.abs(n), Math.abs(d)) || 1;
+      this.n = n / g;
+      this.d = d / g;
     }
-    
-    function updateProgress() {
-        var pct=Math.min(100,Math.round(progress));
-        progressBar.style.width=pct+"%";
-        progressPercent.textContent=pct;
-        
-        var activeIdx=Math.min(totalSteps-1,Math.floor(pct/25));
-        steps.forEach(function(step,idx){
-            step.className="step";
-            if(idx<activeIdx) step.classList.add("done");
-            else if(idx===activeIdx) step.classList.add("active");
-        });
+    add(f) { return new Frac(this.n * f.d + f.n * this.d, this.d * f.d); }
+    sub(f) { return new Frac(this.n * f.d - f.n * this.d, this.d * f.d); }
+    mul(f) { return new Frac(this.n * f.n, this.d * f.d); }
+    div(f) { return new Frac(this.n * f.d, this.d * f.n); }
+    value() { return this.n / this.d; }
+  }
+
+  function parseFormula(formula) {
+    formula = formula.trim()
+      .replace(/\(aq\)|\(s\)|\(l\)|\(g\)/g, "")
+      .replace(/\s+/g, "");
+
+    if (!formula) throw new Error("فرمول خالی است");
+
+    const tokens = formula.match(/[A-Z][a-z]?|\d+|[\(\)\[\]\{\}]/g);
+    if (!tokens) throw new Error("فرمول نامعتبر است");
+
+    const stack = [Object.create(null)];
+    const openers = new Set(["(", "[", "{"]);
+    const closers = {")":"(", "]":"[", "}":"{"};
+
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+
+      if (openers.has(t)) {
+        stack.push(Object.create(null));
+      } else if (closers[t]) {
+        if (stack.length === 1) throw new Error("پرانتز نامتوازن");
+        const group = stack.pop();
+        let mul = 1;
+        if (i + 1 < tokens.length && /^\d+$/.test(tokens[i + 1])) {
+          mul = parseInt(tokens[++i], 10);
+        }
+        for (const k in group) {
+          stack[stack.length - 1][k] = (stack[stack.length - 1][k] || 0) + group[k] * mul;
+        }
+      } else if (/^[A-Z][a-z]?$/.test(t)) {
+        let count = 1;
+        if (i + 1 < tokens.length && /^\d+$/.test(tokens[i + 1])) {
+          count = parseInt(tokens[++i], 10);
+        }
+        stack[stack.length - 1][t] = (stack[stack.length - 1][t] || 0) + count;
+      } else if (/^\d+$/.test(t)) {
+        throw new Error("عدد در جای نامعتبر");
+      } else {
+        throw new Error("توکن نامعتبر");
+      }
     }
+
+    if (stack.length !== 1) throw new Error("پرانتز باز مانده");
+    return stack[0];
+  }
+
+  function findPositiveIntegerSolutions(A) {
+    const m = A.length;
+    const n = A[0].length;
     
-    function advanceStep() {
-        if(currentStep>=totalSteps) {
-            progress=100;
-            updateProgress();
-            setTimeout(function(){
-                splash.classList.add("hide");
-                container.classList.add("loaded");
-                sessionStorage.setItem("splashShown","true");
-                splashHidden=true;
-            },400);
-            return;
+    let M = A.map(row => row.map(x => new Frac(x, 1)));
+    let r = 0;
+    let pivots = [];
+
+    for (let c = 0; c < n && r < m; c++) {
+      let pivot = -1;
+      for (let i = r; i < m; i++) {
+        if (M[i][c].n !== 0) { pivot = i; break; }
+      }
+      if (pivot === -1) continue;
+
+      [M[r], M[pivot]] = [M[pivot], M[r]];
+      const pv = M[r][c];
+      for (let j = c; j < n; j++) M[r][j] = M[r][j].div(pv);
+
+      for (let i = 0; i < m; i++) {
+        if (i !== r && M[i][c].n !== 0) {
+          const factor = M[i][c];
+          for (let j = c; j < n; j++) {
+            M[i][j] = M[i][j].sub(factor.mul(M[r][j]));
+          }
+        }
+      }
+
+      pivots.push(c);
+      r++;
+    }
+
+    const freeVars = [];
+    for (let j = 0; j < n; j++) {
+      if (!pivots.includes(j)) freeVars.push(j);
+    }
+
+    if (freeVars.length === 0) {
+      return null;
+    }
+
+    const results = [];
+    
+    function tryCombinations(combo) {
+      if (combo.length === freeVars.length) {
+        const sol = Array(n).fill(0);
+        for (let i = 0; i < freeVars.length; i++) {
+          sol[freeVars[i]] = combo[i];
         }
         
-        var target=Math.min(100,Math.round(((currentStep+1)/totalSteps)*100));
-        var start=progress;
-        var diff=target-start;
-        var duration=currentStep===0?250:currentStep===1?300:currentStep===2?280:200;
-        var startTime=Date.now();
-        
-        function animate() {
-            var elapsed=Date.now()-startTime;
-            var t=Math.min(1,elapsed/duration);
-            var ease=1-Math.pow(1-t,3);
-            progress=start+(diff*ease);
-            updateProgress();
-            if(t<1){requestAnimationFrame(animate)}else{
-                progress=target;
-                updateProgress();
-                currentStep++;
-                setTimeout(advanceStep,currentStep===1?120:currentStep===2?100:80);
+        let valid = true;
+        for (let i = 0; i < r; i++) {
+          let sum = new Frac(0, 1);
+          for (let j = pivots[i] + 1; j < n; j++) {
+            if (M[i][j].n !== 0) {
+              sum = sum.add(M[i][j].mul(new Frac(sol[j], 1)));
             }
+          }
+          const val = sum.n === 0 ? new Frac(0, 1) : sum.mul(new Frac(-1, 1));
+          if (val.n < 0) {
+            valid = false;
+            break;
+          }
+          sol[pivots[i]] = val.n / val.d;
+          if (sol[pivots[i]] % 1 !== 0) {
+            valid = false;
+            break;
+          }
         }
-        animate();
-    }
-    
-    setTimeout(advanceStep,120);
-    
-    setTimeout(function(){
-        if(!splash.classList.contains("hide")){
-            splash.classList.add("hide");
-            container.classList.add("loaded");
-            sessionStorage.setItem("splashShown","true");
-            splashHidden=true;
+        
+        if (valid && sol.some(x => x > 0)) {
+          let g = 0;
+          for (const x of sol) g = gcd(g, Math.abs(x));
+          if (g > 1) {
+            for (let i = 0; i < sol.length; i++) sol[i] = sol[i] / g;
+          }
+          if (sol.every(x => x >= 0) && sol.some(x => x > 0)) {
+            results.push(sol);
+          }
         }
-    },4000);
-})();
-
-// ====== توابع اصلی ======
-function checkConnection() {
-    var statusDot=document.getElementById("statusDot");
-    var statusText=document.getElementById("statusText");
-    var speedText=document.getElementById("speedText");
-    var statusIcon=document.getElementById("statusIcon");
-    var offlineModal=document.getElementById("offlineModal");
-
-    if(!navigator.onLine) {
-        isOnline=false;
-        statusDot.className="status-dot offline";
-        statusText.textContent="آفلاین";
-        speedText.textContent="";
-        statusIcon.className="fa fa-wifi";
-        statusIcon.style.color="var(--offline-color)";
-        offlineModal.classList.add("show");
         return;
+      }
+      
+      for (let v = 1; v <= 15; v++) {
+        tryCombinations([...combo, v]);
+      }
     }
-    isOnline=true;
-    statusDot.className="status-dot measuring";
-    statusText.textContent="در حال اندازه‌گیری";
-    speedText.textContent="";
-    statusIcon.className="fa fa-wifi";
-    statusIcon.style.color="#fbbf24";
-    offlineModal.classList.remove("show");
 
-    measureSpeed(function(speed) {
-        if(!navigator.onLine) {
-            isOnline=false;
-            statusDot.className="status-dot offline";
-            statusText.textContent="آفلاین";
-            speedText.textContent="";
-            statusIcon.className="fa fa-wifi";
-            statusIcon.style.color="var(--offline-color)";
-            offlineModal.classList.add("show");
-            return;
+    tryCombinations([]);
+    
+    const uniqueResults = [];
+    for (const sol of results) {
+      let isDuplicate = false;
+      for (const existing of uniqueResults) {
+        if (sol.every((x, i) => x === existing[i])) {
+          isDuplicate = true;
+          break;
         }
-        isOnline=true;
-        statusDot.className="status-dot online";
-        statusText.textContent="آنلاین";
-        statusIcon.className="fa fa-wifi";
-        statusIcon.style.color="var(--online-color)";
-        if(speed!==null){
-            speedText.textContent=speed<1 ? (speed*1000).toFixed(0)+" Kbps" : speed.toFixed(1)+" Mbps";
-        } else {
-            speedText.textContent="";
-        }
-    });
-}
-
-function measureSpeed(callback) {
-    var startTime,endTime;
-    var downloadSize=200000;
-    var url="https://www.google.com/images/phd/px.gif?cache="+Date.now();
-    var xhr=new XMLHttpRequest();
-    xhr.open("GET",url,true);
-    xhr.responseType="arraybuffer";
-    xhr.onloadstart=function(){startTime=Date.now()};
-    xhr.onload=function(){
-        if(xhr.status===200){
-            endTime=Date.now();
-            var duration=(endTime-startTime)/1000;
-            if(duration>0){
-                var bitsLoaded=downloadSize*8;
-                var speedBps=bitsLoaded/duration;
-                var speedMbps=speedBps/(1024*1024);
-                if(speedMbps<0.001){callback(speedMbps*1000/1024)}else{callback(speedMbps)}
-            }else{callback(null)}
-        }else{callback(null)}
-    };
-    xhr.onerror=function(){callback(null)};
-    xhr.ontimeout=function(){callback(null)};
-    xhr.timeout=5000;
-    xhr.send();
-}
-
-function showOfflineModal(){document.getElementById("offlineModal").classList.add("show")}
-function hideOfflineModal(){document.getElementById("offlineModal").classList.remove("show")}
-function closeOfflineModal(){document.getElementById("offlineModal").classList.remove("show")}
-function closeOfflineOnBackdrop(e){if(e.target===e.currentTarget&&navigator.onLine){hideOfflineModal()}}
-function refreshPage(){if(navigator.onLine){hideOfflineModal();window.location.reload()}else{checkConnection();showToast("هنوز اتصال برقرار نیست")}}
-
-// ====== ابزارهای در حال توسعه ======
-var newTools={
-"شیمی":[{name:"محاسبه‌گر pH",icon:"fa-flask",desc:"محاسبه pH اسیدها و بازها"},{name:"وزن مولکولی",icon:"fa-weight-scale",desc:"محاسبه وزن مولکولی ترکیبات"},{name:"تبدیل واحد شیمی",icon:"fa-arrows-left-right",desc:"تبدیل مول، گرم و حجم"},{name:"جدول حلالیت",icon:"fa-table",desc:"جدول حلالیت ترکیبات یونی"},{name:"ترازوی الکترونیکی",icon:"fa-scale-balanced",desc:"ترازوی دیجیتال برای آزمایشگاه"}],
-"ریاضی":[{name:"حل‌کننده ماتریس",icon:"fa-table",desc:"عملیات روی ماتریس‌ها"},{name:"محاسبه‌گر احتمال",icon:"fa-dice",desc:"محاسبه احتمالات"},{name:"آمار توصیفی",icon:"fa-chart-pie",desc:"محاسبه میانگین، میانه و واریانس"},{name:"حل‌کننده معادله دیفرانسیل",icon:"fa-wave-square",desc:"حل معادلات دیفرانسیل"},{name:"مثلثات‌یاب",icon:"fa-circle",desc:"محاسبه توابع مثلثاتی"}],
-"متن":[{name:"تغییر قلم",icon:"fa-font",desc:"تغییر فونت و اندازه متن"},{name:"جستجو و جایگزینی",icon:"fa-search",desc:"جستجو و جایگزینی در متن"},{name:"تولید متن تصادفی",icon:"fa-shuffle",desc:"تولید متن تصادفی"},{name:"تبدیل حروف بزرگ/کوچک",icon:"fa-arrow-up",desc:"تبدیر حروف به بزرگ/کوچک"}],
-"برنامه‌نویسی":[{name:"شکل‌دهنده HTML",icon:"fa-code",desc:"بهبود ظاهر کد HTML"},{name:"مینی‌فایر CSS",icon:"fa-file-code",desc:"فشرده‌سازی کد CSS"},{name:"JavaScript Beautifier",icon:"fa-bolt",desc:"زیباسازی کد جاوااسکریپت"},{name:"تبدیل CSV به JSON",icon:"fa-table",desc:"تبدیل فایل CSV به JSON"},{name:"تولیدکننده رنگ",icon:"fa-palette",desc:"تولید کد رنگ Hex"},{name:"تست API",icon:"fa-cloud",desc:"تست درخواست‌های API"},{name:"مبدل تاریخ",icon:"fa-calendar",desc:"تبدیل تاریخ در برنامه‌نویسی"}],
-"مذهبی":[{name:"اذان‌گو",icon:"fa-mosque",desc:"پخش اذان با صدای دلنشین"},{name:"تسبیح‌خوان",icon:"fa-hands-praying",desc:"تسبیح الکترونیکی"},{name:"قبله‌یاب",icon:"fa-compass",desc:"جهت‌یابی قبله"},{name:"دعا‌نامه",icon:"fa-hands",desc:"مجموعه دعاهای روزانه"}],
-"زمان":[{name:"زمان جهانی",icon:"fa-globe",desc:"نمایش زمان شهرهای جهان"},{name:"یادآور",icon:"fa-bell",desc:"تنظیم یادآور"},{name:"مناسبت‌ها",icon:"fa-star",desc:"مناسبت‌های مهم"},{name:"مبدل منطقه زمانی",icon:"fa-clock-rotate-left",desc:"تبدیل منطقه زمانی"},{name:"تقویم قمری",icon:"fa-moon",desc:"تقویم قمری"}],
-"ابزارها":[{name:"مبدل ارز",icon:"fa-dollar-sign",desc:"تبدیل ارزهای جهان"},{name:"مشخصات سیستم",icon:"fa-laptop",desc:"نمایش مشخصات سیستم"},{name:"تولید نام کاربری",icon:"fa-user",desc:"تولید نام کاربری تصادفی"},{name:"تست سرعت اینترنت",icon:"fa-wifi",desc:"تست سرعت اینترنت"}],
-"بهره‌وری":[{name:"مدیریت زمان",icon:"fa-clock",desc:"مدیریت زمان کارها"},{name:"هدف‌گذاری",icon:"fa-bullseye",desc:"تعیین اهداف روزانه"},{name:"یادآور عادت",icon:"fa-heart",desc:"پیگیری عادت‌ها"},{name:"دفترچه یادداشت",icon:"fa-book",desc:"دفترچه دیجیتال"},{name:"برنامه‌ریزی",icon:"fa-calendar-plus",desc:"برنامه‌ریزی هفتگی"}],
-"سلامتی":[{name:"پیگیری کالری",icon:"fa-utensils",desc:"شمارش کالری روزانه"},{name:"یادآور آب",icon:"fa-droplet",desc:"یادآور نوشیدن آب"},{name:"محاسبه‌گر چربی",icon:"fa-weight-scale",desc:"محاسبه چربی بدن"},{name:"پیگیری خواب",icon:"fa-bed",desc:"مدیریت خواب"}],
-"مهندسی":[{name:"محاسبه‌گر مقاومت",icon:"fa-bolt",desc:"محاسبه مقاومت الکتریکی"},{name:"توان الکتریکی",icon:"fa-lightbulb",desc:"محاسبه توان و جریان"},{name:"محاسبه‌گر سیم پیچ",icon:"fa-bolt",desc:"محاسبه سیم پیچ"},{name:"نمودار نیرو",icon:"fa-arrows-up-down",desc:"نمودار نیروهای مهندسی"}],
-"مالی":[{name:"محاسبه وام",icon:"fa-hand-holding-dollar",desc:"محاسبه اقساط وام"},{name:"سود مرکب",icon:"fa-chart-line",desc:"محاسبه سود مرکب"},{name:"تبدیل ارز",icon:"fa-dollar-sign",desc:"تبدیل ارزهای جهان"},{name:"محاسبه مالیات",icon:"fa-file-invoice",desc:"محاسبه مالیات"}],
-"امنیت":[{name:"تولید کلید SSH",icon:"fa-key",desc:"تولید کلید SSH"},{name:"تست قدرت رمز",icon:"fa-shield-halved",desc:"بررسی قدرت رمز"},{name:"رمزنگاری فایل",icon:"fa-lock",desc:"رمزنگاری فایل‌ها"},{name:"امضای دیجیتال",icon:"fa-pen",desc:"امضای دیجیتال"}],
-"هوش مصنوعی":[{name:"تشخیص تصویر",icon:"fa-image",desc:"تشخیص اشیاء در تصویر"},{name:"ترجمه هوشمند",icon:"fa-language",desc:"ترجمه با هوش مصنوعی"},{name:"تولید متن",icon:"fa-pen",desc:"تولید متن با هوش مصنوعی"},{name:"پاسخ‌گویی خودکار",icon:"fa-comment",desc:"پاسخ‌گویی هوشمند"}],
-"طراحی":[{name:"ویرایشگر تصویر",icon:"fa-image",desc:"ویرایش ساده تصاویر"},{name:"نقاشی با ماوس",icon:"fa-paintbrush",desc:"نقاشی با ماوس"},{name:"تولید لوگو",icon:"fa-pen-nib",desc:"تولید لوگوی ساده"},{name:"فونت‌یاب",icon:"fa-font",desc:"پیدا کردن فونت"}],
-"بازی‌ها":[{name:"مار",icon:"fa-arrow-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
-};
-
-// ====== ابزارهای فعال ======
-var mainTools={
-"شیمی":[{name:"موازنه‌گر شیمیایی",icon:"fa-flask",desc:"موازنه معادلات شیمیایی با رابط کاربری مدرن",link:"b.html"},{name:"جدول تناوبی",icon:"fa-table",desc:"جدول تناوبی مناسب موبایل و استفاده سریع",link:"pt.html"},{name:"محاسبه‌گر غلظت محلول",icon:"fa-flask",desc:"محاسبه غلظت مولی، درصدی و رقت‌سازی",link:"concentration-calculator.html"}],
-"ریاضی":[{name:"حل‌کننده چندجمله‌ای",icon:"fa-square-root-variable",desc:"حل معادلات ریاضی از درجه ۱ تا ۲۰",link:"ps.html"},{name:"حل‌کننده نامعادله",icon:"fa-chart-line",desc:"حل نامعادله با نمایش نمودار آن",link:"ls.html"},{name:"ماشین حساب مهندسی",icon:"fa-calculator",desc:"ماشین حساب پیشرفته با قابلیت حل معادله",link:"calcu.html"},{name:"محاسبه‌گر درصد",icon:"fa-percent",desc:"محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی",link:"percent-calculator.html"},{name:"ابزار حرفه ای ریاضی",icon:"fa-infinity",desc:"مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین",link:"math-solver-pro.html"},{name:"حل‌کننده پیشرفته معادلات",icon:"fa-infinity",desc:"حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار",link:"equation-solver-pro.html"}],
-"متن":[{name:"شمارشگر متن",icon:"fa-pen-nib",desc:"محاسبه تعداد کلمات، حروف، خطوط و زمان مطالعه",link:"word-counter.html"},{name:"پاک‌ساز متن",icon:"fa-broom",desc:"حذف فاصله‌های اضافی، خطوط خالی و مرتب‌سازی سریع متن",link:"text-cleaner.html"}],
-"برنامه‌نویسی":[{name:"فرمت‌کننده JSON",icon:"fa-code",desc:"زیباسازی، فشرده‌سازی و بررسی صحت ساختار JSON",link:"json-formatter.html"},{name:"تولیدکننده هش",icon:"fa-hashtag",desc:"تولید هش MD5، SHA-1 و SHA-256 برای متن ورودی",link:"hash-generator.html"},{name:"تولیدکننده UUID",icon:"fa-fingerprint",desc:"تولید UUID نسخه 4 برای استفاده در پروژه‌ها",link:"uuid-generator.html"},{name:"رمزگذار Base64",icon:"fa-arrows-left-right",desc:"تبدیل متن به Base64 و رمزگشایی آن",link:"base64-tool.html"},{name:"تست‌کننده Regex",icon:"fa-search",desc:"بررسی الگوهای Regex و نمایش نتایج تطبیق",link:"regex-tester.html"},{name:"URL Encoder / Decoder",icon:"fa-link",desc:"کدگذاری و رمزگشایی URL",link:"url-encoder.html"}],
-"تبدیل":[{name:"مبدل واحد",icon:"fa-ruler-combined",desc:"تبدیل واحد در دسته‌بندی‌های مختلف",link:"u.html"},{name:"تولیدکننده Ascii Art",icon:"fa-font",desc:"تبدیل متن به خروجی ASCII Art",link:"ascii.html"}],
-"مذهبی":[{name:"قرآن آنلاین",icon:"fa-book",desc:"قرآن آنلاین (با اینترنت وارد شوید)",link:"Quran.html"}],
-"زمان":[{name:"تقویم شمسی",icon:"fa-calendar-days",desc:"تقویم شمسی با دقت بالا و مناسبت‌ها",link:"s.html"},{name:"فاصله دو تاریخ",icon:"fa-calendar-minus",desc:"محاسبه اختلاف بین دو تاریخ",link:"date-difference.html"},{name:"تبدیل تاریخ دقیق",icon:"fa-calendar-check",desc:"تبدیل دقیق بین شمسی، میلادی و قمری",link:"date-converter.html"},{name:"تایمر پومودورو",icon:"fa-stopwatch-20",desc:"تایمر تمرکز و استراحت برای افزایش بهره‌وری",link:"pomodoro.html"},{name:"محاسبه‌گر سن",icon:"fa-cake-candles",desc:"محاسبه سن دقیق بر اساس تاریخ تولد",link:"age.html"},{name:"ساعت آنالوگ",icon:"fa-clock",desc:"ساعت آنالوگ، تایمر و استاپ‌واچ",link:"ac.html"}],
-"ابزارها":[{name:"عدد تصادفی",icon:"fa-dice",desc:"تولید عدد تصادفی بین یک بازه دلخواه",link:"random.html"},{name:"کد مورس آفلاین",icon:"fa-tower-broadcast",desc:"مترجم و پخش‌کننده صوتی مورس ۱۰۰٪ آفلاین",link:"morse.html"},{name:"انتخاب‌گر تصادفی",icon:"fa-hand-pointer",desc:"انتخاب یک گزینه تصادفی از بین چند ورودی",link:"random-picker.html"},{name:"سازنده QR",icon:"fa-qrcode",desc:"تبدیل سریع لینک و متن به کد QR",link:"qr.html"}],
-"بهره‌وری":[{name:"لیست کارها",icon:"fa-circle-check",desc:"مدیریت وظایف روزانه با ذخیره‌سازی محلی",link:"todo.html"},{name:"نوت‌برداری حرفه‌ای",icon:"fa-note-sticky",desc:"یادداشت با Markdown ساده و ذخیره محلی",link:"notes.html"},{name:"تست سرعت تایپ حرفه‌ای",icon:"fa-keyboard",desc:"اندازه‌گیری WPM، دقت و رکورد عملکرد",link:"typing-speed.html"}],
-"سلامتی":[{name:"محاسبه‌گر BMI",icon:"fa-weight-scale",desc:"محاسبه شاخص توده بدنی با قد و وزن",link:"bmi.html"},{name:"محاسبه‌گر BMR",icon:"fa-fire",desc:"محاسبه متابولیسم پایه و تخمین کالری روزانه",link:"bmr.html"}],
-"مهندسی":[{name:"تبدیل مبنای اعداد",icon:"fa-code",desc:"تبدیل حرفه‌ای بین مبناهای باینری و هگز",link:"base-converter.html"}],
-"مالی":[{name:"محاسبه تخفیف",icon:"fa-tag",desc:"محاسبه مبلغ تخفیف و قیمت نهایی",link:"discount-calculator.html"},{name:"تقسیم هزینه",icon:"fa-file-invoice-dollar",desc:"تقسیم مبلغ بین چند نفر با محاسبه مالیات",link:"expense-splitter.html"}],
-"امنیت":[{name:"رمزساز حرفه‌ای",icon:"fa-key",desc:"ساخت رمز امن با بررسی قدرت و تنظیمات",link:"pg.html"}],
-"هوش مصنوعی":[{name:"هوش مصنوعی آنلاین",icon:"fa-robot",desc:"هوش مصنوعی رایگان و سریع (با اینترنت وارد شوید)",link:"ai.html"}],
-"طراحی":[{name:"پالت‌ساز رنگ",icon:"fa-palette",desc:"تولید رنگ تصادفی و کپی سریع کد Hex",link:"palette.html"},{name:"گرادینت‌ساز CSS",icon:"fa-rainbow",desc:"ساخت گرادینت با پیش‌نمایش زنده و کپی کد",link:"gradient-generator.html"}],
-"بازی‌ها":[{name:"بازی حافظه",icon:"fa-brain",desc:"کارت‌های مشابه را پیدا کنید",link:"memory-match.html"},{name:"سودوکو",icon:"fa-th",desc:"جدول ۹×۹ را با اعداد ۱ تا ۹ کامل کنید",link:"sudoku-game.html"},{name:"شطرنج",icon:"fa-chess",desc:"بازی شطرنج آفلاین دونفره",link:"chess.html"},{name:"تتریس",icon:"fa-cubes",desc:"بازی تتریس نئونی",link:"tet.html"},{name:"بازی دوز",icon:"fa-x",desc:"دوز با قابلیت بازی دونفره و رقابت با ربات",link:"ttt.html"}]
-};
-
-// ====== توابع کمکی ======
-function addToHistory(name){if(!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
-function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var count=historyLog.length;h.querySelector(".count").textContent=count;var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(count===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" ';if(found.link){html+='onclick="cardClickHandler(event)" href="'+found.link+'"';}else{html+='onclick="showToast(\'این ابزار در نسخه های بعدی کامل می‌شود\')"';}html+=' data-name="'+found.name+'">'+(isDev?'<span class="dev-badge"><i class="fa fa-gear"></i> در حال توسعه</span>':'<span class="active-badge"><i class="fa fa-check-circle"></i> فعال</span>')+'<div class="card-top"><div class="icon-badge"><i class="fa '+found.icon+'"></i></div></div><h2>'+found.name+'</h2><p>'+found.desc+'</p><div class="card-footer"><span class="pill">'+found.cat+'</span><span class="open">ورود ←</span></div></div>';grid.innerHTML+=html}})}}}}
-function buildHistoryTab(){var c=document.getElementById("tabsContainer");var h=document.createElement("button");h.className="tab-btn";h.dataset.tab="history";h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';c.appendChild(h);h.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});applyFilterAndSearch()});var grid=document.getElementById("appGrid");var section=document.createElement("section");section.className="category hidden-cat";section.dataset.tab="history";section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2><span class="category-count">0</span></div><div class="grid"></div>';grid.appendChild(section)}
-function copyToClipboard(text,e){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){showCopyFeedback(e)})["catch"](function(){fallbackCopy(text,e)})}else{fallbackCopy(text,e)}}
-function fallbackCopy(text,e){var t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.opacity="0";t.style.left="-9999px";document.body.appendChild(t);t.select();try{document.execCommand("copy");showCopyFeedback(e)}catch(err){showToast("کپی نشد! لطفاً دستی کپی کنید")}document.body.removeChild(t)}
-function showCopyFeedback(e){e.classList.add("copied");var t=e.innerHTML;e.innerHTML='<i class="fa fa-check"></i> کپی شد';showToast("متن با موفقیت کپی شد");setTimeout(function(){e.classList.remove("copied");e.innerHTML=t},2000)}
-function setFilter(f){currentFilter=f;document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.toggle("active",b.dataset.filter===f)});applyFilterAndSearch()}
-function applyFilterAndSearch(){var q=document.getElementById("searchInput").value.trim().toLowerCase();var cats=document.querySelectorAll(".category");var total=0;cats.forEach(function(cat){var cards=cat.querySelectorAll(".card");var visible=0;var catName=cat.dataset.category.toLowerCase();cards.forEach(function(card){var isDev=!!card.querySelector(".dev-badge");var isActive=!!card.querySelector(".active-badge")||card.tagName==="A";var fm=true;if(currentFilter==="active")fm=isActive;else if(currentFilter==="dev")fm=isDev;var txt=(card.querySelector("h2")?.textContent||"")+(card.querySelector("p")?.textContent||"");var sm=txt.toLowerCase().includes(q)||catName.includes(q);var show=fm&&sm;card.style.display=show?"":"none";if(show)visible++});total+=visible;var ce=cat.querySelector(".category-count");if(ce)ce.textContent=visible+" ابزار";var at=document.querySelector(".tab-btn.active")?.dataset.tab;if(at&&at!=="all")cat.classList.toggle("hidden-cat",cat.dataset.tab!==at)});document.getElementById("emptyState").style.display=total?"none":"block"}
-function buildCards(){var grid=document.getElementById("appGrid");var html="";Object.keys(mainTools).forEach(function(cat){var mc=mainTools[cat]||[],nc=newTools[cat]||[];html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'"><div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2><span class="category-count">'+(mc.length+nc.length)+' ابزار</span></div><div class="grid">';mc.forEach(function(t){html+='<a href="'+t.link+'" class="card" onclick="cardClickHandler(event)" data-name="'+t.name+'"><span class="active-badge"><i class="fa fa-check-circle"></i> فعال</span><div class="card-top"><div class="icon-badge"><i class="fa '+t.icon+'"></i></div></div><h2>'+t.name+'</h2><p>'+t.desc+'</p><div class="card-footer"><span class="pill">'+cat+'</span><span class="open">ورود ←</span></div></a>'});nc.forEach(function(t){html+='<div class="card" onclick="showToast(\'این ابزار در نسخه های بعدی کامل می‌شود\')" data-name="'+t.name+'"><span class="dev-badge"><i class="fa fa-gear"></i> در حال توسعه</span><div class="card-top"><div class="icon-badge"><i class="fa '+t.icon+'"></i></div></div><h2>'+t.name+'</h2><p>'+t.desc+'</p><div class="card-footer"><span class="pill">'+cat+'</span><span class="open">ورود ←</span></div></div>'});html+="</div></section>"});grid.innerHTML=html}
-function buildTabs(){var c=document.getElementById("tabsContainer");var total=0;Object.keys(mainTools).forEach(function(k){total+=(mainTools[k]?.length||0)+(newTools[k]?.length||0)});var html='<button class="tab-btn active" data-tab="all"><i class="fa fa-th"></i> همه <span class="count">'+total+'</span></button>';Object.keys(mainTools).forEach(function(k){var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);var icon=mainTools[k]?.[0]?.icon||"fa-cube";html+='<button class="tab-btn" data-tab="'+k+'"><i class="fa '+icon+'"></i> '+k+' <span class="count">'+count+'</span></button>'});c.innerHTML=html;buildHistoryTab();c.querySelectorAll(".tab-btn").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});applyFilterAndSearch()})})}
-var toastTimer;function showToast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},3000)}
-function initBridge(){try{if(window.WebView?.isReady||window.jsBridge||window.webkit?.messageHandlers||window.android){return true}return false}catch(e){return false}}
-function openLinkWithBridge(u){try{if(window.WebView?.isReady){window.WebView.platform.openUrl(u);return true}if(window.jsBridge?.openUrl){window.jsBridge.openUrl(u);return true}if(window.webkit?.messageHandlers?.openUrl){window.webkit.messageHandlers.openUrl.postMessage({url:u});return true}if(window.android?.openUrl){window.android.openUrl(u);return true}return false}catch(e){return false}}
-function cardClickHandler(e){e.preventDefault();var card=e.currentTarget;var href=card.getAttribute("href");var name=card.dataset.name||"";if(name)addToHistory(name);if(!href)return;var ripple=document.createElement("span");ripple.className="card-ripple";card.appendChild(ripple);var rect=card.getBoundingClientRect();var size=Math.max(rect.width,rect.height);var x=e.clientX-rect.left-size/2;var y=e.clientY-rect.top-size/2;ripple.style.width=ripple.style.height=size+"px";ripple.style.left=x+"px";ripple.style.top=y+"px";setTimeout(function(){var used=openLinkWithBridge(href);if(!used)window.location.assign(href)},380);ripple.addEventListener("animationend",function(){ripple.remove()})}
-function applyTheme(t){document.body.classList.toggle("light-mode",t==="light");localStorage.setItem("sa-apps-theme",t)}
-function toggleTheme(){var isLight=document.body.classList.toggle("light-mode");localStorage.setItem("sa-apps-theme",isLight?"light":"dark")}
-function openAbout(){document.getElementById("aboutModal").classList.add("show");document.body.style.overflow="hidden"}
-function closeAbout(){document.getElementById("aboutModal").classList.remove("show");document.body.style.overflow=""}
-function closeAboutOnBackdrop(e){if(e.target===e.currentTarget)closeAbout()}
-function openExternal(u){window.open(u,"_blank")}
-function openEmail(e){window.open("mailto:"+e)}
-function openHelp(){document.getElementById("helpModal").classList.add("show");document.body.style.overflow="hidden"}
-function closeHelp(){document.getElementById("helpModal").classList.remove("show");document.body.style.overflow=""}
-function closeHelpOnBackdrop(e){if(e.target===e.currentTarget)closeHelp()}
-function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
-
-// ====== دکمه تغییر چیدمان - کاملاً جدا ======
-function toggleLayoutDropdown(e){
-    e.stopPropagation();
-    var dd=document.getElementById("layoutTopDropdown");
-    dd.classList.toggle("show");
-}
-function closeLayoutDropdown(){
-    document.getElementById("layoutTopDropdown").classList.remove("show");
-}
-function updateLayoutItems(active){
-    document.querySelectorAll(".dropdown-item").forEach(function(item){
-        item.classList.remove("active-layout");
-        var hint=item.querySelector(".hint-text");
-        if(hint) hint.style.display="none";
-    });
-    var target=document.querySelector('.dropdown-item[data-layout="'+active+'"]');
-    if(target){
-        target.classList.add("active-layout");
-        var hint=target.querySelector(".hint-text");
-        if(hint) hint.style.display="inline";
+      }
+      if (!isDuplicate) {
+        uniqueResults.push(sol);
+      }
     }
-}
-function selectLayout(num){
-    closeLayoutDropdown();
-    if(num===1){
-        showToast("شما هم اکنون داخل چیدمان ۱ هستید");
-        updateLayoutItems(1);
-        return;
-    }
-    var targetFile=num===2?"index2.html":"index3.html";
-    showTransition(targetFile,num);
-}
-function showTransition(targetFile,num){
-    var overlay=document.getElementById("transitionOverlay");
-    var msgEl=document.getElementById("transitionMsg");
     
-    // فقط متن‌های خودت با زمان بیشتر برای خوندن
-    var msgs = loadingMessages.slice().sort(function(){return Math.random()-0.5});
-    var msgIndex=0;
-    var totalDuration=6000; // 6 ثانیه کل زمان
-    var interval=totalDuration/msgs.length;
-    
-    overlay.classList.add("show");
-    msgEl.innerHTML='<i class="fa fa-spinner fa-spin"></i> '+msgs[0];
-    
-    var timer=setInterval(function(){
-        msgIndex++;
-        if(msgIndex<msgs.length){
-            msgEl.innerHTML='<i class="fa fa-spinner fa-spin"></i> '+msgs[msgIndex];
-        }else{
-            clearInterval(timer);
-            msgEl.innerHTML='<i class="fa fa-arrow-left"></i> در حال انتقال به چیدمان '+num+'...';
-            setTimeout(function(){
-                window.location.href=targetFile;
-            },700);
-        }
-    },interval);
-    
-    setTimeout(function(){
-        if(!window.location.href.includes(targetFile)){
-            window.location.href=targetFile;
-        }
-    },6000);
-}
-document.getElementById("layoutTopBtn").addEventListener("click",toggleLayoutDropdown);
-document.addEventListener("click",function(e){
-    if(!e.target.closest("#layoutTopBtn")){
-        closeLayoutDropdown();
-    }
-});
-document.addEventListener("DOMContentLoaded",function(){
-    updateLayoutItems(1);
-});
+    return uniqueResults.length > 0 ? uniqueResults : null;
+  }
 
-// ====== راه‌اندازی ======
-document.addEventListener("DOMContentLoaded",function(){
-    initBridge();
-    applyTheme(config.theme);
-    document.getElementById("versionDisplay").textContent="نسخه: "+config.version;
-    document.getElementById("modalVersion").textContent=config.version;
-    document.getElementById("githubLinkText").textContent=config.siteUrl.replace(/^https?:\/\//,"");
-    document.getElementById("contactEmailLink").textContent=config.contactEmail;
-    buildCards();
-    buildTabs();
-    document.getElementById("searchInput").addEventListener("input",applyFilterAndSearch);
-    
-    var backBtn=document.getElementById("backTopBtn");
-    window.addEventListener("scroll",function(){
-        if(window.scrollY>300){backBtn.classList.add("visible")}else{backBtn.classList.remove("visible")}
+  function splitEquation(eq) {
+    eq = eq.replace(/→/g, "->").replace(/=/g, "->");
+    const parts = eq.split("->");
+    if (parts.length !== 2) throw new Error("معادله باید یک فلش داشته باشد");
+    const left = parts[0].split("+").map(s => s.trim()).filter(Boolean);
+    const right = parts[1].split("+").map(s => s.trim()).filter(Boolean);
+    if (!left.length || !right.length) throw new Error("طرفین معادله ناقص هستند");
+    return { left, right };
+  }
+
+  function fmtFormula(f) {
+    return f.replace(/(\d+)/g, "<sub>$1</sub>");
+  }
+
+  function balance() {
+    const input = document.getElementById("eq").value.trim();
+    const resultEl = document.getElementById("result");
+    const errorEl = document.getElementById("error");
+    const statusEl = document.getElementById("status");
+    const copyStatus = document.getElementById("copyStatus");
+
+    errorEl.textContent = "";
+    copyStatus.textContent = "";
+
+    if (!input) {
+      resultEl.textContent = "—";
+      statusEl.innerHTML = '<i class="fas fa-check-circle" style="margin-left:6px;color:var(--accent);"></i>آماده';
+      return;
+    }
+
+    try {
+      const { left, right } = splitEquation(input);
+      const mols = [...left, ...right];
+      const parsed = mols.map(parseFormula);
+
+      const elements = [...new Set(parsed.flatMap(obj => Object.keys(obj)))];
+      const matrix = elements.map(el =>
+        mols.map((_, i) => (i < left.length ? 1 : -1) * (parsed[i][el] || 0))
+      );
+
+      if (!matrix.length) throw new Error("فرمول‌ها قابل پردازش نیستند");
+
+      const solutions = findPositiveIntegerSolutions(matrix);
+      
+      if (!solutions || solutions.length === 0) {
+        throw new Error("جواب مثبت برای این معادله یافت نشد");
+      }
+
+      let bestSolution = solutions[0];
+      let bestSum = bestSolution.reduce((a, b) => a + b, 0);
+      for (const sol of solutions) {
+        const sum = sol.reduce((a, b) => a + b, 0);
+        if (sum < bestSum) {
+          bestSum = sum;
+          bestSolution = sol;
+        }
+      }
+
+      const ints = bestSolution;
+      const lmax = left.length;
+      
+      const leftCoeffs = [];
+      const rightCoeffs = [];
+      const leftMols = [];
+      const rightMols = [];
+      
+      for (let i = 0; i < lmax; i++) {
+        if (ints[i] > 0) {
+          leftCoeffs.push(ints[i]);
+          leftMols.push(left[i]);
+        }
+      }
+      
+      for (let i = 0; i < right.length; i++) {
+        if (ints[lmax + i] > 0) {
+          rightCoeffs.push(ints[lmax + i]);
+          rightMols.push(right[i]);
+        }
+      }
+      
+      if (leftMols.length === 0 || rightMols.length === 0) {
+        throw new Error("همه ضرایب صفر شدند");
+      }
+
+      const outLeft = leftMols.map((m, i) => {
+        const c = leftCoeffs[i];
+        return (c !== 1 ? c : "") + fmtFormula(m);
+      }).join(" + ");
+
+      const outRight = rightMols.map((m, i) => {
+        const c = rightCoeffs[i];
+        return (c !== 1 ? c : "") + fmtFormula(m);
+      }).join(" + ");
+
+      const balanced = `${outLeft} → ${outRight}`;
+      resultEl.innerHTML = balanced;
+      statusEl.innerHTML = '<i class="fas fa-check-circle" style="margin-left:6px;color:var(--success);"></i>موازنه شد';
+      addToHistory(input, balanced);
+    } catch (err) {
+      resultEl.textContent = "—";
+      errorEl.textContent = "خطا: " + (err.message || "ورودی نامعتبر است");
+      statusEl.innerHTML = '<i class="fas fa-exclamation-triangle" style="margin-left:6px;color:var(--danger);"></i>خطا در پردازش';
+    }
+  }
+
+  function setSample(sample) {
+    document.getElementById("eq").value = sample;
+    balance();
+  }
+
+  function clearAll() {
+    document.getElementById("eq").value = "";
+    document.getElementById("result").textContent = "—";
+    document.getElementById("error").textContent = "";
+    document.getElementById("status").innerHTML = '<i class="fas fa-check-circle" style="margin-left:6px;color:var(--accent);"></i>آماده';
+    document.getElementById("copyStatus").textContent = "";
+    document.getElementById("eq").focus();
+  }
+
+  function copyResult() {
+    const text = document.getElementById("result").innerText.trim();
+    const copyStatus = document.getElementById("copyStatus");
+    if (!text || text === "—") {
+      copyStatus.textContent = "چیزی برای کپی نیست";
+      return;
+    }
+    navigator.clipboard.writeText(text)
+      .then(() => copyStatus.textContent = "نتیجه کپی شد")
+      .catch(() => copyStatus.textContent = "کپی ناموفق بود");
+    setTimeout(() => copyStatus.textContent = "", 1800);
+  }
+
+  function addToHistory(input, output) {
+    let history = JSON.parse(localStorage.getItem("sa_cb_history") || "[]");
+    const item = { input, output, time: Date.now() };
+    history = [item, ...history.filter(x => x.input !== input)].slice(0, 8);
+    localStorage.setItem("sa_cb_history", JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const box = document.getElementById("historyBox");
+    const list = document.getElementById("historyList");
+    const history = JSON.parse(localStorage.getItem("sa_cb_history") || "[]");
+
+    list.innerHTML = "";
+    if (!history.length) {
+      box.style.display = "none";
+      return;
+    }
+
+    box.style.display = "block";
+    history.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "historyItem";
+      div.textContent = item.input;
+      div.title = item.output;
+      div.onclick = () => {
+        document.getElementById("eq").value = item.input;
+        balance();
+      };
+      list.appendChild(div);
     });
+  }
+
+  document.getElementById("eq").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") balance();
+    if (e.key === "Escape") clearAll();
+  });
+
+  renderHistory();
+
+  // Theme Switcher
+  const themeBtn = document.getElementById("themeToggle");
+
+  themeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("sa_theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+  });
+
+  if (localStorage.getItem("sa_theme") === "light") {
+    document.body.classList.add("light-mode");
+  }
+
+  // ===== Modal logic با ساختار جدید =====
+  const modal = document.getElementById('infoModal');
+  const modalContent = document.getElementById('modalContent');
+  const modalTitle = document.getElementById('modalTitle');
+  const closeBtn = document.getElementById('modalCloseBtn');
+
+  function openModal(title, html) {
+    modalTitle.innerHTML = title;
+    modalContent.innerHTML = html;
+    modal.classList.add('active');
+    modalContent.scrollTop = 0;
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // about content
+  const aboutHTML = `
+    <p>
+      <strong>SA-Chemical Balancer</strong> ابزاری تخصصی و رایگان برای موازنه معادلات شیمیایی است که با بهره‌گیری از الگوریتم‌های دقیق ریاضی، ضرایب استوکیومتری مناسب را محاسبه و نمایش می‌دهد.
+    </p>
+    <p>
+      این پروژه توسط <strong>صالح عمو</strong>، توسعه‌دهنده و طراح نرم‌افزار، با هدف تسهیل فرآیند یادگیری و آموزش شیمی برای دانش‌آموزان، دانشجویان و علاقه‌مندان طراحی و پیاده‌سازی شده است.
+    </p>
+    <div class="dev-info">
+      <span><i class="fas fa-user"></i> صالح عمو (Saleh Amoo)</span>
+      <span><i class="fas fa-envelope"></i> <a href="mailto:salehamoo1389@gmail.com">salehamoo1389@gmail.com</a></span>
+      <span><i class="fas fa-globe"></i> <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">amoo189.github.io/Saleh-Amoo</a></span>
+    </div>
+  `;
+
+  // help content با راهنمای آفلاین
+  const helpHTML = `
+    <ul>
+      <li>معادله را به صورت <code>مواد‌واکنش‌دهنده → فرآورده‌ها</code> وارد کنید.</li>
+      <li>از علامت <code>=</code> یا <code>-></code> برای جدا کردن دو طرف استفاده کنید.</li>
+      <li>مثال: <code>H2 + O2 -> H2O</code></li>
+      <li>از پرانتز <code>()</code> برای گروه‌های شیمیایی استفاده کنید: <code>Fe2(SO4)3</code></li>
+      <li>ضرایب به صورت خودکار محاسبه و نمایش داده می‌شوند.</li>
+      <li>با کلیک روی نمونه‌ها، معادله‌های آماده را امتحان کنید.</li>
+      <li>تاریخچه معادلات اخیر شما ذخیره می‌شود.</li>
+    </ul>
     
-    setTimeout(checkConnection,600);
-    setInterval(checkConnection,30000);
-    
-    window.addEventListener("online",function(){
-        checkConnection();
-        hideOfflineModal();
-        showToast("اتصال اینترنت برقرار شد");
-    });
-    window.addEventListener("offline",function(){
-        isOnline=false;
-        document.getElementById("statusDot").className="status-dot offline";
-        document.getElementById("statusText").textContent="آفلاین";
-        document.getElementById("speedText").textContent="";
-        document.getElementById("statusIcon").className="fa fa-wifi";
-        document.getElementById("statusIcon").style.color="var(--offline-color)";
-        showOfflineModal();
-        showToast("اتصال اینترنت قطع شد");
-    });
-});
+    <h3><i class="fas fa-wifi"></i> راهنمای استفاده‌ی آفلاین</h3>
+    <p>
+      پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:
+    </p>
+    <ul>
+      <li>برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
+      <li>اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه ی تلاش مجدد را دوبار بزنید و این عمل را باری دیگر انجام بدهید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
+    </ul>
+  `;
+
+  document.getElementById('aboutBtn').addEventListener('click', () => openModal('<i class="fas fa-info-circle"></i> درباره ما', aboutHTML));
+  document.getElementById('helpBtn').addEventListener('click', () => openModal('<i class="fas fa-question-circle"></i> راهنما', helpHTML));
+
 </script>
 </body>
-                        </html>
+  </html>
