@@ -22,12 +22,12 @@
       font-style:normal;
       font-display:swap;
     }
-/* لایه پس‌زمینه پری‌لودر */
+/* ===== پری‌لودر جدید با لوگوی SA-UC ===== */
 .preloader{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.7);
-backdrop-filter:blur(20px);
+background:rgba(0,0,0,.85);
+backdrop-filter:blur(24px);
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -36,24 +36,42 @@ z-index:9999;
 transition:opacity .7s ease, visibility .7s ease;
 }
 
+.preloader-box{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:20px;
+}
+
+/* لوگوی پری‌لودر شبیه به لوگوی اصلی اما بزرگتر */
 .preloader-logo{
 position:relative;
-padding:22px 34px;
-border-radius:120px;
-border:1px solid rgba(255,255,255,.15);
-background:rgba(255,255,255,.06);
-margin-bottom:20px;
+width:100px;
+height:100px;
+border-radius:24px;
+overflow:hidden;
+background:
+  radial-gradient(circle at 30% 20%, rgba(255,255,255,.12), transparent 40%),
+  radial-gradient(circle at 75% 88%, rgba(0,0,0,.50), transparent 45%),
+  linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
+box-shadow:
+  0 20px 40px rgba(0,0,0,.6),
+  0 8px 20px rgba(0,0,0,.4),
+  inset 0 1px 0 rgba(255,255,255,.10),
+  inset 0 -12px 18px rgba(0,0,0,.55),
+  inset 10px 0 16px rgba(0,0,0,.20),
+  inset -10px 0 16px rgba(0,0,0,.20);
 }
 
 .preloader-logo::before{
 content:"";
 position:absolute;
-inset:-6px;
-border-radius:140px;
+inset:-8px;
+border-radius:30px;
 background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);
-filter:blur(10px);
-opacity:.7;
-animation:spin 5s linear infinite;
+filter:blur(18px);
+opacity:.6;
+animation:spin 6s linear infinite;
 }
 
 @keyframes spin{
@@ -61,23 +79,66 @@ animation:spin 5s linear infinite;
 100%{transform:rotate(360deg)}
 }
 
-.preloader-sign{
-position:relative;
-font-size:26px;
-font-weight:700;
-color:#fff;
+/* نوشته SA در پری‌لودر */
+.preloader-sa{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-44%);
+font-family:"Arial Black", Arial, sans-serif;
+font-size:52px;
+font-weight:900;
+letter-spacing:-8px;
+color:#289CFF;
+text-shadow:
+  0 7px 12px rgba(0,0,0,.5),
+  0 2px 4px rgba(0,0,0,.35),
+  0 0 20px rgba(40,156,255,.30),
+  0 0 40px rgba(40,156,255,.15),
+  0 -1px 3px rgba(255,255,255,.08);
+}
+
+/* برچسب UC در پری‌لودر */
+.preloader-badge{
+position:absolute;
+top:-4px;
+right:12px;
+padding:5px 12px;
+font-size:15px;
+font-weight:900;
+border-radius:0 0 14px 14px;
+color:#289CFF;
+font-family:"Arial Black", Arial, sans-serif;
+background:
+  linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
+border:1px solid rgba(255,255,255,.06);
+box-shadow:
+  0 8px 18px rgba(0,0,0,.50),
+  inset 0 -6px 9px rgba(0,0,0,.55),
+  inset 0 4px 6px rgba(255,255,255,.07),
+  0 3px 10px rgba(0,0,0,.35);
+text-shadow:
+  0 2px 4px rgba(0,0,0,.35),
+  0 0 10px rgba(40,156,255,.18);
 }
 
 .preloader .loader-text{
-color:rgba(255,255,255,.6);
-font-size:14px;
-margin-top:12px;
-letter-spacing:1px;
+color:rgba(255,255,255,.7);
+font-size:15px;
+letter-spacing:2px;
 animation:pulseText 1.6s infinite;
+margin-top:8px;
 }
 @keyframes pulseText{
-0%,100%{opacity:.4;}
-50%{opacity:1;}
+0%,100%{opacity:.4; transform:scale(0.98);}
+50%{opacity:1; transform:scale(1);}
+}
+
+.preloader .loader-sub{
+color:rgba(255,255,255,.35);
+font-size:12px;
+margin-top:2px;
+letter-spacing:1px;
 }
 
 .preloader.hide{
@@ -762,10 +823,14 @@ body.light .sign-btn:hover {
 
 <body>
 <div class="preloader" id="preloader">
-<div class="preloader-logo">
-<div class="preloader-sign">✦Saleh✦</div>
-</div>
-<div class="loader-text">در حال بارگذاری مبدل...</div>
+  <div class="preloader-box">
+    <div class="preloader-logo">
+      <div class="preloader-sa">SA</div>
+      <div class="preloader-badge">UC</div>
+    </div>
+    <div class="loader-text">✦ مبدل واحد هوشمند ✦</div>
+    <div class="loader-sub">SA-Unit Converter</div>
+  </div>
 </div>
 <div class="container">
     
@@ -927,8 +992,8 @@ body.light .sign-btn:hover {
       <div class="highlight">
         <p>پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:</p>
         <ul>
-          <li>برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
-          <li>اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه‌ی تلاش مجدد را دوبار بزنید و با دکمه برگشت گوشی به صفحه اصلی بروید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
+          <li><i class="fas fa-arrow-left"></i> برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
+          <li><i class="fas fa-redo"></i> اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه‌ی تلاش مجدد را دوبار بزنید و با دکمه برگشت گوشی به صفحه اصلی بروید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
         </ul>
       </div>
       <p><i class="fas fa-check-circle" style="color:var(--ok);"></i> تمامی محاسبات به صورت محلی (Local) انجام می‌شود و نیازی به اینترنت پس از بارگذاری اولیه ندارد.</p>
@@ -1634,4 +1699,4 @@ window.addEventListener('DOMContentLoaded', ()=>{
 });
 </script>
 </body>
-  </html>
+      </html>
