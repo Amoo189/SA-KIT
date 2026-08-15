@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-IS</title>
+<link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+<style>
+@font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"VazirmatnLocal";
+      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#e2e8f0;
+--muted:#94a3b8;
+--border:#334155;
+--accent:#6366f1;
+--green:#22c55e;
+--gold:#f59e0b;
+--pink:#ec4899;
+--cyan:#06b6d4;
+}
+body.light{
+--bg:#f1f5f9;
+--card:#ffffff;
+--text:#0f172a;
+--muted:#475569;
+--border:#cbd5e1;
+--accent:#6366f1;
+--green:#16a34a;
+--gold:#d97706;
+--pink:#db2777;
+--cyan:#0891b2;
+}
+body{
+margin:0;
+padding:20px;
+background:var(--bg);
+color:var(--text);
+font-family:"VazirmatnLocal", sans-serif;
+transition:.3s;
+user-select: none;
+-webkit-user-select: none;
+}
+.container{max-width:950px;margin:auto;}
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+flex-wrap:wrap;
+gap:10px;
+}
+.badge{
+padding:8px 16px;
+border-radius:40px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+color:var(--muted);
+font-size:14px;
+display:flex;
+align-items:center;
+gap:6px;
+}
+.theme-toggle{
+width:40px;height:40px;
+display:flex;align-items:center;justify-content:center;
+border-radius:50%;cursor:pointer;
+border:1px solid var(--border);
+background:rgba(255,255,255,.06);
+font-size:20px;
+}
+.card{
+background:var(--card);
+border:1px solid var(--border);
+padding:22px 20px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+input{
+width:100%;
+padding:14px 16px;
+font-size:18px;
+border-radius:14px;
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+color:var(--text);
+font-family:inherit;
+margin:6px 0 12px 0;
+transition:.2s;
+box-sizing:border-box;
+}
+input:focus{
+border-color:var(--accent);
+outline:none;
+box-shadow:0 0 0 3px rgba(99,102,241,.2);
+}
+button{
+padding:12px 20px;
+border:none;border-radius:12px;
+background:var(--accent);
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+display:inline-flex;
+align-items:center;
+gap:8px;
+}
+button:hover{opacity:.85; transform:scale(.98);}
+canvas{
+width:100%;
+height:auto;
+margin-top:18px;
+background:#0b1120;
+border-radius:16px;
+border:1px solid var(--border);
+display:block;
+}
+body.light canvas{ background:#f8fafc; }
+
+/* ===== PRELOADER رسمی ===== */
+.preloader{
+position:fixed;
+inset:0;
+background:var(--bg);
+z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+opacity:1;
+transition:opacity 0.6s ease, visibility 0.6s ease;
+visibility:visible;
+}
+.preloader.hide{
+opacity:0;
+visibility:hidden;
+pointer-events:none;
+}
+.preloader-container{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:20px;
+}
+.preloader-ring{
+position:relative;
+width:100px;
+height:100px;
+border-radius:50%;
+border:3px solid rgba(99,102,241,.08);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.preloader-ring::before{
+content:"";
+position:absolute;
+inset:-3px;
+border-radius:50%;
+border:3px solid transparent;
+border-top-color:var(--accent);
+border-right-color:var(--accent);
+animation: preloaderSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.preloader-ring::after{
+content:"";
+position:absolute;
+inset:6px;
+border-radius:50%;
+border:2px solid transparent;
+border-bottom-color:var(--gold);
+border-left-color:var(--gold);
+animation: preloaderSpin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
+}
+.preloader-icon{
+position:relative;
+z-index:2;
+font-size:36px;
+color:var(--accent);
+opacity:.9;
+}
+.preloader-title{
+font-size:26px;
+font-weight:700;
+letter-spacing:6px;
+color:var(--text);
+opacity:.9;
+}
+.preloader-title span{
+color:var(--accent);
+}
+.preloader-sub{
+font-size:13px;
+color:var(--muted);
+opacity:.6;
+letter-spacing:2px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+.preloader-progress{
+width:160px;
+height:2px;
+background:rgba(255,255,255,.06);
+border-radius:10px;
+overflow:hidden;
+}
+.preloader-progress-bar{
+height:100%;
+width:0%;
+background:linear-gradient(90deg, var(--accent), var(--gold));
+border-radius:10px;
+animation: preloaderProgress 2s ease-in-out forwards;
+}
+@keyframes preloaderSpin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+@keyframes preloaderProgress{
+0%{width:0%;}
+30%{width:40%;}
+70%{width:75%;}
+100%{width:100%;}
+}
+
+/* ===== بقیه استایل‌ها ===== */
+.keyboard-tabs{
+display:flex;gap:8px;margin:12px 0 8px 0;
+flex-wrap:wrap;
+}
+.keyboard-tabs button{
+padding:6px 16px;
+border-radius:30px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.04);
+color:var(--text);
+font-size:13px;
+cursor:pointer;
+font-weight:500;
+display:inline-flex;
+align-items:center;
+gap:4px;
+}
+.keyboard-tabs button.active{
+background:var(--accent);
+color:white;
+border-color:var(--accent);
+}
+.math-keyboard-set{
+display:none;
+gap:8px;
+background:rgba(255,255,255,.02);
+padding:12px;
+border-radius:16px;
+border:1px solid var(--border);
+flex-wrap:wrap;
+animation:keySlide .2s ease;
+}
+.math-keyboard-set.active{display:flex;}
+.math-keyboard-set button{
+flex:1 0 16%;
+padding:10px 0;
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+border-radius:10px;
+color:var(--text);
+font-size:16px;
+cursor:pointer;
+font-family:inherit;
+transition:.1s;
+}
+.math-keyboard-set button:hover{
+background:var(--accent);
+color:white;
+border-color:var(--accent);
+}
+@keyframes keySlide{
+from{opacity:0;transform:translateY(8px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== FOOTER رسمی ===== */
+footer{
+margin-top:30px;
+padding:20px 0 10px 0;
+border-top:1px solid var(--border);
+color:var(--muted);
+font-size:13px;
+text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:8px;
+}
+.footer-main{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
+font-size:14px;
+}
+.footer-main .divider{
+color:var(--border);
+}
+.footer-copy{
+font-size:12px;
+opacity:.6;
+letter-spacing:1px;
+}
+.footer-copy a{
+color:var(--accent);
+text-decoration:none;
+}
+.footer-copy a:hover{text-decoration:underline;}
+.footer-links{
+display:flex;
+gap:16px;
+align-items:center;
+flex-wrap:wrap;
+}
+.footer-links a{
+color:var(--muted);
+text-decoration:none;
+font-size:13px;
+transition:.2s;
+}
+.footer-links a:hover{
+color:var(--accent);
+}
+
+.hint{
+color:var(--muted);
+font-size:.95rem;
+line-height:1.5;
+margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:6px;
+}
+.sa-logo-center{
+display:flex;
+justify-content:center;
+margin:0 0 10px 0;
+}
+.sa-logo{
+width:78px;
+height:78px;
+position:relative;
+border-radius:18px;
+background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.08), transparent 40%),
+            radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+            linear-gradient(185deg, #232e40 0%, #1b2535 58%, #121c2a 100%);
+box-shadow:0 14px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+display:flex;
+align-items:center;
+justify-content:center;
+gap:2px;
+}
+.sa-logo i {
+font-size: 32px;
+color: #289CFF;
+text-shadow: 0 7px 12px rgba(0,0,0,.44), 0 0 20px rgba(40,156,255,.2);
+z-index: 2;
+}
+.sa-logo .fa-infinity {
+font-size: 28px;
+color: #22c55e;
+text-shadow: 0 0 20px rgba(34,197,94,.2);
+}
+.sa-badge{
+position:absolute;
+top:-2px;
+right:8px;
+padding:2px 10px;
+font-size:13px;
+font-weight:900;
+border-radius:0 0 12px 12px;
+color:#289CFF;
+font-family:"Arial Black",Arial,sans-serif;
+background:linear-gradient(180deg, #283448, #161d2a);
+box-shadow:0 8px 18px rgba(0,0,0,.5);
+display:flex;
+align-items:center;
+gap:4px;
+}
+.sa-badge i {
+font-size: 10px;
+color: #22c55e;
+}
+.result-box{
+margin-top:16px;
+background:rgba(255,255,255,.03);
+padding:12px 16px;
+border-radius:14px;
+border-right:4px solid var(--accent);
+}
+.result-box p{
+margin:6px 0;
+font-size:1rem;
+display:flex;
+align-items:center;
+gap:6px;
+}
+.interval-tag{
+display:inline-block;
+background:rgba(34,197,94,.12);
+color:var(--green);
+padding:2px 12px;
+border-radius:20px;
+margin:4px 6px 4px 0;
+border:1px solid rgba(34,197,94,.2);
+font-weight:500;
+}
+.fade-out{opacity:0;transition:.4s;}
+.ltr-digits{
+direction:ltr;
+display:inline-block;
+unicode-bidi:isolate;
+}
+.math-keyboard-set button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+@media(max-width:600px){
+.math-keyboard-set button{flex:1 0 21%;}
+}
+
+/* مودال ها */
+.modal-overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(10px);
+z-index:1000;
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+pointer-events:none;
+transition:opacity .4s ease;
+}
+.modal-overlay.active{
+opacity:1;
+pointer-events:auto;
+}
+.modal-box{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:24px;
+padding:30px 28px;
+max-width:650px;
+width:95%;
+max-height:85vh;
+overflow-y:auto;
+transform:scale(.95) translateY(20px);
+transition:transform .4s ease;
+box-shadow:0 30px 60px rgba(0,0,0,.6);
+}
+.modal-overlay.active .modal-box{
+transform:scale(1) translateY(0);
+}
+.modal-box h2{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:0;
+margin-bottom:16px;
+border-bottom:1px solid var(--border);
+padding-bottom:14px;
+}
+.modal-close{
+background:transparent;
+border:1px solid var(--border);
+color:var(--text);
+width:36px;
+height:36px;
+border-radius:50%;
+cursor:pointer;
+font-size:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-right:auto;
+}
+.modal-close:hover{background:rgba(255,0,0,.15);border-color:#ef4444;color:#ef4444;}
+.modal-body{
+color:var(--text);
+line-height:1.8;
+font-size:15px;
+}
+.modal-body a{
+color:var(--accent);
+text-decoration:none;
+}
+.modal-body a:hover{text-decoration:underline;}
+.modal-body hr{
+border-color:var(--border);
+margin:16px 0;
+}
+.help-section{
+background:rgba(255,255,255,.03);
+padding:12px 16px;
+border-radius:12px;
+border-right:3px solid var(--accent);
+margin:8px 0;
+}
+.help-section strong{color:var(--accent);}
+.header-btns{
+display:flex;
+gap:8px;
+align-items:center;
+flex-wrap:wrap;
+}
+.header-btns button{
+padding:8px 16px;
+font-size:13px;
+background:rgba(255,255,255,.06);
+border:1px solid var(--border);
+color:var(--text);
+border-radius:30px;
+}
+.header-btns button:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.help-section-gold{
+border-right-color:var(--gold) !important;
+}
+.help-section-gold strong{color:var(--gold) !important;}
+</style>
+</head>
+<body>
+<div class="sa-logo-center">
+<div class="sa-logo">
+<i class="fas fa-chart-line"></i>
+<i class="fas fa-infinity"></i>
+<div class="sa-badge"><i class="fas fa-cog fa-spin"></i> IS</div>
+</div>
+</div>
+
+<!-- ===== PRELOADER ===== -->
+<div id="preloader" class="preloader">
+<div class="preloader-container">
+<div class="preloader-ring">
+<i class="fas fa-calculator preloader-icon"></i>
+</div>
+<div class="preloader-title">SA<span>-IS</span></div>
+<div class="preloader-sub">
+<i class="fas fa-spinner fa-spin"></i>
+بارگذاری
+</div>
+<div class="preloader-progress">
+<div class="preloader-progress-bar"></div>
+</div>
+</div>
+</div>
+
+<div class="container">
+<header>
+<div class="badge"><i class="fas fa-user-astronaut"></i> Saleh Amoo</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+<div class="header-btns">
+<button onclick="openModal('help')"><i class="fas fa-question-circle"></i> راهنما</button>
+<button onclick="openModal('about')"><i class="fas fa-info-circle"></i> درباره ما</button>
+</div>
+<div id="themeToggle" class="theme-toggle">🌙</div>
+<div id="themeLabel" class="badge">حالت تیره</div>
+</div>
+</header>
+
+<div class="card">
+<h3 style="margin:0 0 6px 0;display:flex;align-items:center;gap:8px;"><i class="fas fa-calculator"></i> حل‌کننده نامعادله</h3>
+<div class="hint"><i class="fas fa-info-circle"></i> <b>متغیر دلخواه (x, y, t, …) • مثال: x^3 - 4*x > 0</b></div>
+<input id="equation" type="text" placeholder="مثلاً: sin(x) - 0.5 > 0  یا  x^2 - 3*x + 2 ≤ 0">
+
+<div class="keyboard-tabs">
+<button class="active" data-tab="num"><i class="fas fa-hashtag"></i> اعداد</button>
+<button data-tab="ops"><i class="fas fa-code"></i> عملگرها</button>
+<button data-tab="func"><i class="fas fa-f"></i> توابع</button>
+<button data-tab="sym"><i class="fas fa-superscript"></i> نمادها</button>
+</div>
+
+<div id="num" class="math-keyboard-set active">
+<button>7</button><button>8</button><button>9</button>
+<button>4</button><button>5</button><button>6</button>
+<button>1</button><button>2</button><button>3</button>
+<button>0</button><button>.</button><button>←</button>
+</div>
+<div id="ops" class="math-keyboard-set">
+<button>+</button><button>-</button><button>*</button><button>/</button>
+<button>^</button><button>(</button><button>)</button>
+<button>&lt;</button><button>&gt;</button><button>=</button>
+</div>
+<div id="func" class="math-keyboard-set">
+<button>sin(</button><button>cos(</button><button>tan(</button>
+<button>sqrt(</button><button>log(</button><button>exp(</button>
+</div>
+<div id="sym" class="math-keyboard-set">
+<button>x</button><button>y</button><button>t</button>
+<button>π</button><button>e</button>
+</div>
+
+<button onclick="solveIneq()" style="width:100%;margin-top:14px;justify-content:center;"><i class="fas fa-play"></i> حل و رسم</button>
+
+<div id="resultBox" class="result-box">
+<p id="result" style="color:var(--accent);font-weight:600;"></p>
+<div id="intervals" style="color:var(--green);font-weight:600;display:flex;flex-wrap:wrap;gap:4px;direction:ltr;text-align:left;"></div>
+</div>
+
+<canvas id="graph" width="700" height="320"></canvas>
+</div>
+</div>
+
+<!-- ===== FOOTER رسمی ===== -->
+<footer>
+<div class="footer-main">
+<span>توسعه‌یافته توسط <strong style="color:var(--accent);">صالح عمو</strong></span>
+<span class="divider">|</span>
+<a href="#" onclick="openModal('about');return false;" style="color:var(--muted);text-decoration:none;">درباره ما</a>
+<span class="divider">|</span>
+<a href="#" onclick="openModal('help');return false;" style="color:var(--muted);text-decoration:none;">راهنما</a>
+</div>
+<div class="footer-copy">
+&copy; ۱۴۰۵ تمامی حقوق برای <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">صالح عمو</a> محفوظ است.
+</div>
+</footer>
+
+<!-- ===== مودال راهنما ===== -->
+<div id="helpModal" class="modal-overlay" onclick="if(event.target===this) closeModal('help')">
+<div class="modal-box">
+<h2><i class="fas fa-question-circle" style="color:var(--accent);"></i> راهنمای کامل برنامه
+<button class="modal-close" onclick="closeModal('help')"><i class="fas fa-times"></i></button>
+</h2>
+<div class="modal-body">
+<div class="help-section">
+<strong><i class="fas fa-pencil-alt"></i> ۱. ورودی عبارت:</strong>
+عبارت نامعادله را در کادر متنی وارد کنید. متغیر می‌تواند <b>x</b>، <b>y</b>، <b>t</b> یا هر حرف دیگری باشد.
+<br>مثال: <code>x^3 - 4*x > 0</code> یا <code>sin(x) - 0.5 > 0</code>
+</div>
+
+<div class="help-section">
+<strong><i class="fas fa-keyboard"></i> ۲. صفحه‌کلید مجازی:</strong>
+از چهار تب زیر برای ورود آسان استفاده کنید:
+<ul style="margin:6px 0;">
+<li><b>اعداد:</b> شامل اعداد ۰ تا ۹، نقطه (اعشار) و دکمه حذف ←</li>
+<li><b>عملگرها:</b> + - * / ^ ( ) &lt; &gt; =</li>
+<li><b>توابع:</b> sin( cos( tan( sqrt( log( exp(</li>
+<li><b>نمادها:</b> x y t π e</li>
+</ul>
+</div>
+
+<div class="help-section">
+<strong><i class="fas fa-calculator"></i> ۳. عملگرها و توابع پشتیبانی شده:</strong>
+<ul style="margin:6px 0;">
+<li><b>عملگرها:</b> <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>^</code> (توان) <code>(</code> <code>)</code></li>
+<li><b>توابع مثلثاتی:</b> <code>sin()</code> <code>cos()</code> <code>tan()</code></li>
+<li><b>توابع دیگر:</b> <code>sqrt()</code> (جذر) <code>log()</code> (لگاریتم) <code>exp()</code> (نمایی)</li>
+<li><b>ثابت‌ها:</b> <code>π</code> (پی) <code>e</code> (عدد اویلر)</li>
+</ul>
+</div>
+
+<div class="help-section">
+<strong><i class="fas fa-robot"></i> ۴. نحوه حل و نمایش:</strong>
+برنامه با استفاده از روش <b>دوبخشی</b> ریشه‌های تابع را با دقت بالا پیدا کرده و بر اساس عملگر نامعادله، بازه‌های پاسخ را مشخص می‌کند.
+<br><br>
+<b>خروجی:</b>
+<ul style="margin:6px 0;">
+<li><b>بازه‌های پاسخ:</b> به صورت [a, b] یا (a, b) نمایش داده می‌شوند</li>
+<li><b>نمودار:</b> تابع به رنگ آبی، ریشه‌ها به رنگ قرمز و بازه‌های پاسخ به صورت هایلایت سبز نمایش داده می‌شوند</li>
+<li><b>علامت‌ها:</b> پرانتز ( ) یعنی باز و کروشه [ ] یعنی بسته بودن بازه</li>
+</ul>
+</div>
+
+<div class="help-section">
+<strong><i class="fas fa-palette"></i> ۵. تغییر تم (روشن/تاریک):</strong>
+با کلیک روی آیکون <b>🌙/☀️</b> در بالای صفحه، می‌توانید بین حالت تاریک و روشن جابه‌جا شوید.
+</div>
+
+<div class="help-section">
+<strong><i class="fas fa-info-circle"></i> ۶. درباره ما:</strong>
+با کلیک روی دکمه <b>«درباره ما»</b> می‌توانید اطلاعات کامل درباره توسعه‌دهنده و هدف پروژه را مشاهده کنید.
+</div>
+
+<div class="help-section help-section-gold">
+<strong><i class="fas fa-wifi"></i> ۷. راهنمای استفاده‌ی آفلاین</strong><br>
+پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:
+<br><br>
+<strong>مرحله ۱:</strong> برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.
+<br><br>
+<strong>مرحله ۲:</strong> اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه ی تلاش مجدد را دوبار بزنید و با دکمه برگشت گوشی به صفحه اصلی بروید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== مودال درباره ما (رسمی) ===== -->
+<div id="aboutModal" class="modal-overlay" onclick="if(event.target===this) closeModal('about')">
+<div class="modal-box">
+<h2><i class="fas fa-info-circle" style="color:var(--accent);"></i> درباره ما
+<button class="modal-close" onclick="closeModal('about')"><i class="fas fa-times"></i></button>
+</h2>
+<div class="modal-body">
+<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+<div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;flex-shrink:0;">
+<i class="fas fa-user-astronaut"></i>
+</div>
+<div>
+<div style="font-size:22px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+صالح عمو
+<span style="font-size:13px;font-weight:400;background:rgba(99,102,241,.15);padding:2px 14px;border-radius:20px;color:var(--accent);">توسعه‌دهنده</span>
+</div>
+<div style="color:var(--muted);font-size:14px;"><i class="fas fa-map-pin"></i> ایران</div>
+</div>
+</div>
+<hr>
+
+<div style="margin:12px 0;">
+<p style="font-size:16px;font-weight:600;color:var(--accent);">
+<i class="fas fa-bullseye" style="color:var(--accent);"></i> معرفی
+</p>
+<p style="line-height:2;margin:8px 0;text-align:justify;">
+«SA-IS» یک ابزار تخصصی برای حل نامعادلات ریاضی و نمایش گرافیکی توابع است. این برنامه با بهره‌گیری از الگوریتم‌های عددی دقیق، قادر به شناسایی ریشه‌های توابع و تعیین بازه‌های پاسخ بر اساس عملگرهای نامعادله می‌باشد. نمایش بصری هم‌زمان با محاسبات، امکان درک عمیق‌تر مفاهیم ریاضی را برای کاربران فراهم می‌آورد.
+</p>
+</div>
+
+<hr>
+
+<div style="display:flex;flex-direction:column;gap:8px;margin:8px 0;">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 0;background:rgba(255,255,255,.02);border-radius:10px;padding:8px 14px;">
+<i class="fas fa-globe" style="color:var(--accent);width:24px;"></i>
+<a href="https://amoo189.github.io/Saleh-Amoo" target="_blank" style="font-weight:500;">amoo189.github.io/Saleh-Amoo</a>
+</div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 0;background:rgba(255,255,255,.02);border-radius:10px;padding:8px 14px;">
+<i class="fas fa-envelope" style="color:var(--accent);width:24px;"></i>
+<a href="mailto:salehamoo1389@gmail.com" style="font-weight:500;">salehamoo1389@gmail.com</a>
+</div>
+</div>
+
+<hr>
+
+<div style="margin-top:12px;padding:14px 18px;background:rgba(99,102,241,.06);border-radius:14px;border:1px solid rgba(99,102,241,.1);text-align:center;font-size:14px;color:var(--muted);">
+<i class="fas fa-code" style="color:var(--accent);"></i>
+توسعه‌یافته با هدف تسهیل فرآیند یادگیری و آموزش مفاهیم ریاضی
+</div>
+</div>
+</div>
+</div>
+
+<script>
+// ---------- PRELOADER ----------
+document.addEventListener("DOMContentLoaded", ()=>{
+const loader = document.getElementById("preloader");
+setTimeout(()=>{
+loader.classList.add("hide");
+}, 2200);
+});
+
+// ---------- THEME ----------
+const t=document.getElementById("themeToggle");
+const l=document.getElementById("themeLabel");
+t.onclick=()=>{
+document.body.classList.toggle("light");
+if(document.body.classList.contains("light")){
+ t.textContent="☀️"; l.textContent="حالت روشن";
+}else{
+ t.textContent="🌙"; l.textContent="حالت تیره";
+}
+};
+
+// ---------- مودال ها ----------
+function openModal(type){
+const el = document.getElementById(type+'Modal');
+el.classList.add('active');
+document.body.style.overflow = 'hidden';
+}
+function closeModal(type){
+const el = document.getElementById(type+'Modal');
+el.classList.remove('active');
+document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown',(e)=>{
+if(e.key==='Escape'){
+document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));
+document.body.style.overflow = '';
+}
+});
+
+// ---------- تابع کمکی برای فرمت عدد ----------
+function formatNumber(num) {
+if (num === undefined || num === null || !isFinite(num)) return "0";
+if (Math.abs(num) < 1e-10) return "0";
+if (Number.isInteger(num)) {
+    if (num === 0) return "0";
+    return num.toString();
+}
+let str = num.toFixed(3);
+str = str.replace(/\.?0+$/, '');
+if (str.endsWith('.')) str = str.slice(0, -1);
+if (str === "-0") return "0";
+return str;
+}
+
+// ---------- EVAL با متغیر دلخواه ----------
+function evalExpr(expr, varName, val){
+let e = expr
+ .replace(/(\d)([a-zA-Z])/g,"$1*$2")
+ .replace(/sqrt\(/g,"Math.sqrt(")
+ .replace(/sin\(/g,"Math.sin(")
+ .replace(/cos\(/g,"Math.cos(")
+ .replace(/tan\(/g,"Math.tan(")
+ .replace(/abs\(/g,"Math.abs(")
+ .replace(/log\(/g,"Math.log(")
+ .replace(/exp\(/g,"Math.exp(")
+ .replace(/π/g,"Math.PI")
+ .replace(/\be\b/g,"Math.E")
+ .replace(/\^/g,"**");
+try{
+ let fn = new Function(varName, "return " + e);
+ let v = fn(val);
+ if(!isFinite(v)) return NaN;
+ return v;
+}catch{ return NaN; }
+}
+
+// ---------- پیدا کردن ریشه ----------
+function bisection(expr, varName, a, b){
+let fa = evalExpr(expr, varName, a);
+let fb = evalExpr(expr, varName, b);
+if(Math.sign(fa) === Math.sign(fb)) return null;
+for(let i=0; i<90; i++){
+ let m = (a+b)/2;
+ let fm = evalExpr(expr, varName, m);
+ if(Math.abs(fm) < 1e-7) return m;
+ if(Math.sign(fm) === Math.sign(fa)){
+  a = m; fa = fm;
+ }else{
+  b = m;
+ }
+}
+return (a+b)/2;
+}
+
+// ---------- تشخیص متغیر ----------
+function detectVariable(expr){
+const match = expr.match(/[a-zA-Z]/);
+return match ? match[0] : 'x';
+}
+
+// ---------- حل اصلی ----------
+function solveIneq(){
+const raw = document.getElementById("equation").value.replace(/\s/g,"");
+const res = document.getElementById("result");
+const inter = document.getElementById("intervals");
+if(!raw){ res.textContent="⚠️ عبارت وارد نشده"; inter.innerHTML=""; drawGraph("0",'x',[]); return; }
+
+let op;
+if(raw.includes(">=")) op=">=";
+else if(raw.includes("<=")) op="<=";
+else if(raw.includes(">")) op=">";
+else if(raw.includes("<")) op="<";
+else op="=";
+
+let parts = raw.split(op);
+if(parts.length<2) { res.textContent="⚠️ عملگر نامعادله را وارد کنید"; inter.innerHTML=""; return; }
+let left = parts[0].trim(), right = (parts[1]||"0").trim();
+if(right === "") right = "0";
+let expr = "(" + left + ")-(" + right + ")";
+let varName = detectVariable(expr);
+
+let roots = [];
+let step = 0.2;
+let start = -100, end = 100;
+let prevX = start;
+let prevVal = evalExpr(expr, varName, prevX);
+for(let x = start + step; x <= end; x += step){
+ let curVal = evalExpr(expr, varName, x);
+ if(!isNaN(prevVal) && !isNaN(curVal) && Math.sign(prevVal) !== Math.sign(curVal)){
+  let r = bisection(expr, varName, x-step, x);
+  if(r !== null && isFinite(r)) roots.push(r);
+ }
+ prevX = x; prevVal = curVal;
+}
+
+let unique = [];
+roots.sort((a,b)=>a-b);
+for(let r of roots){
+ if(unique.length===0 || Math.abs(r - unique[unique.length-1]) > 1e-5) unique.push(r);
+}
+
+let intervals = [];
+let testPoints = [-100, ...unique, 100];
+let midPoints = [];
+for(let i=0; i<testPoints.length-1; i++){
+ let mid = (testPoints[i] + testPoints[i+1]) / 2;
+ midPoints.push(mid);
+}
+
+if(unique.length===0){
+ let mid = 0;
+ let val = evalExpr(expr, varName, mid);
+ if(!isNaN(val)){
+  let sign = Math.sign(val);
+  if( (op===">" || op===">=") && sign>0 ) intervals.push({start:-Infinity, end:Infinity, openStart:false, openEnd:false});
+  else if( (op==="<" || op==="<=") && sign<0 ) intervals.push({start:-Infinity, end:Infinity, openStart:false, openEnd:false});
+  else if(op==="=" && Math.abs(val)<1e-8) intervals.push({start:-Infinity, end:Infinity, openStart:false, openEnd:false});
+ }
+}else{
+ let points = [-100, ...unique, 100];
+ for(let i=0; i<points.length-1; i++){
+  let mid = (points[i] + points[i+1]) / 2;
+  let val = evalExpr(expr, varName, mid);
+  if(isNaN(val)) continue;
+  let sign = Math.sign(val);
+  let include = false;
+  if(op===">" && sign>0) include=true;
+  else if(op===">=" && sign>=0) include=true;
+  else if(op==="<" && sign<0) include=true;
+  else if(op==="<=" && sign<=0) include=true;
+  else if(op==="=" && Math.abs(val)<1e-8) include=true;
+  if(include){
+   let start = points[i], end = points[i+1];
+   let openStart = false, openEnd = false;
+   if(i>0){
+    let r1 = unique[i-1];
+    if(Math.abs(start - r1) < 1e-7){
+     openStart = (op===">" || op==="<" || op==="=");
+    }
+   }
+   if(i<points.length-2){
+    let r2 = unique[i];
+    if(Math.abs(end - r2) < 1e-7){
+     openEnd = (op===">" || op==="<" || op==="=");
+    }
+   }
+   intervals.push({start, end, openStart, openEnd});
+  }
+ }
+ if(op==="="){
+  for(let r of unique){
+   if(Math.abs(evalExpr(expr, varName, r))<1e-7){
+    intervals.push({start:r, end:r, openStart:false, openEnd:false});
+   }
+  }
+ }
+}
+
+let resultText = "";
+if(intervals.length===0){
+ resultText = "💡 هیچ بازه‌ای یافت نشد";
+}else{
+ let parts = intervals.map(it => {
+  if(it.start === -Infinity && it.end === Infinity) return "ℝ";
+  if(it.start === it.end) {
+   let val = formatNumber(it.start);
+   return "{" + val + "}";
+  }
+  let s = it.openStart ? "(" : "[";
+  let e = it.openEnd ? ")" : "]";
+  let a = it.start === -Infinity ? "-∞" : formatNumber(it.start);
+  let b = it.end === Infinity ? "+∞" : formatNumber(it.end);
+  return s + a + ", " + b + e;
+ });
+ resultText = parts.join(" ∪ ");
+}
+res.textContent = "✅ بازه‌های پاسخ:";
+
+inter.innerHTML = intervals.map(it => {
+ if(it.start === -Infinity && it.end === Infinity) return `<span class="interval-tag">ℝ</span>`;
+ if(it.start === it.end) {
+  let val = formatNumber(it.start);
+  return `<span class="interval-tag ltr-digits">{${val}}</span>`;
+ }
+ let s = it.openStart ? "(" : "[";
+ let e = it.openEnd ? ")" : "]";
+ let a = it.start === -Infinity ? "-∞" : formatNumber(it.start);
+ let b = it.end === Infinity ? "+∞" : formatNumber(it.end);
+ return `<span class="interval-tag ltr-digits">${s}${a}, ${b}${e}</span>`;
+}).join(" ∪ ");
+
+drawGraph(expr, varName, unique, intervals, op);
+}
+
+// ---------- رسم گراف ----------
+function drawGraph(expr, varName, roots, intervals, op){
+const c = document.getElementById("graph");
+const ctx = c.getContext("2d");
+const W = c.width, H = c.height;
+ctx.clearRect(0,0,W,H);
+
+ctx.strokeStyle = "#94a3b8";
+ctx.lineWidth = 1.2;
+ctx.beginPath();
+ctx.moveTo(0, H/2);
+ctx.lineTo(W, H/2);
+ctx.moveTo(W/2, 0);
+ctx.lineTo(W/2, H);
+ctx.stroke();
+
+ctx.fillStyle = "#94a3b8";
+ctx.font = "11px VazirmatnLocal";
+ctx.textAlign = "center";
+ctx.fillText("0", W/2+10, H/2+18);
+for(let i=-10; i<=10; i++){
+ if(i===0) continue;
+ let px = W/2 + i*25;
+ if(px>0 && px<W){
+  ctx.fillText(i, px, H/2+18);
+  ctx.beginPath();
+  ctx.moveTo(px, H/2-5);
+  ctx.lineTo(px, H/2+5);
+  ctx.stroke();
+ }
+}
+
+ctx.strokeStyle = "#3b82f6";
+ctx.lineWidth = 2.5;
+ctx.beginPath();
+let started = false;
+let scale = 25;
+for(let px=0; px<W; px++){
+ let x = (px - W/2) / scale;
+ let y = evalExpr(expr, varName, x);
+ if(isNaN(y) || !isFinite(y)) { started=false; continue; }
+ let py = H/2 - y*scale;
+ if(py < -2000 || py > 2000) { started=false; continue; }
+ if(!started){ ctx.moveTo(px, py); started=true; }
+ else ctx.lineTo(px, py);
+}
+ctx.stroke();
+
+if(roots){
+ ctx.fillStyle = "#ef4444";
+ for(let r of roots){
+  let px = W/2 + r*scale;
+  if(px>0 && px<W){
+   ctx.beginPath();
+   ctx.arc(px, H/2, 6, 0, 2*Math.PI);
+   ctx.fill();
+   ctx.fillStyle = "white";
+   ctx.font = "10px VazirmatnLocal";
+   ctx.textAlign = "center";
+   let label = formatNumber(r);
+   ctx.fillText(label, px, H/2-12);
+   ctx.fillStyle = "#ef4444";
+  }
+ }
+}
+
+if(intervals && intervals.length>0){
+ ctx.fillStyle = "rgba(34,197,94,0.15)";
+ for(let it of intervals){
+  let x1 = it.start, x2 = it.end;
+  if(x1 === -Infinity) x1 = -50;
+  if(x2 === Infinity) x2 = 50;
+  if(x1 === x2) continue;
+  let p1 = W/2 + x1*scale;
+  let p2 = W/2 + x2*scale;
+  if(p1 > W) continue;
+  if(p2 < 0) continue;
+  p1 = Math.max(0, p1);
+  p2 = Math.min(W, p2);
+  ctx.fillRect(p1, 0, p2-p1, H);
+  ctx.strokeStyle = "#22c55e";
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.moveTo(p1, 0);
+  ctx.lineTo(p1, H);
+  ctx.moveTo(p2, 0);
+  ctx.lineTo(p2, H);
+  ctx.stroke();
+  ctx.setLineDash([]);
+ }
+ for(let it of intervals){
+  if(it.start === it.end) continue;
+  let x1 = it.start, x2 = it.end;
+  if(x1 === -Infinity) x1 = -50;
+  if(x2 === Infinity) x2 = 50;
+  let p1 = W/2 + x1*scale;
+  let p2 = W/2 + x2*scale;
+  if(p1>0 && p1<W && it.openStart){
+   ctx.beginPath();
+   ctx.arc(p1, H/2, 7, 0, 2*Math.PI);
+   ctx.strokeStyle = "#22c55e";
+   ctx.lineWidth = 2;
+   ctx.stroke();
+  }
+  if(p2>0 && p2<W && it.openEnd){
+   ctx.beginPath();
+   ctx.arc(p2, H/2, 7, 0, 2*Math.PI);
+   ctx.strokeStyle = "#22c55e";
+   ctx.lineWidth = 2;
+   ctx.stroke();
+  }
+ }
+}
+}
+
+// ---------- کیبورد مجازی ----------
+document.querySelectorAll(".keyboard-tabs button").forEach(btn=>{
+btn.onclick=()=>{
+ document.querySelectorAll(".keyboard-tabs button").forEach(b=>b.classList.remove("active"));
+ document.querySelectorAll(".math-keyboard-set").forEach(s=>s.classList.remove("active"));
+ btn.classList.add("active");
+ document.getElementById(btn.dataset.tab).classList.add("active");
+};
+});
+
+const eqInput = document.getElementById("equation");
+document.querySelectorAll(".math-keyboard-set button").forEach(btn=>{
+btn.onclick=()=>{
+ let key = btn.textContent;
+ if(key==="←"){
+  let s=eqInput.selectionStart;
+  if(s>0){
+   eqInput.value = eqInput.value.slice(0,s-1) + eqInput.value.slice(s);
+   eqInput.setSelectionRange(s-1,s-1);
+  }
+  eqInput.focus();
+  return;
+ }
+ let s=eqInput.selectionStart;
+ eqInput.value = eqInput.value.slice(0,s) + key + eqInput.value.slice(s);
+ eqInput.setSelectionRange(s+key.length, s+key.length);
+ eqInput.focus();
+};
+});
+
+window.onload = ()=>{
+document.getElementById("equation").value = "x^3 - 4*x > 0";
+solveIneq();
+};
+</script>
+</body>
+  </html>
