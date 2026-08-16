@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-PS</title>
+
+<link rel="stylesheet" href="fontawesome/css/all.min.css">
+<style>
+/* ===== PRELOADER خفن و مدرن ===== */
+@font-face{
+  font-family:"VazirmatnLocal";
+  src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"VazirmatnLocal";
+  src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin:0;
+  font-family:"VazirmatnLocal", sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ===== PRELOADER خفن ===== */
+.preloader {
+  position:fixed;
+  inset:0;
+  background: #0a0e1a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  flex-direction: column;
+  gap: 35px;
+  overflow: hidden;
+}
+.preloader.hide {
+  opacity:0;
+  pointer-events:none;
+  visibility:hidden;
+}
+
+/* پس‌زمینه با ذرات */
+.preloader-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: floatParticle linear infinite;
+}
+@keyframes floatParticle {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% {
+    transform: translateY(-10vh) scale(1);
+    opacity: 0;
+  }
+}
+
+/* حلقه اصلی با انیمیشن پیشرفته */
+.preloader-ring-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+.preloader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+}
+.preloader-ring:nth-child(1) {
+  border-top: 4px solid #6ea8fe;
+  border-right: 4px solid #8b5cf6;
+  animation: spinRing 1.2s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+.preloader-ring:nth-child(2) {
+  border-bottom: 4px solid #22c55e;
+  border-left: 4px solid #6366f1;
+  animation: spinRing 1.8s cubic-bezier(0.6, 0, 0.4, 1) infinite reverse;
+  inset: 12px;
+}
+.preloader-ring:nth-child(3) {
+  border-top: 3px solid #f59e0b;
+  border-right: 3px solid #ec4899;
+  animation: spinRing 2.4s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+  inset: 24px;
+}
+@keyframes spinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* لوگو در مرکز حلقه */
+.preloader-logo-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(110, 168, 254, 0.3);
+  letter-spacing: 1px;
+}
+.preloader-logo-center i {
+  color: #6ea8fe;
+  margin-left: 6px;
+  font-size: 28px;
+}
+.preloader-logo-center span {
+  background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* نوار بارگذاری با انیمیشن نورانی */
+.preloader-bar-wrapper {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+.preloader-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(110, 168, 254, 0.05);
+}
+.preloader-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #6ea8fe, #22c55e, #6ea8fe, #8b5cf6);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: fillProgress 2.2s ease-in-out infinite, shimmer 1.5s ease-in-out infinite;
+  position: relative;
+}
+.preloader-bar-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 20px;
+  height: 8px;
+  background: rgba(110, 168, 254, 0.6);
+  filter: blur(6px);
+  border-radius: 50%;
+}
+@keyframes fillProgress {
+  0% { width: 0%; }
+  30% { width: 35%; }
+  60% { width: 70%; }
+  85% { width: 90%; }
+  100% { width: 100%; }
+}
+@keyframes shimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+.preloader-text {
+  color: rgba(255,255,255,0.2);
+  font-size: 13px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  animation: textPulse 1.8s ease-in-out infinite;
+}
+@keyframes textPulse {
+  0%, 100% { opacity: 0.2; letter-spacing: 6px; }
+  50% { opacity: 0.8; letter-spacing: 10px; }
+}
+
+/* درصد بارگذاری */
+.preloader-percent {
+  color: rgba(255,255,255,0.15);
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== THEME ===== */
+:root{
+  --bg:#0b1220;
+  --card:#111a2e;
+  --text:#e8eefc;
+  --muted:#a9b6d6;
+  --accent:#6ea8fe;
+  --accent2:#8b5cf6;
+  --border:rgba(255,255,255,.08);
+  --shadow:0 18px 60px rgba(0,0,0,.35);
+  --card-bg:rgba(255,255,255,.04);
+}
+body.light{
+  --bg:#e7ecff;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:rgba(0,0,0,.08);
+  --shadow:0 18px 40px rgba(0,0,0,.1);
+  --card-bg:rgba(0,0,0,.02);
+}
+
+.container{width:min(1000px,100%)}
+
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.title h1{
+  margin:0;
+  font-size:28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.title h1 i {
+  color: var(--accent);
+}
+.title p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.theme-toggle{
+  width:38px;
+  height:38px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 18px;
+  transition: 0.2s;
+}
+.theme-toggle:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ===== BUTTONS ===== */
+button {
+  cursor:pointer;
+  border:none;
+  padding:12px 18px;
+  border-radius:14px;
+  font-weight:bold;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: 0.2s;
+}
+button i {
+  font-size: 16px;
+}
+button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+.ghost{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+}
+.ghost:hover {
+  background: rgba(255,255,255,.12);
+}
+.header-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+}
+.header-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.header-btn i {
+  font-size: 14px;
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+
+.card{
+  background:linear-gradient(180deg, var(--card-bg), rgba(255,255,255,.01));
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  backdrop-filter: blur(4px);
+}
+.inner{padding:18px}
+.resultBox{padding:18px; display:flex; flex-direction:column; gap:12px;}
+
+h2{
+  margin:0 0 10px;
+  font-size:16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+h2 i {
+  color: var(--accent);
+}
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.field{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+label{
+  font-size:13px;
+  color:var(--muted);
+}
+input,select{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(0,0,0,.15);
+  color:var(--text);
+  font-family: inherit;
+}
+input:focus, select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.resultBig{
+  font-size:28px;
+  font-weight:900;
+  direction:ltr;
+  white-space:pre-line;
+}
+.resultMeta{
+  font-size:13px;
+  color:var(--muted);
+}
+.math{
+  direction:ltr;
+  margin-top:12px;
+  font-size:18px;
+  background: rgba(0,0,0,.1);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+/* ===== LOGO ===== */
+.sa-logo-center{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:10px 0 20px 0;
+}
+.sa-logo{
+  width:80px;
+  height:80px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  user-select:none;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
+    radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
+    linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.55),
+    0 5px 12px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -12px 18px rgba(0,0,0,.55),
+    inset 10px 0 16px rgba(0,0,0,.20),
+    inset -10px 0 16px rgba(0,0,0,.20);
+}
+.sa-logo::before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:16px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04), inset 0 0 18px rgba(255,255,255,.03);
+  pointer-events:none;
+}
+.sa-text{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-42%);
+  font-family:"Arial Black", Arial, sans-serif;
+  font-size:46px;
+  font-weight:900;
+  letter-spacing:-7px;
+  color:#289CFF;
+  text-shadow:
+    0 7px 12px rgba(0,0,0,.44),
+    0 2px 4px rgba(0,0,0,.30),
+    0 0 14px rgba(40,156,255,.25),
+    0 0 28px rgba(40,156,255,.12),
+    0 -1px 3px rgba(255,255,255,.08);
+}
+.sa-badge{
+  position:absolute;
+  top:-3px;
+  right:10px;
+  padding:4px 10px;
+  font-size:13px;
+  font-weight:900;
+  border-radius:0 0 12px 12px;
+  color:#289CFF;
+  font-family:"Arial Black", Arial, sans-serif;
+  background:linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.50),
+    inset 0 -6px 9px rgba(0,0,0,.55),
+    inset 0 4px 6px rgba(255,255,255,.07),
+    0 3px 10px rgba(0,0,0,.35);
+  text-shadow:0 2px 4px rgba(0,0,0,.35), 0 0 10px rgba(40,156,255,.18);
+}
+.fade-out{opacity:0; transition:.4s ease;}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.modal {
+  background: var(--card);
+  color: var(--text);
+  max-width: 700px;
+  width: 95%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 24px;
+  padding: 28px 30px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  border: 1px solid var(--border);
+  transform: scale(0.95) translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+.modal-overlay.active .modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+.modal h2 {
+  margin-top: 0;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.modal h2 i {
+  color: var(--accent);
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 28px;
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  float: left;
+  background: var(--card);
+  padding: 0 8px;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.modal-close:hover {
+  color: var(--text);
+  transform: rotate(90deg);
+}
+.modal p, .modal li {
+  line-height: 1.8;
+  color: var(--text);
+}
+.modal ul {
+  padding-right: 20px;
+}
+.modal hr {
+  border-color: var(--border);
+  margin: 18px 0;
+}
+.modal .guide-section {
+  margin-bottom: 20px;
+}
+.modal a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.modal a:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== PRELOADER خفن ===== -->
+<div class="preloader" id="preloader">
+  <!-- ذرات پس‌زمینه -->
+  <div class="preloader-particles" id="particles"></div>
+
+  <!-- حلقه‌های چرخان -->
+  <div class="preloader-ring-container">
+    <div class="preloader-ring"></div>
+    <div class="preloader-ring"></div>
+    <div class="preloader-ring"></div>
+    <div class="preloader-logo-center">
+      <i class="fas fa-cubes"></i>
+      <span>SA</span>
+    </div>
+  </div>
+
+  <!-- نوار بارگذاری -->
+  <div class="preloader-bar-wrapper">
+    <div class="preloader-bar-track">
+      <div class="preloader-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="preloader-text">بارگذاری</div>
+    <div class="preloader-percent" id="percentDisplay">۰%</div>
+  </div>
+</div>
+
+<!-- ===== MODAL: درباره ما ===== -->
+<div class="modal-overlay" id="aboutModal">
+  <div class="modal">
+    <button class="modal-close" id="aboutModalClose"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-users"></i> درباره ما</h2>
+    <p><strong><i class="fas fa-user-astronaut"></i> توسعه‌دهنده:</strong> صالح عمو (Saleh Amoo)</p>
+    <p><i class="fas fa-globe"></i> <strong>سایت:</strong> <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">amoo189.github.io/Saleh-Amoo</a></p>
+    <p><i class="fas fa-envelope"></i> <strong>ایمیل:</strong> <a href="mailto:salehamoo1389@gmail.com">salehamoo1389@gmail.com</a></p>
+    <hr>
+    <p style="color: var(--muted); font-size: 14px;"><i class="fas fa-code"></i> SA-Polynomial Solver v2.0 — حل معادلات چندجمله‌ای با روش Aberth–Ehrlich</p>
+  </div>
+</div>
+
+<!-- ===== MODAL: راهنما ===== -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal">
+    <button class="modal-close" id="helpModalClose"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-book-open"></i> راهنمای استفاده</h2>
+    <div class="guide-section">
+      <ul>
+        <li><i class="fas fa-arrow-left"></i> <strong>درجه معادله:</strong> از منوی کشویی درجه (۱ تا ۲۰) را انتخاب کنید.</li>
+        <li><i class="fas fa-pen"></i> <strong>ضرایب:</strong> برای هر جمله، علامت (+ یا −) و مقدار (عدد یا کسر مانند ۳/۴) را وارد کنید.</li>
+        <li><i class="fas fa-eye"></i> <strong>نمایش معادله:</strong> با تغییر ضرایب، معادله به‌صورت خودکار به‌روز می‌شود.</li>
+        <li><i class="fas fa-calculator"></i> <strong>حل:</strong> با کلیک روی دکمه «حل»، ریشه‌های حقیقی و مختلط نمایش داده می‌شوند.</li>
+        <li><i class="fas fa-undo-alt"></i> <strong>پاک کردن:</strong> همه‌ی ضرایب را صفر می‌کند.</li>
+        <li><i class="fas fa-moon"></i> <strong>تم:</strong> با کلیک روی آیکون ماه/خورشید، تم روشن/تاریک تغییر می‌کند.</li>
+      </ul>
+    </div>
+    <h4><i class="fas fa-wifi-slash"></i> راهنمای استفاده‌ی آفلاین</h4>
+    <div style="background: rgba(0,0,0,0.1); padding: 12px 16px; border-radius: 14px; border-right: 4px solid var(--accent);">
+      <p style="margin: 0 0 8px 0;">پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:</p>
+      <ul style="margin-top: 4px;">
+        <li>برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
+        <li>اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه ی تلاش مجدد را دوبار بزنید و با دکمه برگشت گوشی به صفحه اصلی بروید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="title">
+      <h1><i class="fas fa-square-root-alt"></i> SA-Polynomial Solver</h1>
+      <div class="sa-logo-center">
+        <div class="sa-logo">
+          <div class="sa-text">SA</div>
+          <div class="sa-badge">PS</div>
+        </div>
+      </div>
+      <p><i class="fas fa-robot"></i> حل معادلات چندجمله‌ای درجه ۱ تا ۲۰</p>
+    </div>
+    <div class="header-left">
+      <button class="header-btn" id="helpBtn"><i class="fas fa-question-circle"></i> راهنما</button>
+      <button class="header-btn" id="aboutBtn"><i class="fas fa-info-circle"></i> درباره ما</button>
+      <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="inner">
+        <h2><i class="fas fa-sliders-h"></i> تنظیم معادله</h2>
+        <div class="field">
+          <label><i class="fas fa-sort-numeric-up"></i> درجه معادله</label>
+          <select id="degree">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+            <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+            <option value="13">13</option><option value="14">14</option><option value="15">15</option>
+            <option value="16">16</option><option value="17">17</option><option value="18">18</option>
+            <option value="19">19</option><option value="20">20</option>
+          </select>
+        </div>
+        <div id="coeffInputs" class="row"></div>
+        <div id="mathView" class="math"></div>
+        <div class="actions">
+          <button id="solveBtn"><i class="fas fa-check-circle"></i> حل</button>
+          <button class="ghost" id="clearBtn"><i class="fas fa-eraser"></i> پاک کردن</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="resultBox">
+        <h2><i class="fas fa-root"></i> ریشه‌ها</h2>
+        <div id="result" class="resultBig">—</div>
+        <div class="resultMeta"><i class="fas fa-info-circle"></i> نمایش ریشه‌های حقیقی و مختلط</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== PRELOADER خفن با درصد =====
+const preloader = document.getElementById('preloader');
+const progressFill = document.getElementById('progressFill');
+const percentDisplay = document.getElementById('percentDisplay');
+
+// ایجاد ذرات پس‌زمینه
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = (2 + Math.random() * 4) + 'px';
+    p.style.height = p.style.width;
+    p.style.animationDuration = (8 + Math.random() * 15) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+// شبیه‌سازی بارگذاری با درصد
+let progress = 0;
+const interval = setInterval(() => {
+  progress += Math.random() * 3 + 1;
+  if (progress > 100) progress = 100;
+  progressFill.style.width = progress + '%';
+  percentDisplay.textContent = Math.round(progress) + '%';
+  
+  if (progress >= 100) {
+    clearInterval(interval);
+    setTimeout(() => {
+      preloader.classList.add('hide');
+    }, 400);
+  }
+}, 120);
+
+// ===== THEME =====
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.onclick = () => {
+  document.body.classList.toggle('light');
+  const icon = themeToggle.querySelector('i');
+  if (document.body.classList.contains('light')) {
+    icon.className = 'fas fa-sun';
+  } else {
+    icon.className = 'fas fa-moon';
+  }
+};
+
+// ===== MODALS =====
+const aboutModal = document.getElementById('aboutModal');
+const helpModal = document.getElementById('helpModal');
+const aboutBtn = document.getElementById('aboutBtn');
+const helpBtn = document.getElementById('helpBtn');
+const aboutClose = document.getElementById('aboutModalClose');
+const helpClose = document.getElementById('helpModalClose');
+
+function openModal(modal) {
+  modal.classList.add('active');
+}
+function closeModal(modal) {
+  modal.classList.remove('active');
+}
+
+aboutBtn.onclick = () => openModal(aboutModal);
+helpBtn.onclick = () => openModal(helpModal);
+aboutClose.onclick = () => closeModal(aboutModal);
+helpClose.onclick = () => closeModal(helpModal);
+
+aboutModal.onclick = (e) => { if (e.target === aboutModal) closeModal(aboutModal); };
+helpModal.onclick = (e) => { if (e.target === helpModal) closeModal(helpModal); };
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeModal(aboutModal);
+    closeModal(helpModal);
+  }
+});
+
+// ===== ELEMENTS =====
+const degree = document.getElementById('degree');
+const coeffDiv = document.getElementById('coeffInputs');
+const mathView = document.getElementById('mathView');
+const result = document.getElementById('result');
+
+// ===== PARSE FRACTIONS =====
+function parseFraction(str) {
+  str = str.trim();
+  if (str.includes('/')) {
+    let [a,b] = str.split('/');
+    return parseFloat(a) / parseFloat(b);
+  }
+  return parseFloat(str);
+}
+
+// ===== BUILD INPUTS =====
+function buildInputs() {
+  let n = parseInt(degree.value);
+  coeffDiv.innerHTML = '';
+  for (let i = n; i >= 0; i--) {
+    let field = document.createElement('div');
+    field.className = 'field';
+    let row = document.createElement('div');
+    row.className = 'row';
+    let sign = document.createElement('select');
+    sign.id = 's'+i;
+    sign.innerHTML = '<option value="1">+</option><option value="-1">−</option>';
+    sign.onchange = updateMath;
+    let input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'a'+i;
+    input.id = 'c'+i;
+    input.oninput = updateMath;
+    row.appendChild(sign);
+    row.appendChild(input);
+    field.appendChild(row);
+    coeffDiv.appendChild(field);
+  }
+  updateMath();
+}
+degree.onchange = buildInputs;
+buildInputs();
+
+// ===== UPDATE MATH VIEW =====
+function updateMath() {
+  let n = parseInt(degree.value);
+  let str = 'f(x) = ';
+  for (let i = n; i >= 0; i--) {
+    let v = document.getElementById('c'+i)?.value;
+    let s = document.getElementById('s'+i)?.value;
+    if (v === '') v = 'a'+i;
+    let t = (s == '-1' ? '− ' : '+ ') + v;
+    if (i === n) t = (s == '-1' ? '− ' : '') + v;
+    if (i > 1) str += `${t}x^${i} `;
+    else if (i == 1) str += `${t}x `;
+    else str += `${t}`;
+  }
+  mathView.textContent = str;
+}
+
+// ===== COMPLEX ARITHMETIC =====
+function C(r,i){ this.r=r; this.i=i; }
+function add(a,b){ return new C(a.r+b.r, a.i+b.i); }
+function sub(a,b){ return new C(a.r-b.r, a.i-b.i); }
+function mul(a,b){ return new C(a.r*b.r - a.i*b.i, a.r*b.i + a.i*b.r); }
+function div(a,b){ let d = b.r*b.r + b.i*b.i; return new C((a.r*b.r + a.i*b.i)/d, (a.i*b.r - a.r*b.i)/d); }
+function abs(a){ return Math.sqrt(a.r*a.r + a.i*a.i); }
+
+function poly(z, coeff) {
+  let res = new C(0,0);
+  for (let i = coeff.length-1; i >= 0; i--) res = add(mul(res, z), new C(coeff[i],0));
+  return res;
+}
+function polyDer(z, coeff) {
+  let n = coeff.length-1;
+  let res = new C(0,0);
+  for (let i = n; i >= 1; i--) res = add(mul(res, z), new C(coeff[i]*i,0));
+  return res;
+}
+
+// ===== ABERTH–EHRLICH =====
+function solvePoly(coeff) {
+  let n = coeff.length - 1;
+  if (n === 1) return [new C(-coeff[0]/coeff[1],0)];
+  let roots = [];
+  let R = 1 + Math.max(...coeff.map(v=>Math.abs(v)));
+  for (let i = 0; i < n; i++) {
+    let a = 2 * Math.PI * i / n;
+    roots.push(new C(R * Math.cos(a), R * Math.sin(a)));
+  }
+  for (let iter = 0; iter < 80; iter++) {
+    for (let i = 0; i < n; i++) {
+      let zi = roots[i];
+      let f = poly(zi, coeff);
+      let f1 = polyDer(zi, coeff);
+      let ratio = div(f, f1);
+      let sum = new C(0,0);
+      for (let j = 0; j < n; j++) {
+        if (i !== j) {
+          let d = sub(zi, roots[j]);
+          if (abs(d) < 1e-12) d = new C(d.r+1e-12, d.i+1e-12);
+          sum = add(sum, div(new C(1,0), d));
+        }
+      }
+      let denom = sub(new C(1,0), mul(ratio, sum));
+      if (abs(denom) < 1e-12) denom = new C(denom.r+1e-12, denom.i+1e-12);
+      let corr = div(ratio, denom);
+      roots[i] = sub(zi, corr);
+    }
+  }
+  return roots;
+}
+
+// ===== RATIONAL APPROX =====
+function rationalApprox(x) {
+  const MAXD = 6000;
+  let bestN=0, bestD=1, bestErr=Infinity;
+  for (let d=1; d<=MAXD; d++) {
+    let n = Math.round(x*d);
+    let err = Math.abs(x - n/d);
+    if (err < bestErr) { bestErr=err; bestN=n; bestD=d; if (err < 1e-12) break; }
+  }
+  if (bestErr <= 1e-9) {
+    const g = (a,b) => b ? g(b, a%b) : Math.abs(a);
+    let g0 = g(bestN, bestD);
+    bestN /= g0; bestD /= g0;
+    if (bestD === 1) return {type:'int', text:String(bestN)};
+    return {type:'frac', text:`${bestN}/${bestD}`};
+  }
+  return null;
+}
+function formatReal(x) {
+  const EPS = 1e-8;
+  if (Math.abs(x - Math.round(x)) < EPS) return String(Math.round(x));
+  let rat = rationalApprox(x);
+  if (rat) return rat.text;
+  let v = Number(x.toFixed(12));
+  if (Math.abs(v - Math.round(v)) < EPS) return String(Math.round(v));
+  return v.toString();
+}
+function format(z) {
+  if (Math.abs(z.i) < 1e-10) return formatReal(z.r);
+  if (Math.abs(z.r) < 1e-10) {
+    let imag = formatReal(z.i);
+    if (imag === '1') return 'i';
+    if (imag === '-1') return '-i';
+    return imag+'i';
+  }
+  let re = formatReal(z.r);
+  let imAbs = formatReal(Math.abs(z.i));
+  let sign = z.i >= 0 ? ' + ' : ' − ';
+  let imPart = imAbs === '1' ? 'i' : imAbs+'i';
+  return re + sign + imPart;
+}
+
+// ===== SOLVE =====
+document.getElementById('solveBtn').onclick = () => {
+  let n = parseInt(degree.value);
+  let c = [];
+  for (let i = n; i >= 0; i--) {
+    let raw = document.getElementById('c'+i).value.trim();
+    let s = parseFloat(document.getElementById('s'+i).value);
+    let v = raw === '' ? 0 : parseFraction(raw);
+    c.push(s * v);
+  }
+  c.reverse();
+  if (c[c.length-1] === 0) {
+    result.textContent = 'ضریب جمله بالاتر نمی‌تواند صفر باشد.';
+    return;
+  }
+  let roots = solvePoly(c);
+  roots.sort((a,b)=> a.r-b.r || a.i-b.i);
+  let hasRealRoot = roots.some(root => Math.abs(root.i) < 1e-10);
+  let out = '';
+  if (!hasRealRoot) {
+    out = 'ریشه‌ی حقیقی ندارد\nریشه‌های مختلط:\n';
+    for (let i=0; i<roots.length; i++) out += `x${i+1} = ${format(roots[i])}\n`;
+    result.textContent = out;
+    return;
+  }
+  for (let i=0; i<roots.length; i++) out += `x${i+1} = ${format(roots[i])}\n`;
+  result.textContent = out;
+};
+
+// ===== CLEAR =====
+document.getElementById('clearBtn').onclick = () => {
+  document.querySelectorAll('#coeffInputs input').forEach(e=> e.value = '');
+  result.textContent = '—';
+  updateMath();
+};
+</script>
+</body>
+  </html>
