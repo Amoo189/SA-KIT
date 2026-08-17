@@ -88,6 +88,20 @@
         linear-gradient(180deg, var(--body-bg1), var(--body-bg2) 55%, var(--body-bg3));
       overflow-x:hidden;
       transition: background .3s ease, color .3s ease;
+      
+      /* ===== ممنوعیت انتخاب و کپی متن ===== */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    /* ===== استثنا برای ورودی‌ها (اجازه انتخاب در فیلد ورودی) ===== */
+    input, textarea, .historyItem, .chip, button {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+      -moz-user-select: text !important;
+      -ms-user-select: text !important;
     }
 
     /* ===== PRELOADER پیشرفته و مدرن ===== */
@@ -472,7 +486,7 @@
       font-size:.86rem;
       cursor:pointer;
       transition:.2s ease;
-      user-select:none;
+      user-select: none;
     }
     .chip:hover{
       transform:translateY(-1px);
@@ -1173,6 +1187,25 @@
 </div>
 
 <script>
+  // ===== جلوگیری از کپی با کلیک راست =====
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // ===== جلوگیری از کپی با Ctrl+C / Cmd+C =====
+  document.addEventListener('keydown', function(e) {
+    // Ctrl+C یا Cmd+C
+    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+      // اگر هدف input یا textarea نباشد، جلوگیری کن
+      const target = e.target;
+      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        return false;
+      }
+    }
+  });
+
   // ===== ایجاد ذرات برای پری‌لودر =====
   (function createParticles() {
     const container = document.getElementById('particles');
