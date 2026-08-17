@@ -55,6 +55,60 @@ transition:.3s;
 user-select: none;
 -webkit-user-select: none;
 }
+
+/* ===== استثنا برای فیلدهای ورودی و انتخاب ===== */
+input, select, textarea, button, .historyItem, .chip {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+/* ===== دکمه رفرش بالا سمت راست ===== */
+.refresh-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  transition: all .25s ease;
+  backdrop-filter: blur(12px);
+}
+.refresh-btn:hover {
+  transform: rotate(60deg) scale(1.05);
+  border-color: var(--accent);
+  background: rgba(99,102,241,.15);
+}
+.refresh-btn:active {
+  transform: rotate(60deg) scale(0.92);
+}
+.refresh-btn i {
+  transition: transform .3s ease;
+}
+.refresh-btn:hover i {
+  transform: rotate(-60deg);
+}
+body.light .refresh-btn {
+  background: #ffffff;
+  border-color: rgba(0,0,0,.1);
+  color: #0b1220;
+}
+body.light .refresh-btn:hover {
+  border-color: var(--accent);
+  background: rgba(99,102,241,.08);
+}
+
 .container{max-width:950px;margin:auto;}
 header{
 display:flex;
@@ -139,7 +193,7 @@ body.light canvas{ background:#f8fafc; }
 position:fixed;
 inset:0;
 background:var(--bg);
-z-index:9999;
+z-index:99999;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -451,7 +505,7 @@ position:fixed;
 inset:0;
 background:rgba(0,0,0,.75);
 backdrop-filter:blur(10px);
-z-index:1000;
+z-index:10000;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -547,6 +601,11 @@ border-right-color:var(--gold) !important;
 </style>
 </head>
 <body>
+<!-- ===== دکمه رفرش بالا سمت راست ===== -->
+<button class="refresh-btn" onclick="location.reload()" title="رفرش صفحه">
+  <i class="fas fa-sync-alt"></i>
+</button>
+
 <div class="sa-logo-center">
 <div class="sa-logo">
 <i class="fas fa-chart-line"></i>
@@ -764,6 +823,25 @@ border-right-color:var(--gold) !important;
 </div>
 
 <script>
+// ===== جلوگیری از کپی با کلیک راست =====
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  return false;
+});
+
+// ===== جلوگیری از کپی با Ctrl+C / Cmd+C =====
+document.addEventListener('keydown', function(e) {
+  // Ctrl+C یا Cmd+C
+  if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+    // اگر هدف input یا textarea یا select نباشد، جلوگیری کن
+    const target = e.target;
+    if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.tagName !== 'SELECT') {
+      e.preventDefault();
+      return false;
+    }
+  }
+});
+
 // ---------- PRELOADER ----------
 document.addEventListener("DOMContentLoaded", ()=>{
 const loader = document.getElementById("preloader");
@@ -1150,4 +1228,4 @@ solveIneq();
 };
 </script>
 </body>
-  </html>
+      </html>
