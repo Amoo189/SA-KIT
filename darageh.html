@@ -43,34 +43,36 @@ input, select, textarea, button, .historyItem, .chip {
   -ms-user-select: text !important;
 }
 
-/* ===== دکمه رفرش بالا سمت راست ===== */
+/* ===== دکمه رفرش بالا سمت چپ ===== */
 .refresh-btn {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 9999;
-  width: 44px;
-  height: 44px;
+  top: 20px;
+  left: 20px;
+  z-index: 99999;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--text);
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,.35);
-  transition: all .25s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+  transition: all .3s ease;
   backdrop-filter: blur(12px);
+  opacity: 0.6;
 }
 .refresh-btn:hover {
-  transform: rotate(60deg) scale(1.05);
+  transform: rotate(60deg) scale(1.1);
   border-color: var(--accent);
-  background: rgba(110,168,254,.15);
+  background: rgba(110,168,254,.2);
+  opacity: 1;
 }
 .refresh-btn:active {
-  transform: rotate(60deg) scale(0.92);
+  transform: rotate(60deg) scale(0.9);
 }
 .refresh-btn i {
   transition: transform .3s ease;
@@ -85,7 +87,7 @@ body.light .refresh-btn {
 }
 body.light .refresh-btn:hover {
   border-color: var(--accent);
-  background: rgba(110,168,254,.08);
+  background: rgba(110,168,254,.1);
 }
 
 body {
@@ -101,7 +103,7 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* ===== PRELOADER خفن ===== */
+/* ===== PRELOADER جدید و خفن ===== */
 .preloader {
   position:fixed;
   inset:0;
@@ -112,7 +114,7 @@ body {
   z-index:99999;
   transition: opacity 0.8s ease, visibility 0.8s ease;
   flex-direction: column;
-  gap: 35px;
+  gap: 40px;
   overflow: hidden;
 }
 .preloader.hide {
@@ -121,7 +123,37 @@ body {
   visibility:hidden;
 }
 
-/* پس‌زمینه با ذرات */
+/* پس‌زمینه با موج‌های نئونی */
+.preloader-waves {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(ellipse at center, rgba(110,168,254,0.03) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: waveFloat 6s ease-in-out infinite;
+}
+.wave:nth-child(2) {
+  animation-delay: -2s;
+  background: radial-gradient(ellipse at center, rgba(139,92,246,0.03) 0%, transparent 70%);
+}
+.wave:nth-child(3) {
+  animation-delay: -4s;
+  background: radial-gradient(ellipse at center, rgba(34,197,94,0.03) 0%, transparent 70%);
+}
+@keyframes waveFloat {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(10%, -10%) scale(1.1) rotate(5deg); }
+  66% { transform: translate(-10%, 10%) scale(0.9) rotate(-5deg); }
+}
+
+/* ذرات درخشان */
 .preloader-particles {
   position: absolute;
   inset: 0;
@@ -129,153 +161,151 @@ body {
 }
 .particle {
   position: absolute;
-  width: 4px;
-  height: 4px;
-  background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+  width: 3px;
+  height: 3px;
+  background: white;
   border-radius: 50%;
-  opacity: 0.3;
-  animation: floatParticle linear infinite;
+  opacity: 0;
+  animation: particleFloat linear infinite;
+  box-shadow: 0 0 10px rgba(110,168,254,0.5);
 }
-@keyframes floatParticle {
+@keyframes particleFloat {
   0% {
-    transform: translateY(100vh) scale(0);
+    transform: translateY(100vh) scale(0) rotate(0deg);
     opacity: 0;
   }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.5; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
   100% {
-    transform: translateY(-10vh) scale(1);
+    transform: translateY(-10vh) scale(1) rotate(720deg);
     opacity: 0;
   }
 }
 
-/* حلقه اصلی با انیمیشن پیشرفته */
-.preloader-ring-container {
+/* لوگوی اصلی با انیمیشن سه‌بعدی */
+.preloader-logo-3d {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
+  perspective: 600px;
 }
-.preloader-ring {
+.preloader-cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cubeRotate 4s ease-in-out infinite;
+}
+@keyframes cubeRotate {
+  0% { transform: rotateX(0deg) rotateY(0deg); }
+  25% { transform: rotateX(90deg) rotateY(90deg); }
+  50% { transform: rotateX(180deg) rotateY(180deg); }
+  75% { transform: rotateX(270deg) rotateY(270deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg); }
+}
+.preloader-cube-face {
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 3px solid transparent;
-}
-.preloader-ring:nth-child(1) {
-  border-top: 4px solid #6ea8fe;
-  border-right: 4px solid #8b5cf6;
-  animation: spinRing 1.2s cubic-bezier(0.6, 0, 0.4, 1) infinite;
-}
-.preloader-ring:nth-child(2) {
-  border-bottom: 4px solid #22c55e;
-  border-left: 4px solid #6366f1;
-  animation: spinRing 1.8s cubic-bezier(0.6, 0, 0.4, 1) infinite reverse;
-  inset: 12px;
-}
-.preloader-ring:nth-child(3) {
-  border-top: 3px solid #f59e0b;
-  border-right: 3px solid #ec4899;
-  animation: spinRing 2.4s cubic-bezier(0.6, 0, 0.4, 1) infinite;
-  inset: 24px;
-}
-@keyframes spinRing {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* لوگو در مرکز حلقه */
-.preloader-logo-center {
-  position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
+  font-size: 50px;
   font-weight: 900;
-  color: #fff;
-  text-shadow: 0 0 40px rgba(110, 168, 254, 0.3);
-  letter-spacing: 1px;
+  background: rgba(110,168,254,0.05);
+  border: 2px solid rgba(110,168,254,0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  text-shadow: 0 0 40px rgba(110,168,254,0.3);
 }
-.preloader-logo-center i {
-  color: #6ea8fe;
-  margin-left: 6px;
-  font-size: 28px;
-}
-.preloader-logo-center span {
-  background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+.preloader-cube-face span {
+  background: linear-gradient(135deg, #6ea8fe, #8b5cf6, #22c55e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.preloader-cube-face:nth-child(1) { transform: rotateX(0deg) translateZ(80px); }
+.preloader-cube-face:nth-child(2) { transform: rotateX(180deg) translateZ(80px); }
+.preloader-cube-face:nth-child(3) { transform: rotateY(-90deg) translateZ(80px); }
+.preloader-cube-face:nth-child(4) { transform: rotateY(90deg) translateZ(80px); }
+.preloader-cube-face:nth-child(5) { transform: rotateX(-90deg) translateZ(80px); }
+.preloader-cube-face:nth-child(6) { transform: rotateX(90deg) translateZ(80px); }
 
-/* نوار بارگذاری با انیمیشن نورانی */
+/* نوار بارگذاری با افکت لیزر */
 .preloader-bar-wrapper {
-  width: 260px;
+  width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   align-items: center;
+  position: relative;
 }
 .preloader-bar-track {
   width: 100%;
   height: 4px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.03);
   border-radius: 4px;
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 0 20px rgba(110, 168, 254, 0.05);
+  box-shadow: inset 0 0 40px rgba(110, 168, 254, 0.05);
 }
 .preloader-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #6366f1, #6ea8fe, #22c55e, #6ea8fe, #8b5cf6);
-  background-size: 200% 100%;
+  background: linear-gradient(90deg, #6366f1, #6ea8fe, #22c55e, #f59e0b, #ec4899, #6366f1);
+  background-size: 300% 100%;
   border-radius: 4px;
-  animation: fillProgress 2.2s ease-in-out infinite, shimmer 1.5s ease-in-out infinite;
+  animation: fillProgress 2s ease-in-out infinite, shimmer 1.5s ease-in-out infinite;
   position: relative;
+  box-shadow: 0 0 40px rgba(110,168,254,0.4);
 }
 .preloader-bar-fill::after {
   content: '';
   position: absolute;
   right: 0;
-  top: -2px;
-  width: 20px;
-  height: 8px;
-  background: rgba(110, 168, 254, 0.6);
-  filter: blur(6px);
+  top: -6px;
+  width: 60px;
+  height: 16px;
+  background: rgba(110, 168, 254, 0.3);
+  filter: blur(12px);
   border-radius: 50%;
 }
 @keyframes fillProgress {
   0% { width: 0%; }
-  30% { width: 35%; }
-  60% { width: 70%; }
-  85% { width: 90%; }
+  30% { width: 40%; }
+  60% { width: 75%; }
+  85% { width: 92%; }
   100% { width: 100%; }
 }
 @keyframes shimmer {
   0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
+  100% { background-position: 300% 0%; }
 }
 
 .preloader-text {
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.1);
   font-size: 13px;
-  letter-spacing: 6px;
+  letter-spacing: 10px;
   text-transform: uppercase;
-  animation: textPulse 1.8s ease-in-out infinite;
+  animation: textGlow 2s ease-in-out infinite;
+  font-weight: 300;
 }
-@keyframes textPulse {
-  0%, 100% { opacity: 0.2; letter-spacing: 6px; }
-  50% { opacity: 0.8; letter-spacing: 10px; }
+@keyframes textGlow {
+  0%, 100% { opacity: 0.2; letter-spacing: 10px; }
+  50% { opacity: 1; letter-spacing: 16px; text-shadow: 0 0 50px rgba(110,168,254,0.2); }
 }
 
-/* درصد بارگذاری */
 .preloader-percent {
-  color: rgba(255,255,255,0.15);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 2px;
+  color: rgba(255,255,255,0.08);
+  font-size: 14px;
+  font-weight: 200;
+  letter-spacing: 4px;
   font-variant-numeric: tabular-nums;
+  animation: percentFade 1.5s ease-in-out infinite;
+}
+@keyframes percentFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
 }
 
 /* ===== THEME ===== */
@@ -642,24 +672,32 @@ input:focus, select:focus {
 </head>
 <body>
 
-<!-- ===== دکمه رفرش بالا سمت راست ===== -->
+<!-- ===== دکمه رفرش بالا سمت چپ ===== -->
 <button class="refresh-btn" onclick="location.reload()" title="رفرش صفحه">
   <i class="fas fa-sync-alt"></i>
 </button>
 
-<!-- ===== PRELOADER خفن ===== -->
+<!-- ===== PRELOADER جدید و خفن ===== -->
 <div class="preloader" id="preloader">
-  <!-- ذرات پس‌زمینه -->
+  <!-- موج‌های پس‌زمینه -->
+  <div class="preloader-waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- ذرات درخشان -->
   <div class="preloader-particles" id="particles"></div>
 
-  <!-- حلقه‌های چرخان -->
-  <div class="preloader-ring-container">
-    <div class="preloader-ring"></div>
-    <div class="preloader-ring"></div>
-    <div class="preloader-ring"></div>
-    <div class="preloader-logo-center">
-      <i class="fas fa-cubes"></i>
-      <span>SA</span>
+  <!-- لوگوی سه‌بعدی -->
+  <div class="preloader-logo-3d">
+    <div class="preloader-cube">
+      <div class="preloader-cube-face"><span>S</span></div>
+      <div class="preloader-cube-face"><span>A</span></div>
+      <div class="preloader-cube-face"><span>P</span></div>
+      <div class="preloader-cube-face"><span>S</span></div>
+      <div class="preloader-cube-face"><span>SA</span></div>
+      <div class="preloader-cube-face"><span>PS</span></div>
     </div>
   </div>
 
@@ -668,7 +706,7 @@ input:focus, select:focus {
     <div class="preloader-bar-track">
       <div class="preloader-bar-fill" id="progressFill"></div>
     </div>
-    <div class="preloader-text">بارگذاری</div>
+    <div class="preloader-text">در حال بارگذاری</div>
     <div class="preloader-percent" id="percentDisplay">۰%</div>
   </div>
 </div>
@@ -775,9 +813,7 @@ document.addEventListener('contextmenu', function(e) {
 
 // ===== جلوگیری از کپی با Ctrl+C / Cmd+C =====
 document.addEventListener('keydown', function(e) {
-  // Ctrl+C یا Cmd+C
   if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-    // اگر هدف input یا textarea یا select نباشد، جلوگیری کن
     const target = e.target;
     if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.tagName !== 'SELECT') {
       e.preventDefault();
@@ -786,31 +822,34 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ===== PRELOADER خفن با درصد =====
+// ===== PRELOADER جدید =====
 const preloader = document.getElementById('preloader');
 const progressFill = document.getElementById('progressFill');
 const percentDisplay = document.getElementById('percentDisplay');
 
-// ایجاد ذرات پس‌زمینه
+// ایجاد ذرات
 function createParticles() {
   const container = document.getElementById('particles');
-  for (let i = 0; i < 30; i++) {
+  const colors = ['#6ea8fe', '#8b5cf6', '#22c55e', '#f59e0b', '#ec4899'];
+  for (let i = 0; i < 60; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     p.style.left = Math.random() * 100 + '%';
-    p.style.width = (2 + Math.random() * 4) + 'px';
+    p.style.width = (1 + Math.random() * 4) + 'px';
     p.style.height = p.style.width;
-    p.style.animationDuration = (8 + Math.random() * 15) + 's';
-    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.animationDuration = (8 + Math.random() * 18) + 's';
+    p.style.animationDelay = (Math.random() * 12) + 's';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.boxShadow = `0 0 ${10 + Math.random() * 20}px ${p.style.background}`;
     container.appendChild(p);
   }
 }
 createParticles();
 
-// شبیه‌سازی بارگذاری با درصد
+// بارگذاری
 let progress = 0;
 const interval = setInterval(() => {
-  progress += Math.random() * 3 + 1;
+  progress += Math.random() * 2 + 0.5;
   if (progress > 100) progress = 100;
   progressFill.style.width = progress + '%';
   percentDisplay.textContent = Math.round(progress) + '%';
@@ -819,9 +858,9 @@ const interval = setInterval(() => {
     clearInterval(interval);
     setTimeout(() => {
       preloader.classList.add('hide');
-    }, 400);
+    }, 500);
   }
-}, 120);
+}, 100);
 
 // ===== THEME =====
 const themeToggle = document.getElementById('themeToggle');
