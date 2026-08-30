@@ -8,9 +8,9 @@
 <style>
 @font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
-:root{--bg:#0b1220;--bg2:#0f172a;--text:#e8eefc;--muted:#9fb0d0;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 50px rgba(0,0,0,.45);--glass:blur(14px);--radius:24px;--bg-light:#eef2f7;--bg2-light:#d5dee8;--text-light:#1a202c;--muted-light:#5a6a7e;--border-light:rgba(0,0,0,.1);--shadow-light:0 10px 30px rgba(0,0,0,.08);--tab-bg:rgba(255,255,255,.04);--tab-active:rgba(110,168,254,.15);--card-bg:rgba(255,255,255,.04);--card-bg-light:rgba(255,255,255,.7);--online-color:#4ade80;--offline-color:#f87171}
-body.light-mode{--bg:var(--bg-light);--bg2:var(--bg2-light);--text:var(--text-light);--muted:var(--muted-light);--border:var(--border-light);--shadow:var(--shadow-light);--tab-bg:rgba(0,0,0,.04);--tab-active:rgba(110,168,254,.12);--card-bg:rgba(255,255,255,.7);background:#eef2f7}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+:root{--bg:#0b1220;--bg2:#0f172a;--text:#e8eefc;--muted:#9fb0d0;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 50px rgba(0,0,0,.45);--glass:blur(14px);--radius:24px;--bg-light:#eef2f7;--bg2-light:#d5dee8;--text-light:#1a202c;--muted-light:#5a6a7e;--border-light:rgba(0,0,0,.1);--shadow-light:0 10px 30px rgba(0,0,0,.08);--tab-bg:rgba(255,255,255,.04);--tab-active:rgba(110,168,254,.15);--card-bg:rgba(255,255,255,.04);--card-bg-light:rgba(255,255,255,.7);--online-color:#4ade80;--offline-color:#f87171;--splash-bg:#0b1220;--splash-text:rgba(255,255,255,0.8);--splash-subtitle:rgba(255,255,255,0.2);--step-bg:rgba(255,255,255,.08)}
+body.light-mode{--bg:var(--bg-light);--bg2:var(--bg2-light);--text:var(--text-light);--muted:var(--muted-light);--border:var(--border-light);--shadow:var(--shadow-light);--tab-bg:rgba(0,0,0,.04);--tab-active:rgba(110,168,254,.12);--card-bg:rgba(255,255,255,.7);--splash-bg:#eef2f7;--splash-text:rgba(0,0,0,0.8);--splash-subtitle:rgba(0,0,0,0.15);--step-bg:rgba(0,0,0,.08);background:#eef2f7}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
 html{scroll-behavior:smooth}
 body{min-height:100vh;font-family:VazirmatnLocal,sans-serif;background:#0b1220;background-image:radial-gradient(circle at top left,rgba(110,168,254,.2),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.18),transparent 34%);background-attachment:fixed;color:var(--text);transition:all .3s}
 body.light-mode{background:#eef2f7;background-image:radial-gradient(circle at top left,rgba(110,168,254,.08),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.06),transparent 34%)}
@@ -65,125 +65,36 @@ body.light-mode .tab-btn .count{background:rgba(0,0,0,.06);color:var(--muted-lig
 .category-title{margin:0;font-size:18px;font-weight:700;color:var(--text);padding-right:4px;transition:color .3s}
 body.light-mode .category-title{color:var(--text-light)}
 .category-title i{margin-left:8px;color:var(--accent)}
-.category-count{display:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:16px 10px;margin-top:6px}
-.card{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    color:inherit;
-    background:transparent;
-    border:none;
-    border-radius:18px;
-    padding:12px 6px;
-    transition:all .25s ease;
-    cursor:pointer;
-    position:relative;
-    text-align:center;
-    height:130px;
-    min-height:130px;
-    max-height:130px;
-    overflow:hidden;
-    user-select:none;
-    -webkit-user-select:none;
-}
+.card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:inherit;background:transparent;border:none;border-radius:18px;padding:12px 6px;transition:all .25s ease;cursor:pointer;position:relative;text-align:center;height:130px;min-height:130px;max-height:130px;overflow:hidden;user-select:none;-webkit-user-select:none}
 .card:hover{background:rgba(255,255,255,.04)}
 body.light-mode .card:hover{background:rgba(0,0,0,.03)}
-.card .ripple-effect{
-    position:absolute;
-    border-radius:50%;
-    background:rgba(110,168,254,.35);
-    transform:scale(0);
-    animation:rippleAnim 0.7s ease-out forwards;
-    pointer-events:none;
-    will-change:transform,opacity;
-}
-body.light-mode .card .ripple-effect{
-    background:rgba(110,168,254,.2);
-}
-@keyframes rippleAnim{
-    0%{transform:scale(0);opacity:1}
-    100%{transform:scale(4);opacity:0}
-}
-.card:active .card-icon{
-    transform:scale(0.85);
-    transition:transform 0.12s ease;
-}
-.card .card-icon{
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    background:var(--card-bg);
-    border:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:26px;
-    color:var(--accent);
-    transition:all .3s ease;
-    margin-bottom:6px;
-    flex-shrink:0;
-    position:relative;
-    z-index:1;
-}
+.card .ripple-effect{position:absolute;border-radius:50%;background:rgba(110,168,254,.35);transform:scale(0);animation:rippleAnim .7s ease-out forwards;pointer-events:none;will-change:transform,opacity}
+body.light-mode .card .ripple-effect{background:rgba(110,168,254,.2)}
+@keyframes rippleAnim{0%{transform:scale(0);opacity:1}100%{transform:scale(4);opacity:0}}
+.card:active .card-icon{transform:scale(.85);transition:transform .12s ease}
+.card .card-icon{width:60px;height:60px;border-radius:50%;background:var(--card-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);transition:all .3s ease;margin-bottom:6px;flex-shrink:0;position:relative;z-index:1}
 body.light-mode .card .card-icon{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.06)}
 .card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 8px 20px rgba(110,168,254,.3)}
 body.light-mode .card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent)}
-.card .card-name{
-    font-size:13px;
-    line-height:1.3;
-    color:var(--muted);
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    max-width:100%;
-    padding:0 2px;
-    min-height:30px;
-    max-height:34px;
-    word-break:break-word;
-    font-weight:500;
-    position:relative;
-    z-index:1;
-}
+.card .card-name{font-size:13px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0 2px;min-height:30px;max-height:34px;word-break:break-word;font-weight:500;position:relative;z-index:1}
 body.light-mode .card .card-name{color:var(--muted-light)}
-.dev-badge-grid{
-    font-size:8px;
-    background:rgba(255,200,0,.15);
-    color:#fbbf24;
-    padding:1px 8px;
-    border-radius:999px;
-    margin-top:2px;
-    border:1px solid rgba(255,200,0,.1);
-    white-space:nowrap;
-    flex-shrink:0;
-    line-height:1.5;
-    position:relative;
-    z-index:1;
-}
+.dev-badge-grid{font-size:8px;background:rgba(255,200,0,.15);color:#fbbf24;padding:1px 8px;border-radius:999px;margin-top:2px;border:1px solid rgba(255,200,0,.1);white-space:nowrap;flex-shrink:0;line-height:1.5;position:relative;z-index:1}
 body.light-mode .dev-badge-grid{background:rgba(255,200,0,.1);border-color:rgba(255,200,0,.08)}
-.card{
-    animation:cardFadeIn 0.4s ease both;
-}
-.card:nth-child(1){animation-delay:0.02s}
-.card:nth-child(2){animation-delay:0.04s}
-.card:nth-child(3){animation-delay:0.06s}
-.card:nth-child(4){animation-delay:0.08s}
-.card:nth-child(5){animation-delay:0.10s}
-.card:nth-child(6){animation-delay:0.12s}
-.card:nth-child(7){animation-delay:0.14s}
-.card:nth-child(8){animation-delay:0.16s}
-.card:nth-child(9){animation-delay:0.18s}
-.card:nth-child(10){animation-delay:0.20s}
-.card:nth-child(11){animation-delay:0.22s}
-.card:nth-child(12){animation-delay:0.24s}
-@keyframes cardFadeIn{
-    0%{opacity:0;transform:translateY(12px) scale(0.96)}
-    100%{opacity:1;transform:translateY(0) scale(1)}
-}
+.card{animation:cardFadeIn .4s ease both}
+.card:nth-child(1){animation-delay:.02s}
+.card:nth-child(2){animation-delay:.04s}
+.card:nth-child(3){animation-delay:.06s}
+.card:nth-child(4){animation-delay:.08s}
+.card:nth-child(5){animation-delay:.10s}
+.card:nth-child(6){animation-delay:.12s}
+.card:nth-child(7){animation-delay:.14s}
+.card:nth-child(8){animation-delay:.16s}
+.card:nth-child(9){animation-delay:.18s}
+.card:nth-child(10){animation-delay:.20s}
+.card:nth-child(11){animation-delay:.22s}
+.card:nth-child(12){animation-delay:.24s}
+@keyframes cardFadeIn{0%{opacity:0;transform:translateY(12px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
 #emptyState{display:none;margin-top:20px;padding:28px 18px;text-align:center;border:1px dashed var(--border);border-radius:22px;color:var(--muted);transition:all .3s}
 body.light-mode #emptyState{border-color:rgba(0,0,0,.08);color:var(--muted-light)}
 .footer{text-align:center;padding:20px 0;margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);transition:all .3s;background:transparent!important}
@@ -233,7 +144,6 @@ body.light-mode .meta-value{color:var(--text-light)}
 .meta-value .action-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(110,168,254,.12);padding:3px 10px;border-radius:999px;font-size:12px;color:var(--accent);border:1px solid rgba(110,168,254,.15);cursor:pointer;transition:all .2s;font-weight:400;white-space:nowrap}
 body.light-mode .meta-value .action-chip{background:rgba(110,168,254,.08);border-color:rgba(110,168,254,.12);color:var(--accent)}
 .meta-value .action-chip:hover{background:rgba(110,168,254,.2);transform:scale(1.02)}
-.meta-value .action-chip i{font-size:11px;margin-left:3px}
 .meta-value .action-chip.copied{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.2);color:#4ade80}
 body.light-mode .meta-value .action-chip.copied{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.15);color:#22c55e}
 .about-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px;flex-wrap:wrap}
@@ -269,8 +179,8 @@ body.light-mode .connection-status .speed-text{color:var(--muted-light)}
 .offline-box .offline-actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
 .offline-box .offline-actions .action-btn i{margin-left:6px}
 
-/* ===== اسپلش اسکرین ===== */
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b1220;transition:opacity .8s ease,visibility .8s ease;overflow:hidden}
+/* ===== اصلاحات اسپلش برای تم سفید ===== */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--splash-bg);transition:opacity .8s ease,visibility .8s ease;overflow:hidden}
 #splash.hide{opacity:0;visibility:hidden;pointer-events:none}
 #splash.hide .splash-wrapper{transform:scale(1.08);opacity:0}
 body.light-mode #splash{background:#eef2f7}
@@ -285,333 +195,140 @@ body.light-mode #splash{background:#eef2f7}
 .splash-logo .logo-shine-2{position:absolute;inset:0;border-radius:36px;background:linear-gradient(180deg,rgba(255,255,255,.2) 0%,transparent 60%);pointer-events:none}
 .splash-progress{width:280px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .splash-progress .track{width:100%;height:5px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;position:relative}
+body.light-mode .splash-progress .track{background:rgba(0,0,0,.08)}
 .splash-progress .bar{height:100%;width:0%;background:linear-gradient(90deg,#6ea8fe,#8b5cf6,#6ea8fe);background-size:200% 100%;border-radius:999px;transition:width .2s ease;animation:barShine 1.5s ease-in-out infinite}
-.splash-progress .label{color:rgba(255,255,255,.4);font-size:14px;letter-spacing:3px;font-weight:300;font-family:inherit}
-.splash-progress .label .pct{color:rgba(255,255,255,.8);font-weight:600;font-size:16px}
+.splash-progress .label{color:var(--splash-text);font-size:14px;letter-spacing:3px;font-weight:300;font-family:inherit}
+.splash-progress .label .pct{color:var(--splash-text);font-weight:600;font-size:16px}
 .splash-steps{display:flex;gap:10px;margin-top:6px}
-.splash-steps .step{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.08);transition:all .4s ease;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:transparent}
+.splash-steps .step{width:14px;height:14px;border-radius:50%;background:var(--step-bg);transition:all .4s ease;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:transparent}
 .splash-steps .step.active{background:var(--accent);border-color:rgba(110,168,254,.4);box-shadow:0 0 30px rgba(110,168,254,.35);transform:scale(1.15);color:#fff}
 .splash-steps .step.done{background:#4ade80;border-color:rgba(74,222,128,.3);box-shadow:0 0 20px rgba(74,222,128,.2);color:#fff}
 .splash-steps .step.done::after{content:'✓';font-size:9px}
-.splash-subtitle{color:rgba(255,255,255,.2);font-size:11px;letter-spacing:4px;font-weight:300;margin-top:-8px;font-family:inherit}
+.splash-subtitle{color:var(--splash-subtitle);font-size:11px;letter-spacing:4px;font-weight:300;margin-top:-8px;font-family:inherit}
 body.light-mode .splash-subtitle{color:rgba(0,0,0,.15)}
 @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes ringPulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
 @keyframes sparkleAnim{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(40deg)}}
 @keyframes barShine{0%{background-position:0% 0%}100%{background-position:200% 0%}}
 
-@media(max-width:640px){
-    .container{padding:16px}
-    .panel{padding:18px;border-radius:24px}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}
-    .card{height:115px;min-height:115px;max-height:115px;padding:8px 4px}
-    .card .card-icon{width:50px;height:50px;font-size:20px}
-    .card .card-name{font-size:11px;min-height:26px;max-height:28px}
-    .category-title{font-size:16px}
-    .search-input{width:100%;max-width:140px}
-    .search-input:focus{width:100%}
-    .topbar{justify-content:center;gap:10px}
-    .topbar-left,.topbar-right{width:100%;justify-content:center}
-    .search-input-container{width:100%;display:flex;justify-content:center}
-    .tab-btn{padding:5px 12px;font-size:12px}
-    .help-box{padding:18px}
-    .meta-grid{grid-template-columns:1fr}
-    .meta-value .action-chip{font-size:11px;padding:2px 8px}
-    .meta-value{font-size:13px}
-    .back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}
-    .connection-status{font-size:10px;padding:3px 8px}
-    .connection-status .status-dot{width:6px;height:6px}
-    .splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}
-    .splash-progress{width:200px}
-    .splash-progress .label{font-size:12px}
-    .splash-steps .step{width:12px;height:12px}
-    .about-btn-icon .tooltip-text{display:none}
-    .theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:34px;height:34px;font-size:13px}
-}
+/* ===== استایل توسعه‌دهندگان - نسخه کوچک‌تر ===== */
+.developers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.developer-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center;transition:all .3s}
+body.light-mode .developer-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.06)}
+.developer-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+body.light-mode .developer-card:hover{box-shadow:0 6px 18px rgba(0,0,0,.05)}
+.developer-card .dev-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:20px;font-weight:700;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.developer-card .dev-avatar.hossein{background:linear-gradient(135deg,#6ea8fe,#4f46e5)}
+.developer-card .dev-avatar.saleh{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+.developer-card .dev-name{font-size:14px;font-weight:700;color:var(--text);transition:color .3s}
+body.light-mode .developer-card .dev-name{color:var(--text-light)}
+.developer-card .dev-role{font-size:11px;color:var(--muted);margin-top:2px;transition:color .3s}
+body.light-mode .developer-card .dev-role{color:var(--muted-light)}
+.developer-card .dev-desc{font-size:11px;color:var(--muted);margin-top:4px;opacity:.7;transition:color .3s}
+body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
+.developer-card .dev-social{display:flex;justify-content:center;gap:6px;margin-top:6px}
+.developer-card .dev-social a{color:var(--muted);font-size:14px;transition:all .3s;text-decoration:none}
+.developer-card .dev-social a:hover{color:var(--accent);transform:scale(1.12)}
+
+/* ===== حذف نوشته "وظایف" از کارت‌های توسعه‌دهندگان ===== */
+.developer-card .dev-role{display:none}
+
+@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}.card{height:115px;min-height:115px;max-height:115px;padding:8px 4px}.card .card-icon{width:50px;height:50px;font-size:20px}.card .card-name{font-size:11px;min-height:26px;max-height:28px}.category-title{font-size:16px}.search-input{width:100%;max-width:140px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:10px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:5px 12px;font-size:12px}.help-box{padding:18px}.meta-grid{grid-template-columns:1fr}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:10px;padding:3px 8px}.connection-status .status-dot{width:6px;height:6px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:34px;height:34px;font-size:13px}.developers-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<!-- اسپلش اسکرین -->
-<div id="splash">
-<canvas id="splashCanvas"></canvas>
-<div class="splash-wrapper">
-<div class="splash-logo">
-<span>SA</span>
-<div class="glow-ring"></div>
-<div class="glow-ring-2"></div>
-<div class="logo-shine"></div>
-<div class="logo-shine-2"></div>
-<span class="sparkle-top">✦</span>
-<span class="sparkle-bottom">✦</span>
-</div>
-<div class="splash-progress">
-<div class="track"><div class="bar" id="progressBar"></div></div>
-<div class="label">بارگذاری <span class="pct" id="progressPercent">۰</span>%</div>
-</div>
-<div class="splash-steps" id="splashSteps">
-<span class="step"></span>
-<span class="step"></span>
-<span class="step"></span>
-<span class="step"></span>
-</div>
-<div class="splash-subtitle">SA‑APPS v16.4.0</div>
-</div>
-</div>
-
-<div class="container" id="mainContainer">
-<div class="orb orb1"></div><div class="orb orb2"></div>
-<section class="panel">
-<div class="topbar">
-<div class="topbar-left"><div class="brand-badge">SA</div><div class="brand-title"><h1>برنامه‌های SA</h1><p>لانچر اصلی ابزارهای SA</p></div></div>
-<div class="topbar-right">
-<div class="search-input-container"><input type="text" class="search-input" id="searchInput" placeholder="جستجو..." autocomplete="off" /></div>
-<div class="connection-status" id="connectionStatus">
-<i class="fa fa-wifi" id="statusIcon" style="font-size:12px;"></i>
-<span class="status-dot" id="statusDot"></span>
-<span class="status-text" id="statusText">در حال بررسی</span>
-<span class="speed-text" id="speedText"></span>
-</div>
+<div id="splash"><canvas id="splashCanvas"></canvas>
+<div class="splash-wrapper"><div class="splash-logo"><span>SA</span><div class="glow-ring"></div><div class="glow-ring-2"></div><div class="logo-shine"></div><div class="logo-shine-2"></div><span class="sparkle-top">✦</span><span class="sparkle-bottom">✦</span></div>
+<div class="splash-progress"><div class="track"><div class="bar" id="progressBar"></div></div><div class="label">بارگذاری <span class="pct" id="progressPercent">۰</span>%</div></div>
+<div class="splash-steps" id="splashSteps"><span class="step"></span><span class="step"></span><span class="step"></span><span class="step"></span></div>
+<div class="splash-subtitle">SA‑APPS v16.4.0</div></div></div>
+<div class="container" id="mainContainer"><div class="orb orb1"></div><div class="orb orb2"></div>
+<section class="panel"><div class="topbar"><div class="topbar-left"><div class="brand-badge">SA</div><div class="brand-title"><h1>برنامه‌های SA</h1><p>لانچر اصلی ابزارهای SA</p></div></div>
+<div class="topbar-right"><div class="search-input-container"><input type="text" class="search-input" id="searchInput" placeholder="جستجو..." autocomplete="off" /></div>
+<div class="connection-status" id="connectionStatus"><i class="fa fa-wifi" id="statusIcon" style="font-size:12px;"></i><span class="status-dot" id="statusDot"></span><span class="status-text" id="statusText">در حال بررسی</span><span class="speed-text" id="speedText"></span></div>
 <button class="refresh-btn" onclick="refreshPage()" aria-label="رفرش"><i class="fa fa-rotate"></i></button>
 <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2.5V5.5M12 18.5V21.5M5.5 12H2.5M21.5 12H18.5M18.364 5.636l-2 2M7.636 16.364l-2 2M16.364 16.364l2 2M5.636 5.636l2 2"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button>
 <button class="help-btn" onclick="openHelp()"><i class="fa-regular fa-circle-question"></i></button>
-<button class="about-btn-icon" onclick="openAbout()">
-<i class="fa fa-circle-info"></i>
-<span class="about-tooltip">
-<span class="tooltip-text">نسخه v16.4.0</span>
-</span>
-</button>
+<button class="about-btn-icon" onclick="openAbout()"><i class="fa fa-circle-info"></i><span class="about-tooltip"><span class="tooltip-text">نسخه v16.4.0</span></span></button>
 </div></div>
 <div class="tabs-wrapper"><div class="tabs" id="tabsContainer"></div></div>
 <div id="appGrid"></div>
 <div id="emptyState">هیچ نتیجه‌ای پیدا نشد.</div>
-</section>
-<footer class="footer"><span id="versionDisplay"></span> | SA‑APPS &copy; 2026</footer>
-</div>
+</section><footer class="footer"><span id="versionDisplay"></span> | SA‑APPS &copy; 2026</footer></div>
 <button class="back-top-btn" id="backTopBtn" onclick="scrollToTop()" aria-label="بازگشت به بالا"><i class="fa fa-arrow-up"></i></button>
-<div id="aboutModal" class="about-modal" onclick="closeAboutOnBackdrop(event)">
-<div class="about-box">
-<div class="about-header"><div class="about-logo">SA</div><div class="about-title"><h2>درباره SA‑APPS</h2><p>لانچر ابزارهای کاربردی، آموزشی و سرگرمی</p></div></div>
-<div class="about-content"><p>SA‑APPS مجموعه‌ای از ابزارهای تحت وب است که با تمرکز بر سرعت، طراحی مدرن و دسترسی آسان ساخته شده است.</p></div>
-<div class="meta-grid">
-<div class="meta-card"><div class="meta-label">نسخه</div><div class="meta-value" id="modalVersion"></div></div>
+<div id="aboutModal" class="about-modal" onclick="closeAboutOnBackdrop(event)"><div class="about-box"><div class="about-header"><div class="about-logo">SA</div><div class="about-title"><h2>درباره SA‑APPS</h2><p>لانچر ابزارهای کاربردی، آموزشی و سرگرمی</p></div></div>
+<div class="about-content"><p>SA‑APPS مجموعه‌ای از ابزارهای تحت وب است که با تمرکز بر سرعت، طراحی مدرن و دسترسی آسان ساخته شده است.</p>
+
+<!-- ===== بخش توسعه‌دهندگان - نسخه کوچک‌تر با آیکون H و S ===== -->
+<div style="margin:12px 0 6px 0"><h3 style="color:var(--text);font-size:15px;margin-bottom:8px;transition:color .3s"><i class="fa fa-code" style="color:var(--accent);margin-left:8px"></i>توسعه‌دهندگان</h3></div>
+<div class="developers-grid">
+<div class="developer-card">
+<div class="dev-avatar hossein">H</div>
+<div class="dev-name">حسین عمو</div>
+<div class="dev-desc">ایده پردازی،طراحی،بهینه سازی برای موبایل،طراحی رابط کاربری</div>
+<div class="dev-social">
+<a href="https://github.com/Amoo189" target="_blank" title="گیت‌هاب"><i class="fa-brands fa-github"></i></a>
+<a href="mailto:salehamoo1389@gmail.com" title="ایمیل"><i class="fa fa-envelope"></i></a>
+</div>
+</div>
+<div class="developer-card">
+<div class="dev-avatar saleh">S</div>
+<div class="dev-name">صالح عمو</div>
+<div class="dev-desc">برنامه نویسی،منطق،،برنامه نویسی ابزار ها،ساخت هسته</div>
+<div class="dev-social">
+<a href="https://github.com/Amoo189" target="_blank" title="گیت‌هاب"><i class="fa-brands fa-github"></i></a>
+<a href="mailto:salehamoo1389@gmail.com" title="ایمیل"><i class="fa fa-envelope"></i></a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="meta-grid"><div class="meta-card"><div class="meta-label">نسخه</div><div class="meta-value" id="modalVersion"></div></div>
 <div class="meta-card"><div class="meta-label">وضعیت</div><div class="meta-value">نسخه پایدار</div></div>
 <div class="meta-card"><div class="meta-label">سایت</div><div class="meta-value"><a href="javascript:void(0)" id="githubLinkText" onclick="openExternal(config.siteUrl)"></a><span class="action-chip" onclick="event.stopPropagation();copyToClipboard(config.siteUrl,this)"><i class="fa fa-copy"></i> کپی</span><span class="action-chip" onclick="event.stopPropagation();openExternal(config.siteUrl)"><i class="fa fa-external-link"></i> بازدید</span></div></div>
 <div class="meta-card"><div class="meta-label">ارتباط</div><div class="meta-value"><a href="javascript:void(0)" id="contactEmailLink" onclick="openEmail(config.contactEmail)"></a><span class="action-chip" onclick="event.stopPropagation();copyToClipboard(config.contactEmail,this)"><i class="fa fa-copy"></i> کپی</span><span class="action-chip" onclick="event.stopPropagation();openEmail(config.contactEmail)"><i class="fa fa-envelope"></i> ایمیل</span></div></div>
-</div>
-<div class="about-actions"><a class="action-btn primary" href="javascript:void(0)" id="githubLinkButton" onclick="openExternal(config.githubRepo)">مشاهده گیت هاب</a><button class="action-btn" onclick="closeAbout()">بستن</button></div>
-</div></div>
-<div id="helpModal" class="help-modal" onclick="closeHelpOnBackdrop(event)">
-<div class="help-box">
-<div class="help-header"><div class="help-logo"><i class="fa fa-question-circle"></i></div><div class="help-title"><h2>راهنما</h2><p>راهنمای استفاده از SA‑APPS</p></div></div>
-<div class="help-content"><div class="help-scroll">
-<div class="warning-box"><strong><i class="fa fa-lightbulb-o"></i> راهنما:</strong><ul><li><i class="fa fa-arrow-left"></i> برای بازگشت از ابزارها از دکمه برگشت گوشی استفاده کنید</li><li><i class="fa fa-wifi"></i> ابزارهایی که در توضیحات آن‌ها ذکر شده است که با اینترنت وارد شوید، بدین معناست که باید پیش از باز کردن ابزار اینترنت خود را روشن کنید</li></ul></div>
-<div class="warning-box"><strong><i class="fa fa-exclamation-triangle"></i> هشدار - برخی محدودیت‌ها:</strong><ul><li><i class="fa fa-file"></i> متأسفانه به یکسری دلایل امکان آپلود فایل وجود ندارد</li><li><i class="fa fa-image"></i> امکان دانلود فایل‌های خروجی همانند دانلود عکس وجود ندارد، اما شما می‌توانید از آن اسکرین‌شات بگیرید</li></ul></div>
-<div class="danger-box"><strong><i class="fa fa-exclamation-circle"></i> هشدار مهم:</strong><p>سرعت اجرای برنامه به سخت‌افزار شما بستگی دارد</p></div>
-</div></div>
-<div class="about-actions"><button class="action-btn primary" onclick="closeHelp()">متوجه شدم</button></div>
-</div></div>
-<div id="offlineModal" class="offline-modal" onclick="closeOfflineOnBackdrop(event)">
-<div class="offline-box">
-<div class="offline-header"><div class="offline-logo"><i class="fa fa-wifi"></i></div><div class="offline-title"><h2>اتصال اینترنت قطع شد</h2><p>لطفاً اتصال خود را بررسی کنید</p></div></div>
-<div class="offline-content">
-<span class="offline-icon"><i class="fa fa-wifi"></i></span>
-<p class="offline-message">برای استفاده از برنامه باید اینترنت وصل باشد</p>
-<p class="offline-sub">لطفاً اتصال اینترنت خود را بررسی کنید</p>
-<div class="offline-actions">
-<button class="action-btn primary" onclick="refreshPage()"><i class="fa fa-rotate"></i> تلاش مجدد</button>
-</div>
-</div>
-</div></div>
+</div><div class="about-actions"><a class="action-btn primary" href="javascript:void(0)" id="githubLinkButton" onclick="openExternal(config.githubRepo)">مشاهده گیت هاب</a><button class="action-btn" onclick="closeAbout()">بستن</button></div></div></div>
+<div id="helpModal" class="help-modal" onclick="closeHelpOnBackdrop(event)"><div class="help-box"><div class="help-header"><div class="help-logo"><i class="fa fa-question-circle"></i></div><div class="help-title"><h2>راهنما</h2><p>راهنمای استفاده از SA‑APPS</p></div></div>
+<div class="help-content"><div class="help-scroll"><div class="warning-box"><strong><i class="fa fa-lightbulb"></i> راهنما:</strong><ul><li><i class="fa fa-arrow-left"></i> برای بازگشت از ابزارها از دکمه برگشت گوشی استفاده کنید</li><li><i class="fa fa-wifi"></i> ابزارهایی که در توضیحات آن‌ها ذکر شده است که با اینترنت وارد شوید، بدین معناست که باید پیش از باز کردن ابزار اینترنت خود را روشن کنید</li></ul></div>
+<div class="warning-box"><strong><i class="fa fa-triangle-exclamation"></i> هشدار - برخی محدودیت‌ها:</strong><ul><li><i class="fa fa-file"></i> متأسفانه به یکسری دلایل امکان آپلود فایل وجود ندارد</li><li><i class="fa fa-image"></i> امکان دانلود فایل‌های خروجی همانند دانلود عکس وجود ندارد، اما شما می‌توانید از آن اسکرین‌شات بگیرید</li></ul></div>
+<div class="danger-box"><strong><i class="fa fa-circle-exclamation"></i> هشدار مهم:</strong><p>سرعت اجرای برنامه به سخت‌افزار شما بستگی دارد</p></div>
+</div></div><div class="about-actions"><button class="action-btn primary" onclick="closeHelp()">متوجه شدم</button></div></div></div>
+<div id="offlineModal" class="offline-modal" onclick="closeOfflineOnBackdrop(event)"><div class="offline-box"><div class="offline-header"><div class="offline-logo"><i class="fa fa-wifi"></i></div><div class="offline-title"><h2>اتصال اینترنت قطع شد</h2><p>لطفاً اتصال خود را بررسی کنید</p></div></div>
+<div class="offline-content"><span class="offline-icon"><i class="fa fa-wifi"></i></span><p class="offline-message">برای استفاده از برنامه باید اینترنت وصل باشد</p><p class="offline-sub">لطفاً اتصال اینترنت خود را بررسی کنید</p>
+<div class="offline-actions"><button class="action-btn primary" onclick="refreshPage()"><i class="fa fa-rotate"></i> تلاش مجدد</button></div></div></div></div>
 <div id="toast" class="toast"></div>
 <script>
-// ====== پیکربندی ======
 var config={version:"v16.4.0",siteUrl:"https://amoo189.github.io/Saleh-Amoo/",githubRepo:"https://github.com/Amoo189",contactEmail:"salehamoo1389@gmail.com",theme:localStorage.getItem("sa-apps-theme")||"dark"};
 var currentFilter="all";
 var historyLog=[];
 var isOnline=true;
-var splashHidden=false;
+var splashHidden=!!sessionStorage.getItem("splashShown");
 
-// ====== بررسی اینکه آیا از قبل اسپلش نمایش داده شده ======
-if(sessionStorage.getItem("splashShown")) {
-    splashHidden=true;
-}
-
-// ====== اسپلش اسکرین ======
-(function() {
+(function(){
     var splash=document.getElementById("splash");
     var container=document.getElementById("mainContainer");
     var progressBar=document.getElementById("progressBar");
     var progressPercent=document.getElementById("progressPercent");
     var steps=document.querySelectorAll("#splashSteps .step");
-    
-    if(splashHidden) {
-        splash.style.display="none";
-        container.classList.add("loaded");
-        return;
-    }
-    
-    var progress=0;
-    var totalSteps=4;
-    var currentStep=0;
-    
+    if(splashHidden){splash.style.display="none";container.classList.add("loaded");return}
+    var progress=0,currentStep=0,totalSteps=4;
     var c=document.getElementById("splashCanvas");
-    if(c) {
-        var ctx=c.getContext("2d");
-        var W,H,particles=[];
-        function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-        resize();window.addEventListener("resize",resize);
-        for(var i=0;i<50;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+0.5,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.10)"})}
-        function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}
-        draw();
-    }
-    
-    function updateProgress() {
-        var pct=Math.min(100,Math.round(progress));
-        progressBar.style.width=pct+"%";
-        progressPercent.textContent=pct;
-        
-        var activeIdx=Math.min(totalSteps-1,Math.floor(pct/25));
-        steps.forEach(function(step,idx){
-            step.className="step";
-            if(idx<activeIdx) step.classList.add("done");
-            else if(idx===activeIdx) step.classList.add("active");
-        });
-    }
-    
-    function advanceStep() {
-        if(currentStep>=totalSteps) {
-            progress=100;
-            updateProgress();
-            setTimeout(function(){
-                splash.classList.add("hide");
-                container.classList.add("loaded");
-                sessionStorage.setItem("splashShown","true");
-                splashHidden=true;
-            },400);
-            return;
-        }
-        
-        var target=Math.min(100,Math.round(((currentStep+1)/totalSteps)*100));
-        var start=progress;
-        var diff=target-start;
-        var duration=currentStep===0?250:currentStep===1?300:currentStep===2?280:200;
-        var startTime=Date.now();
-        
-        function animate() {
-            var elapsed=Date.now()-startTime;
-            var t=Math.min(1,elapsed/duration);
-            var ease=1-Math.pow(1-t,3);
-            progress=start+(diff*ease);
-            updateProgress();
-            if(t<1){requestAnimationFrame(animate)}else{
-                progress=target;
-                updateProgress();
-                currentStep++;
-                setTimeout(advanceStep,currentStep===1?120:currentStep===2?100:80);
-            }
-        }
-        animate();
-    }
-    
-    setTimeout(advanceStep,120);
-    
-    setTimeout(function(){
-        if(!splash.classList.contains("hide")){
-            splash.classList.add("hide");
-            container.classList.add("loaded");
-            sessionStorage.setItem("splashShown","true");
-            splashHidden=true;
-        }
-    },4000);
+    if(c){var ctx=c.getContext("2d"),W,H,particles=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}resize();window.addEventListener("resize",resize);for(var i=0;i<50;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+0.5,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.10)"})}function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}draw()}
+    function updateProgress(){var pct=Math.min(100,Math.round(progress));if(progressBar)progressBar.style.width=pct+"%";if(progressPercent)progressPercent.textContent=pct;var activeIdx=Math.min(totalSteps-1,Math.floor(pct/25));steps.forEach(function(step,idx){step.className="step";if(idx<activeIdx)step.classList.add("done");else if(idx===activeIdx)step.classList.add("active")})}
+    function advanceStep(){if(currentStep>=totalSteps){progress=100;updateProgress();setTimeout(function(){splash.classList.add("hide");container.classList.add("loaded");sessionStorage.setItem("splashShown","true");splashHidden=true},400);return}var target=Math.min(100,Math.round(((currentStep+1)/totalSteps)*100));var start=progress;var diff=target-start;var duration=currentStep===0?250:currentStep===1?300:currentStep===2?280:200;var startTime=Date.now();function animate(){var elapsed=Date.now()-startTime;var t=Math.min(1,elapsed/duration);var ease=1-Math.pow(1-t,3);progress=start+(diff*ease);updateProgress();if(t<1){requestAnimationFrame(animate)}else{progress=target;updateProgress();currentStep++;setTimeout(advanceStep,currentStep===1?120:currentStep===2?100:80)}}animate()}setTimeout(advanceStep,120);setTimeout(function(){if(!splash.classList.contains("hide")){splash.classList.add("hide");container.classList.add("loaded");sessionStorage.setItem("splashShown","true");splashHidden=true}},4000)
 })();
 
-// ====== توابع اصلی ======
-function checkConnection() {
-    var statusDot=document.getElementById("statusDot");
-    var statusText=document.getElementById("statusText");
-    var speedText=document.getElementById("speedText");
-    var statusIcon=document.getElementById("statusIcon");
-    var offlineModal=document.getElementById("offlineModal");
-
-    if(!navigator.onLine) {
-        isOnline=false;
-        statusDot.className="status-dot offline";
-        statusText.textContent="آفلاین";
-        speedText.textContent="";
-        statusIcon.className="fa fa-wifi";
-        statusIcon.style.color="var(--offline-color)";
-        offlineModal.classList.add("show");
-        return;
-    }
-    isOnline=true;
-    statusDot.className="status-dot measuring";
-    statusText.textContent="در حال اندازه‌گیری";
-    speedText.textContent="";
-    statusIcon.className="fa fa-wifi";
-    statusIcon.style.color="#fbbf24";
-    offlineModal.classList.remove("show");
-
-    measureSpeed(function(speed) {
-        if(!navigator.onLine) {
-            isOnline=false;
-            statusDot.className="status-dot offline";
-            statusText.textContent="آفلاین";
-            speedText.textContent="";
-            statusIcon.className="fa fa-wifi";
-            statusIcon.style.color="var(--offline-color)";
-            offlineModal.classList.add("show");
-            return;
-        }
-        isOnline=true;
-        statusDot.className="status-dot online";
-        statusText.textContent="آنلاین";
-        statusIcon.className="fa fa-wifi";
-        statusIcon.style.color="var(--online-color)";
-        if(speed!==null){
-            speedText.textContent=speed<1 ? (speed*1000).toFixed(0)+" Kbps" : speed.toFixed(1)+" Mbps";
-        } else {
-            speedText.textContent="";
-        }
-    });
-}
-
-function measureSpeed(callback) {
-    var startTime,endTime;
-    var downloadSize=200000;
-    var url="https://www.google.com/images/phd/px.gif?cache="+Date.now();
-    var xhr=new XMLHttpRequest();
-    xhr.open("GET",url,true);
-    xhr.responseType="arraybuffer";
-    xhr.onloadstart=function(){startTime=Date.now()};
-    xhr.onload=function(){
-        if(xhr.status===200){
-            endTime=Date.now();
-            var duration=(endTime-startTime)/1000;
-            if(duration>0){
-                var bitsLoaded=downloadSize*8;
-                var speedBps=bitsLoaded/duration;
-                var speedMbps=speedBps/(1024*1024);
-                if(speedMbps<0.001){callback(speedMbps*1000/1024)}else{callback(speedMbps)}
-            }else{callback(null)}
-        }else{callback(null)}
-    };
-    xhr.onerror=function(){callback(null)};
-    xhr.ontimeout=function(){callback(null)};
-    xhr.timeout=5000;
-    xhr.send();
-}
-
-function showOfflineModal(){document.getElementById("offlineModal").classList.add("show")}
-function hideOfflineModal(){document.getElementById("offlineModal").classList.remove("show")}
-function closeOfflineModal(){document.getElementById("offlineModal").classList.remove("show")}
+function checkConnection(){var sd=document.getElementById("statusDot"),st=document.getElementById("statusText"),sp=document.getElementById("speedText"),si=document.getElementById("statusIcon"),om=document.getElementById("offlineModal");if(!navigator.onLine){isOnline=false;sd.className="status-dot offline";st.textContent="آفلاین";sp.textContent="";si.className="fa fa-wifi";si.style.color="var(--offline-color)";if(om)om.classList.add("show");return}isOnline=true;sd.className="status-dot measuring";st.textContent="در حال اندازه‌گیری";sp.textContent="";si.className="fa fa-wifi";si.style.color="#fbbf24";if(om)om.classList.remove("show");measureSpeed(function(speed){if(!navigator.onLine){isOnline=false;sd.className="status-dot offline";st.textContent="آفلاین";sp.textContent="";si.className="fa fa-wifi";si.style.color="var(--offline-color)";if(om)om.classList.add("show");return}isOnline=true;sd.className="status-dot online";st.textContent="آنلاین";si.className="fa fa-wifi";si.style.color="var(--online-color)";if(speed!==null){sp.textContent=speed<1?(speed*1000).toFixed(0)+" Kbps":speed.toFixed(1)+" Mbps"}else{sp.textContent=""}})}
+function measureSpeed(callback){var xhr=new XMLHttpRequest();xhr.open("GET","https://www.google.com/images/phd/px.gif?cache="+Date.now(),true);xhr.responseType="arraybuffer";var startTime;xhr.onloadstart=function(){startTime=Date.now()};xhr.onload=function(){if(xhr.status===200){var duration=(Date.now()-startTime)/1000;if(duration>0){var speedMbps=(200000*8/duration)/(1024*1024);callback(speedMbps<0.001?speedMbps*1000/1024:speedMbps)}else{callback(null)}}else{callback(null)}};xhr.onerror=function(){callback(null)};xhr.ontimeout=function(){callback(null)};xhr.timeout=5000;xhr.send()}
+function showOfflineModal(){var om=document.getElementById("offlineModal");if(om)om.classList.add("show")}
+function hideOfflineModal(){var om=document.getElementById("offlineModal");if(om)om.classList.remove("show")}
 function closeOfflineOnBackdrop(e){if(e.target===e.currentTarget&&navigator.onLine){hideOfflineModal()}}
 function refreshPage(){if(navigator.onLine){hideOfflineModal();window.location.reload()}else{checkConnection();showToast("هنوز اتصال برقرار نیست")}}
 
-// ====== ابزارهای در حال توسعه ======
 var newTools={
-"شیمی":[{name:"محاسبه‌گر pH",icon:"fa-flask",desc:"محاسبه pH اسیدها و بازها"},{name:"وزن مولکولی",icon:"fa-weight-scale",desc:"محاسبه وزن مولکولی ترکیبات"},{name:"تبدیل واحد شیمی",icon:"fa-arrows-left-right",desc:"تبدیل مول، گرم و حجم"},{name:"جدول حلالیت",icon:"fa-table",desc:"جدول حلالیت ترکیبات یونی"},{name:"ترازوی الکترونیکی",icon:"fa-scale-balanced",desc:"ترازوی دیجیتال برای آزمایشگاه"}],
-"ریاضی":[{name:"حل‌کننده ماتریس",icon:"fa-table",desc:"عملیات روی ماتریس‌ها"},{name:"محاسبه‌گر احتمال",icon:"fa-dice",desc:"محاسبه احتمالات"},{name:"آمار توصیفی",icon:"fa-chart-pie",desc:"محاسبه میانگین، میانه و واریانس"},{name:"حل‌کننده معادله دیفرانسیل",icon:"fa-wave-square",desc:"حل معادلات دیفرانسیل"},{name:"مثلثات‌یاب",icon:"fa-circle",desc:"محاسبه توابع مثلثاتی"}],
-"متن":[{name:"تغییر قلم",icon:"fa-font",desc:"تغییر فونت و اندازه متن"},{name:"جستجو و جایگزینی",icon:"fa-search",desc:"جستجو و جایگزینی در متن"},{name:"تولید متن تصادفی",icon:"fa-shuffle",desc:"تولید متن تصادفی"},{name:"تبدیل حروف بزرگ/کوچک",icon:"fa-arrow-up",desc:"تبدیر حروف به بزرگ/کوچک"}],
+"شیمی":[{name:"محاسبه‌گر pH",icon:"fa-vial",desc:"محاسبه pH اسیدها و بازها"},{name:"وزن مولکولی",icon:"fa-weight-hanging",desc:"محاسبه وزن مولکولی ترکیبات"},{name:"تبدیل واحد شیمی",icon:"fa-arrows-left-right",desc:"تبدیل مول، گرم و حجم"},{name:"جدول حلالیت",icon:"fa-border-all",desc:"جدول حلالیت ترکیبات یونی"},{name:"ترازوی الکترونیکی",icon:"fa-scale-balanced",desc:"ترازوی دیجیتال برای آزمایشگاه"}],
+"ریاضی":[{name:"حل‌کننده ماتریس",icon:"fa-table-cells-large",desc:"عملیات روی ماتریس‌ها"},{name:"محاسبه‌گر احتمال",icon:"fa-dice-five",desc:"محاسبه احتمالات"},{name:"آمار توصیفی",icon:"fa-chart-pie",desc:"محاسبه میانگین، میانه و واریانس"},{name:"حل‌کننده معادله دیفرانسیل",icon:"fa-wave-square",desc:"حل معادلات دیفرانسیل"},{name:"مثلثات‌یاب",icon:"fa-circle-dot",desc:"محاسبه توابع مثلثاتی"}],
+"متن":[{name:"تغییر قلم",icon:"fa-font",desc:"تغییر فونت و اندازه متن"},{name:"جستجو و جایگزینی",icon:"fa-search",desc:"جستجو و جایگزینی در متن"},{name:"تولید متن تصادفی",icon:"fa-shuffle",desc:"تولید متن تصادفی"},{name:"تبدیل حروف بزرگ/کوچک",icon:"fa-arrow-up-1-9",desc:"تبدیر حروف به بزرگ/کوچک"}],
 "برنامه‌نویسی":[{name:"شکل‌دهنده HTML",icon:"fa-code",desc:"بهبود ظاهر کد HTML"},{name:"مینی‌فایر CSS",icon:"fa-file-code",desc:"فشرده‌سازی کد CSS"},{name:"JavaScript Beautifier",icon:"fa-bolt",desc:"زیباسازی کد جاوااسکریپت"},{name:"تبدیل CSV به JSON",icon:"fa-table",desc:"تبدیل فایل CSV به JSON"},{name:"تولیدکننده رنگ",icon:"fa-palette",desc:"تولید کد رنگ Hex"},{name:"تست API",icon:"fa-cloud",desc:"تست درخواست‌های API"},{name:"مبدل تاریخ",icon:"fa-calendar",desc:"تبدیل تاریخ در برنامه‌نویسی"}],
 "مذهبی":[{name:"اذان‌گو",icon:"fa-mosque",desc:"پخش اذان با صدای دلنشین"},{name:"تسبیح‌خوان",icon:"fa-hands-praying",desc:"تسبیح الکترونیکی"},{name:"قبله‌یاب",icon:"fa-compass",desc:"جهت‌یابی قبله"},{name:"دعا‌نامه",icon:"fa-hands",desc:"مجموعه دعاهای روزانه"}],
 "زمان":[{name:"زمان جهانی",icon:"fa-globe",desc:"نمایش زمان شهرهای جهان"},{name:"یادآور",icon:"fa-bell",desc:"تنظیم یادآور"},{name:"مناسبت‌ها",icon:"fa-star",desc:"مناسبت‌های مهم"},{name:"مبدل منطقه زمانی",icon:"fa-clock-rotate-left",desc:"تبدیل منطقه زمانی"},{name:"تقویم قمری",icon:"fa-moon",desc:"تقویم قمری"}],
@@ -623,13 +340,12 @@ var newTools={
 "امنیت":[{name:"تولید کلید SSH",icon:"fa-key",desc:"تولید کلید SSH"},{name:"تست قدرت رمز",icon:"fa-shield-halved",desc:"بررسی قدرت رمز"},{name:"رمزنگاری فایل",icon:"fa-lock",desc:"رمزنگاری فایل‌ها"},{name:"امضای دیجیتال",icon:"fa-pen",desc:"امضای دیجیتال"}],
 "هوش مصنوعی":[{name:"تشخیص تصویر",icon:"fa-image",desc:"تشخیص اشیاء در تصویر"},{name:"ترجمه هوشمند",icon:"fa-language",desc:"ترجمه با هوش مصنوعی"},{name:"تولید متن",icon:"fa-pen",desc:"تولید متن با هوش مصنوعی"},{name:"پاسخ‌گویی خودکار",icon:"fa-comment",desc:"پاسخ‌گویی هوشمند"}],
 "طراحی":[{name:"ویرایشگر تصویر",icon:"fa-image",desc:"ویرایش ساده تصاویر"},{name:"نقاشی با ماوس",icon:"fa-paintbrush",desc:"نقاشی با ماوس"},{name:"تولید لوگو",icon:"fa-pen-nib",desc:"تولید لوگوی ساده"},{name:"فونت‌یاب",icon:"fa-font",desc:"پیدا کردن فونت"}],
-"بازی‌ها":[{name:"مار",icon:"fa-arrow-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
+"بازی‌ها":[{name:"مار",icon:"fa-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
 };
 
-// ====== ابزارهای فعال ======
 var mainTools={
 "شیمی":[{name:"موازنه‌گر شیمیایی",icon:"fa-flask",desc:"موازنه معادلات شیمیایی با رابط کاربری مدرن",link:"b.html"},{name:"جدول تناوبی",icon:"fa-table",desc:"جدول تناوبی مناسب موبایل و استفاده سریع",link:"pt.html"},{name:"محاسبه‌گر غلظت محلول",icon:"fa-flask",desc:"محاسبه غلظت مولی، درصدی و رقت‌سازی",link:"concentration-calculator.html"}],
-"ریاضی":[{name:"حل‌کننده چندجمله‌ای",icon:"fa-square-root-variable",desc:"حل معادلات ریاضی از درجه ۱ تا ۲۰",link:"ps.html"},{name:"حل‌کننده نامعادله",icon:"fa-chart-line",desc:"حل نامعادله با نمایش نمودار آن",link:"ls.html"},{name:"ماشین حساب مهندسی",icon:"fa-calculator",desc:"ماشین حساب پیشرفته با قابلیت حل معادله",link:"calcu.html"},{name:"محاسبه‌گر درصد",icon:"fa-percent",desc:"محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی",link:"percent-calculator.html"},{name:"ابزار حرفه ای ریاضی",icon:"fa-infinity",desc:"مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین",link:"math-solver-pro.html"},{name:"حل‌کننده پیشرفته معادلات",icon:"fa-infinity",desc:"حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار",link:"equation-solver-pro.html"}],
+"ریاضی":[{name:"حل‌کننده چندجمله‌ای",icon:"fa-calculator",desc:"حل معادلات ریاضی از درجه ۱ تا ۲۰",link:"ps.html"},{name:"حل‌کننده نامعادله",icon:"fa-chart-line",desc:"حل نامعادله با نمایش نمودار آن",link:"ls.html"},{name:"ماشین حساب مهندسی",icon:"fa-calculator",desc:"ماشین حساب پیشرفته با قابلیت حل معادله",link:"calcu.html"},{name:"محاسبه‌گر درصد",icon:"fa-percent",desc:"محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی",link:"percent-calculator.html"},{name:"ابزار حرفه ای ریاضی",icon:"fa-infinity",desc:"مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین",link:"math-solver-pro.html"},{name:"حل‌کننده پیشرفته معادلات",icon:"fa-superscript",desc:"حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار",link:"equation-solver-pro.html"}],
 "متن":[{name:"شمارشگر متن",icon:"fa-pen-nib",desc:"محاسبه تعداد کلمات، حروف، خطوط و زمان مطالعه",link:"word-counter.html"},{name:"پاک‌ساز متن",icon:"fa-broom",desc:"حذف فاصله‌های اضافی، خطوط خالی و مرتب‌سازی سریع متن",link:"text-cleaner.html"}],
 "برنامه‌نویسی":[{name:"فرمت‌کننده JSON",icon:"fa-code",desc:"زیباسازی، فشرده‌سازی و بررسی صحت ساختار JSON",link:"json-formatter.html"},{name:"تولیدکننده هش",icon:"fa-hashtag",desc:"تولید هش MD5، SHA-1 و SHA-256 برای متن ورودی",link:"hash-generator.html"},{name:"تولیدکننده UUID",icon:"fa-fingerprint",desc:"تولید UUID نسخه 4 برای استفاده در پروژه‌ها",link:"uuid-generator.html"},{name:"رمزگذار Base64",icon:"fa-arrows-left-right",desc:"تبدیل متن به Base64 و رمزگشایی آن",link:"base64-tool.html"},{name:"تست‌کننده Regex",icon:"fa-search",desc:"بررسی الگوهای Regex و نمایش نتایج تطبیق",link:"regex-tester.html"},{name:"URL Encoder / Decoder",icon:"fa-link",desc:"کدگذاری و رمزگشایی URL",link:"url-encoder.html"}],
 "تبدیل":[{name:"مبدل واحد",icon:"fa-ruler-combined",desc:"تبدیل واحد در دسته‌بندی‌های مختلف",link:"u.html"},{name:"تولیدکننده Ascii Art",icon:"fa-font",desc:"تبدیل متن به خروجی ASCII Art",link:"ascii.html"}],
@@ -637,110 +353,99 @@ var mainTools={
 "زمان":[{name:"تقویم شمسی",icon:"fa-calendar-days",desc:"تقویم شمسی با دقت بالا و مناسبت‌ها",link:"s.html"},{name:"فاصله دو تاریخ",icon:"fa-calendar-minus",desc:"محاسبه اختلاف بین دو تاریخ",link:"date-difference.html"},{name:"تبدیل تاریخ دقیق",icon:"fa-calendar-check",desc:"تبدیل دقیق بین شمسی، میلادی و قمری",link:"date-converter.html"},{name:"تایمر پومودورو",icon:"fa-stopwatch-20",desc:"تایمر تمرکز و استراحت برای افزایش بهره‌وری",link:"pomodoro.html"},{name:"محاسبه‌گر سن",icon:"fa-cake-candles",desc:"محاسبه سن دقیق بر اساس تاریخ تولد",link:"age.html"},{name:"ساعت آنالوگ",icon:"fa-clock",desc:"ساعت آنالوگ، تایمر و استاپ‌واچ",link:"ac.html"}],
 "ابزارها":[{name:"عدد تصادفی",icon:"fa-dice",desc:"تولید عدد تصادفی بین یک بازه دلخواه",link:"random.html"},{name:"کد مورس آفلاین",icon:"fa-tower-broadcast",desc:"مترجم و پخش‌کننده صوتی مورس ۱۰۰٪ آفلاین",link:"morse.html"},{name:"انتخاب‌گر تصادفی",icon:"fa-hand-pointer",desc:"انتخاب یک گزینه تصادفی از بین چند ورودی",link:"random-picker.html"},{name:"سازنده QR",icon:"fa-qrcode",desc:"تبدیل سریع لینک و متن به کد QR",link:"qr.html"}],
 "بهره‌وری":[{name:"لیست کارها",icon:"fa-circle-check",desc:"مدیریت وظایف روزانه با ذخیره‌سازی محلی",link:"todo.html"},{name:"نوت‌برداری حرفه‌ای",icon:"fa-note-sticky",desc:"یادداشت با Markdown ساده و ذخیره محلی",link:"notes.html"},{name:"تست سرعت تایپ حرفه‌ای",icon:"fa-keyboard",desc:"اندازه‌گیری WPM، دقت و رکورد عملکرد",link:"typing-speed.html"}],
-"سلامتی":[{name:"محاسبه‌گر BMI",icon:"fa-weight-scale",desc:"محاسبه شاخص توده بدنی با قد و وزن",link:"bmi.html"},{name:"محاسبه‌گر BMR",icon:"fa-fire",desc:"محاسبه متابولیسم پایه و تخمین کالری روزانه",link:"bmr.html"}],
+"سلامتی":[{name:"محاسبه‌گر BMI",icon:"fa-scale-balanced",desc:"محاسبه شاخص توده بدنی با قد و وزن",link:"bmi.html"},{name:"محاسبه‌گر BMR",icon:"fa-fire",desc:"محاسبه متابولیسم پایه و تخمین کالری روزانه",link:"bmr.html"}],
 "مهندسی":[{name:"تبدیل مبنای اعداد",icon:"fa-code",desc:"تبدیل حرفه‌ای بین مبناهای باینری و هگز",link:"base-converter.html"}],
 "مالی":[{name:"محاسبه تخفیف",icon:"fa-tag",desc:"محاسبه مبلغ تخفیف و قیمت نهایی",link:"discount-calculator.html"},{name:"تقسیم هزینه",icon:"fa-file-invoice-dollar",desc:"تقسیم مبلغ بین چند نفر با محاسبه مالیات",link:"expense-splitter.html"}],
 "امنیت":[{name:"رمزساز حرفه‌ای",icon:"fa-key",desc:"ساخت رمز امن با بررسی قدرت و تنظیمات",link:"pg.html"}],
-"هوش مصنوعی":[{name:"هوش مصنوعی آنلاین",icon:"fa-robot",desc:"هوش مصنوعی رایگان و سریع (با اینترنت وارد شوید)",link:"ai.html"}],
+"هوش مصنوعی":[{name:"هوش مصنوعی آنلاین",icon:"fa-robot",desc:"هوش مصنوعی رایگان و سریع (با اینترنت وارد شوید)",link:"https://amoo189.github.io/Hoosh/"}],
 "طراحی":[{name:"پالت‌ساز رنگ",icon:"fa-palette",desc:"تولید رنگ تصادفی و کپی سریع کد Hex",link:"palette.html"},{name:"گرادینت‌ساز CSS",icon:"fa-rainbow",desc:"ساخت گرادینت با پیش‌نمایش زنده و کپی کد",link:"gradient-generator.html"}],
 "بازی‌ها":[{name:"بازی حافظه",icon:"fa-brain",desc:"کارت‌های مشابه را پیدا کنید",link:"memory-match.html"},{name:"سودوکو",icon:"fa-th",desc:"جدول ۹×۹ را با اعداد ۱ تا ۹ کامل کنید",link:"sudoku-game.html"},{name:"شطرنج",icon:"fa-chess",desc:"بازی شطرنج آفلاین دونفره",link:"chess.html"},{name:"تتریس",icon:"fa-cubes",desc:"بازی تتریس نئونی",link:"tet.html"},{name:"بازی دوز",icon:"fa-x",desc:"دوز با قابلیت بازی دونفره و رقابت با ربات",link:"ttt.html"}]
 };
 
-// ====== توابع کمکی ======
-function addToHistory(name){if(!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
-function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var count=historyLog.length;h.querySelector(".count").textContent=count;var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(count===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" ';if(found.link){html+='data-link="'+found.link+'"';}html+=' data-name="'+found.name+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';html+='<span class="card-name">'+found.name+'</span>';if(isDev){html+='<span class="dev-badge-grid">در حال توسعه</span>'}html+='</div>';grid.innerHTML+=html}})}}}}
+function addToHistory(name){if(name&&!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
+function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var c=h.querySelector(".count");if(c)c.textContent=historyLog.length}var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(historyLog.length===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" ';if(found.link){html+='data-link="'+found.link+'"';}html+=' data-name="'+found.name+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';html+='<span class="card-name">'+found.name+'</span>';if(isDev){html+='<span class="dev-badge-grid">در حال توسعه</span>'}html+='</div>';grid.innerHTML+=html}})}}}
 function buildHistoryTab(){var c=document.getElementById("tabsContainer");var h=document.createElement("button");h.className="tab-btn";h.dataset.tab="history";h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';c.appendChild(h);h.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});applyFilterAndSearch()});var grid=document.getElementById("appGrid");var section=document.createElement("section");section.className="category hidden-cat";section.dataset.tab="history";section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2></div><div class="grid"></div>';grid.appendChild(section)}
 function copyToClipboard(text,e){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){showCopyFeedback(e)})["catch"](function(){fallbackCopy(text,e)})}else{fallbackCopy(text,e)}}
 function fallbackCopy(text,e){var t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.opacity="0";t.style.left="-9999px";document.body.appendChild(t);t.select();try{document.execCommand("copy");showCopyFeedback(e)}catch(err){showToast("کپی نشد! لطفاً دستی کپی کنید")}document.body.removeChild(t)}
 function showCopyFeedback(e){e.classList.add("copied");var t=e.innerHTML;e.innerHTML='<i class="fa fa-check"></i> کپی شد';showToast("متن با موفقیت کپی شد");setTimeout(function(){e.classList.remove("copied");e.innerHTML=t},2000)}
-function applyFilterAndSearch(){var q=document.getElementById("searchInput").value.trim().toLowerCase();var cats=document.querySelectorAll(".category");var total=0;cats.forEach(function(cat){var cards=cat.querySelectorAll(".card");var visible=0;var catName=cat.dataset.category?cat.dataset.category.toLowerCase():"";cards.forEach(function(card){var isDev=!!card.querySelector(".dev-badge-grid");var isActive=!isDev;var fm=true;if(currentFilter==="active")fm=isActive;else if(currentFilter==="dev")fm=isDev;var txt=(card.querySelector(".card-name")?.textContent||"")+(card.getAttribute("title")||"");var sm=txt.toLowerCase().includes(q)||catName.includes(q);var show=fm&&sm;card.style.display=show?"":"none";if(show)visible++});total+=visible;var ce=cat.querySelector(".category-count");if(ce)ce.textContent=visible+" ابزار";var at=document.querySelector(".tab-btn.active")?.dataset.tab;if(at&&at!=="all")cat.classList.toggle("hidden-cat",cat.dataset.tab!==at)});document.getElementById("emptyState").style.display=total?"none":"block"}
+function applyFilterAndSearch(){var q=document.getElementById("searchInput").value.trim().toLowerCase();var cats=document.querySelectorAll(".category");var total=0;cats.forEach(function(cat){var cards=cat.querySelectorAll(".card");var visible=0;var catName=cat.dataset.category?cat.dataset.category.toLowerCase():"";cards.forEach(function(card){var isDev=!!card.querySelector(".dev-badge-grid");var isActive=!isDev;var fm=true;if(currentFilter==="active")fm=isActive;else if(currentFilter==="dev")fm=isDev;var txt=(card.querySelector(".card-name")?.textContent||"")+(card.getAttribute("title")||"");var sm=txt.toLowerCase().includes(q)||catName.includes(q);var show=fm&&sm;card.style.display=show?"":"none";if(show)visible++});total+=visible});var es=document.getElementById("emptyState");if(es)es.style.display=total?"none":"block"}
 function buildCards(){var grid=document.getElementById("appGrid");var html="";Object.keys(mainTools).forEach(function(cat){var mc=mainTools[cat]||[],nc=newTools[cat]||[];if(mc.length===0&&nc.length===0)return;html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'">';html+='<div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2></div>';html+='<div class="grid">';mc.forEach(function(t){html+='<div class="card" data-link="'+t.link+'" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='</div>'});nc.forEach(function(t){html+='<div class="card" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='<span class="dev-badge-grid">در حال توسعه</span>';html+='</div>'});html+='</div></section>'});grid.innerHTML=html}
-function buildTabs(){var c=document.getElementById("tabsContainer");var html='<button class="tab-btn active" data-tab="all">همه</button>';Object.keys(mainTools).forEach(function(k){var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);if(count>0){html+='<button class="tab-btn" data-tab="'+k+'">'+k+'</button>'}});html+='<button class="tab-btn" data-tab="history">تاریخچه</button>';c.innerHTML=html;c.querySelectorAll(".tab-btn").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});if(tab==='history'){updateHistoryTab()}applyFilterAndSearch()})})}
-var toastTimer;function showToast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},3000)}
+function buildTabs(){var c=document.getElementById("tabsContainer");var html='<button class="tab-btn active" data-tab="all">همه</button>';Object.keys(mainTools).forEach(function(k){var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);if(count>0){html+='<button class="tab-btn" data-tab="'+k+'">'+k+'</button>'}});c.innerHTML=html;c.querySelectorAll(".tab-btn").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});if(tab==='history'){updateHistoryTab()}applyFilterAndSearch()})})}
+var toastTimer;function showToast(m){var t=document.getElementById("toast");if(!t)return;t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},3000)}
 function initBridge(){try{if(window.WebView?.isReady||window.jsBridge||window.webkit?.messageHandlers||window.android){return true}return false}catch(e){return false}}
 function openLinkWithBridge(u){try{if(window.WebView?.isReady){window.WebView.platform.openUrl(u);return true}if(window.jsBridge?.openUrl){window.jsBridge.openUrl(u);return true}if(window.webkit?.messageHandlers?.openUrl){window.webkit.messageHandlers.openUrl.postMessage({url:u});return true}if(window.android?.openUrl){window.android.openUrl(u);return true}return false}catch(e){return false}}
 
-// ====== هندلر کلیک کارت با انیمیشن ریپل (یک کلیک = ورود) ======
-function cardClickHandler(e) {
+function cardClickHandler(e){
     e.preventDefault();
-    var card = e.currentTarget;
-    var name = card.dataset.name || "";
-    var link = card.dataset.link || "";
+    var card=e.currentTarget;
+    var name=card.dataset.name||"";
+    var link=card.dataset.link||"";
     
-    // اضافه کردن به تاریخچه
     if(name) addToHistory(name);
     
-    // ====== انیمیشن ریپل ======
-    var rect = card.getBoundingClientRect();
-    var size = Math.max(rect.width, rect.height);
-    var x = e.clientX - rect.left - size/2;
-    var y = e.clientY - rect.top - size/2;
-    
-    var ripple = document.createElement("span");
-    ripple.className = "ripple-effect";
-    ripple.style.width = size + "px";
-    ripple.style.height = size + "px";
-    ripple.style.left = x + "px";
-    ripple.style.top = y + "px";
+    // === انیمیشن ریپل ===
+    var rect=card.getBoundingClientRect();
+    var size=Math.max(rect.width,rect.height);
+    var x=e.clientX-rect.left-size/2;
+    var y=e.clientY-rect.top-size/2;
+    var ripple=document.createElement("span");
+    ripple.className="ripple-effect";
+    ripple.style.width=size+"px";
+    ripple.style.height=size+"px";
+    ripple.style.left=x+"px";
+    ripple.style.top=y+"px";
     card.appendChild(ripple);
     
-    // ====== انیمیشن فشرده شدن ======
-    var icon = card.querySelector(".card-icon");
-    if(icon) {
-        icon.style.transform = "scale(0.85)";
-        setTimeout(function() {
-            icon.style.transform = "";
-        }, 150);
+    // === انیمیشن فشرده شدن آیکون ===
+    var icon=card.querySelector(".card-icon");
+    if(icon){
+        icon.style.transform="scale(0.85)";
+        setTimeout(function(){ icon.style.transform=""; }, 200);
     }
     
-    // ====== حرکت به صفحه بعد (بلافاصله - بدون تاخیر) ======
-    if(link) {
-        var used = openLinkWithBridge(link);
-        if(!used) {
-            window.location.assign(link);
+    // === تاخیر 250ms برای نمایش انیمیشن ===
+    setTimeout(function(){
+        if(link){
+            var used=openLinkWithBridge(link);
+            if(!used){
+                window.location.assign(link);
+            }
+        } else {
+            showToast("این ابزار در نسخه‌های بعدی کامل می‌شود");
         }
-    } else {
-        showToast("این ابزار در نسخه‌های بعدی کامل می‌شود");
-    }
-    
-    // حذف ریپل بعد از انیمیشن
-    setTimeout(function() {
         ripple.remove();
-    }, 700);
+    }, 250);
 }
 
 function applyTheme(t){document.body.classList.toggle("light-mode",t==="light");localStorage.setItem("sa-apps-theme",t)}
 function toggleTheme(){var isLight=document.body.classList.toggle("light-mode");localStorage.setItem("sa-apps-theme",isLight?"light":"dark")}
-function openAbout(){document.getElementById("aboutModal").classList.add("show");document.body.style.overflow="hidden"}
-function closeAbout(){document.getElementById("aboutModal").classList.remove("show");document.body.style.overflow=""}
+function openAbout(){var m=document.getElementById("aboutModal");if(m)m.classList.add("show");document.body.style.overflow="hidden"}
+function closeAbout(){var m=document.getElementById("aboutModal");if(m)m.classList.remove("show");document.body.style.overflow=""}
 function closeAboutOnBackdrop(e){if(e.target===e.currentTarget)closeAbout()}
 function openExternal(u){window.open(u,"_blank")}
 function openEmail(e){window.open("mailto:"+e)}
-function openHelp(){document.getElementById("helpModal").classList.add("show");document.body.style.overflow="hidden"}
-function closeHelp(){document.getElementById("helpModal").classList.remove("show");document.body.style.overflow=""}
+function openHelp(){var m=document.getElementById("helpModal");if(m)m.classList.add("show");document.body.style.overflow="hidden"}
+function closeHelp(){var m=document.getElementById("helpModal");if(m)m.classList.remove("show");document.body.style.overflow=""}
 function closeHelpOnBackdrop(e){if(e.target===e.currentTarget)closeHelp()}
 function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
 
-// ====== راه‌اندازی ======
 document.addEventListener("DOMContentLoaded",function(){
     initBridge();
     applyTheme(config.theme);
-    document.getElementById("versionDisplay").textContent="نسخه: "+config.version;
-    document.getElementById("modalVersion").textContent=config.version;
-    document.getElementById("githubLinkText").textContent=config.siteUrl.replace(/^https?:\/\//,"");
-    document.getElementById("contactEmailLink").textContent=config.contactEmail;
+    var vd=document.getElementById("versionDisplay");if(vd)vd.textContent="نسخه: "+config.version;
+    var mv=document.getElementById("modalVersion");if(mv)mv.textContent=config.version;
+    var gl=document.getElementById("githubLinkText");if(gl)gl.textContent=config.siteUrl.replace(/^https?:\/\//,"");
+    var ce=document.getElementById("contactEmailLink");if(ce)ce.textContent=config.contactEmail;
     buildCards();
+    buildHistoryTab();
     buildTabs();
-    document.getElementById("searchInput").addEventListener("input",applyFilterAndSearch);
-    
+    var si=document.getElementById("searchInput");if(si)si.addEventListener("input",applyFilterAndSearch);
     var backBtn=document.getElementById("backTopBtn");
     window.addEventListener("scroll",function(){
         if(window.scrollY>300){backBtn.classList.add("visible")}else{backBtn.classList.remove("visible")}
     });
-    
     setTimeout(checkConnection,600);
     setInterval(checkConnection,30000);
-    
     window.addEventListener("online",function(){
         checkConnection();
         hideOfflineModal();
@@ -748,15 +453,14 @@ document.addEventListener("DOMContentLoaded",function(){
     });
     window.addEventListener("offline",function(){
         isOnline=false;
-        document.getElementById("statusDot").className="status-dot offline";
-        document.getElementById("statusText").textContent="آفلاین";
-        document.getElementById("speedText").textContent="";
-        document.getElementById("statusIcon").className="fa fa-wifi";
-        document.getElementById("statusIcon").style.color="var(--offline-color)";
+        var sd=document.getElementById("statusDot");if(sd)sd.className="status-dot offline";
+        var st=document.getElementById("statusText");if(st)st.textContent="آفلاین";
+        var sp=document.getElementById("speedText");if(sp)sp.textContent="";
+        var si=document.getElementById("statusIcon");if(si){si.className="fa fa-wifi";si.style.color="var(--offline-color)"}
         showOfflineModal();
         showToast("اتصال اینترنت قطع شد");
     });
 });
 </script>
 </body>
-    </html>
+                                                                                                                                                                   </html>
