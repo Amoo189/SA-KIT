@@ -30,7 +30,7 @@ body.light-mode .brand-badge{background:linear-gradient(135deg,rgba(110,168,254,
 body.light-mode .brand-title h1{color:var(--text-light)}
 .brand-title p{margin:0;color:var(--muted);font-size:15px;transition:color .3s;font-weight:300}
 body.light-mode .brand-title p{color:var(--muted-light)}
-.topbar-right{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
 .search-input{width:180px;padding:11px 18px;border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);border-radius:14px;color:var(--text);font-size:15px;transition:all .3s;font-family:inherit}
 .search-input::placeholder{color:var(--muted);transition:color .3s}
 body.light-mode .search-input{background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.1);color:var(--text-light)}
@@ -165,15 +165,15 @@ body.light-mode .action-btn.primary{background:linear-gradient(135deg,rgba(110,1
 .back-top-btn:hover{transform:translateY(-4px) scale(1.05);background:rgba(110,168,254,.3)}
 body.light-mode .back-top-btn{background:rgba(110,168,254,.12);border-color:rgba(110,168,254,.2);color:var(--text-light)}
 body.light-mode .back-top-btn:hover{background:rgba(110,168,254,.2)}
-.connection-status{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:8px 20px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:13px;color:var(--muted);transition:all .3s;white-space:nowrap;flex-shrink:0;min-width:120px}
+.connection-status{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:11px;color:var(--muted);transition:all .3s;white-space:nowrap;flex-shrink:0;min-width:90px}
 body.light-mode .connection-status{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
-.connection-status .status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;transition:all .3s;flex-shrink:0}
-.connection-status .status-dot.online{background:var(--online-color);box-shadow:0 0 14px rgba(74,222,128,.4)}
-.connection-status .status-dot.offline{background:var(--offline-color);box-shadow:0 0 14px rgba(248,113,113,.4)}
-.connection-status .status-dot.measuring{background:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,.4);animation:pulse-dot 1s ease-in-out infinite}
-.connection-status .status-text{font-size:12px;color:var(--muted);font-weight:400}
+.connection-status .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;transition:all .3s;flex-shrink:0}
+.connection-status .status-dot.online{background:var(--online-color);box-shadow:0 0 12px rgba(74,222,128,.3)}
+.connection-status .status-dot.offline{background:var(--offline-color);box-shadow:0 0 12px rgba(248,113,113,.3)}
+.connection-status .status-dot.measuring{background:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.3);animation:pulse-dot 1s ease-in-out infinite}
+.connection-status .status-text{font-size:10px;color:var(--muted);font-weight:400}
 body.light-mode .connection-status .status-text{color:var(--muted-light)}
-.connection-status .speed-text{font-size:11px;opacity:.7;margin-right:6px;color:var(--muted)}
+.connection-status .speed-text{font-size:9px;opacity:.7;margin-right:4px;color:var(--muted)}
 body.light-mode .connection-status .speed-text{color:var(--muted-light)}
 @keyframes pulse-dot{0%,100%{transform:scale(1)}50%{transform:scale(1.5)}}
 .offline-box .offline-actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
@@ -234,7 +234,7 @@ body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
 .developer-card .dev-role{display:none}
 
 /* ===== ریسپانسیو برای گوشی‌های کوچک ===== */
-@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}.card{height:115px;min-height:115px;max-height:115px;padding:8px 4px}.card .card-icon{width:50px;height:50px;font-size:20px}.card .card-name{font-size:11px;min-height:26px;max-height:28px}.category-title{font-size:16px}.search-input{width:100%;max-width:140px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:10px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:5px 12px;font-size:12px}.help-box{padding:18px}.meta-grid{grid-template-columns:1fr}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:11px;padding:5px 12px;min-width:auto;gap:6px}.connection-status .status-dot{width:7px;height:7px}.connection-status .status-text{font-size:10px}.connection-status .speed-text{font-size:9px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:36px;height:36px;font-size:14px}.developers-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}.card{height:115px;min-height:115px;max-height:115px;padding:8px 4px}.card .card-icon{width:50px;height:50px;font-size:20px}.card .card-name{font-size:11px;min-height:26px;max-height:28px}.category-title{font-size:16px}.search-input{width:100%;max-width:140px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:10px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:5px 12px;font-size:12px}.help-box{padding:18px}.meta-grid{grid-template-columns:1fr}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:10px;padding:4px 10px;min-width:auto;gap:4px}.connection-status .status-dot{width:6px;height:6px}.connection-status .status-text{font-size:9px}.connection-status .speed-text{font-size:8px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:36px;height:36px;font-size:14px}.developers-grid{grid-template-columns:1fr}}
 
 /* ===== تنظیمات جستجو در گوشی‌های کوچک ===== */
 @media(max-width:480px){
@@ -242,14 +242,14 @@ body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
     .brand-title h1{font-size:20px}
     .brand-title p{font-size:12px}
     .brand-badge{width:48px;height:48px;font-size:19px}
-    .topbar-right{flex-wrap:wrap;justify-content:center;gap:8px}
+    .topbar-right{flex-wrap:wrap;justify-content:center;gap:6px}
     .search-input{width:100%;max-width:140px;font-size:13px;padding:8px 12px}
     .search-input:focus{width:100%;max-width:140px}
     .theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:38px;height:38px;font-size:15px}
-    .connection-status{padding:5px 12px;font-size:11px;min-width:auto}
-    .connection-status .status-text{font-size:10px}
-    .connection-status .speed-text{font-size:9px}
-    .connection-status .status-dot{width:7px;height:7px}
+    .connection-status{padding:4px 10px;font-size:10px;min-width:auto;gap:4px}
+    .connection-status .status-text{font-size:9px}
+    .connection-status .speed-text{font-size:8px}
+    .connection-status .status-dot{width:6px;height:6px}
 }
 </style>
 </head>
@@ -261,7 +261,6 @@ body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
 <div class="splash-subtitle">SA‑APPS v16.4.0</div></div></div>
 <div class="container" id="mainContainer"><div class="orb orb1"></div><div class="orb orb2"></div>
 <section class="panel">
-    <!-- نوار بالا با اجزای بزرگ‌تر و وضعیت اتصال وسط‌چین -->
     <div class="topbar">
         <div class="topbar-left">
             <div class="brand-badge">SA</div>
@@ -275,7 +274,7 @@ body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
                 <input type="text" class="search-input" id="searchInput" placeholder="جستجو..." autocomplete="off" />
             </div>
             <div class="connection-status" id="connectionStatus">
-                <i class="fa fa-wifi" id="statusIcon" style="font-size:15px;"></i>
+                <i class="fa fa-wifi" id="statusIcon" style="font-size:13px;"></i>
                 <span class="status-dot" id="statusDot"></span>
                 <span class="status-text" id="statusText">در حال بررسی</span>
                 <span class="speed-text" id="speedText"></span>
@@ -302,7 +301,6 @@ body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
 <footer class="footer"><span id="versionDisplay"></span> | SA‑APPS &copy; 2026</footer></div>
 <button class="back-top-btn" id="backTopBtn" onclick="scrollToTop()" aria-label="بازگشت به بالا"><i class="fa fa-arrow-up"></i></button>
 
-<!-- مودال‌ها -->
 <div id="aboutModal" class="about-modal" onclick="closeAboutOnBackdrop(event)"><div class="about-box"><div class="about-header"><div class="about-logo">SA</div><div class="about-title"><h2>درباره SA‑APPS</h2><p>لانچر ابزارهای کاربردی، آموزشی و سرگرمی</p></div></div>
 <div class="about-content"><p>SA‑APPS مجموعه‌ای از ابزارهای تحت وب است که با تمرکز بر سرعت، طراحی مدرن و دسترسی آسان ساخته شده است.</p>
 <div style="margin:12px 0 6px 0"><h3 style="color:var(--text);font-size:15px;margin-bottom:8px;transition:color .3s"><i class="fa fa-code" style="color:var(--accent);margin-left:8px"></i>توسعه‌دهندگان</h3></div>
@@ -458,7 +456,6 @@ function cardClickHandler(e){
     
     if(name) addToHistory(name);
     
-    // ripple animation
     var rect=card.getBoundingClientRect();
     var size=Math.max(rect.width,rect.height);
     var x=e.clientX-rect.left-size/2;
@@ -471,7 +468,6 @@ function cardClickHandler(e){
     ripple.style.top=y+"px";
     card.appendChild(ripple);
     
-    // icon press
     var icon=card.querySelector(".card-icon");
     if(icon){
         icon.style.transform="scale(0.85)";
@@ -482,7 +478,6 @@ function cardClickHandler(e){
         if(link){
             var used=openLinkWithBridge(link);
             if(!used){
-                // smooth page transition with fade out/in
                 document.body.style.transition="opacity 0.3s";
                 document.body.style.opacity="0";
                 setTimeout(function(){
@@ -542,4 +537,4 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 </body>
-                    </html>
+    </html>
