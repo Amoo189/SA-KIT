@@ -3,756 +3,652 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SA-UC</title>
+<title>SA-APPS</title>
 <link rel="stylesheet" href="fontawesome/css/all.min.css">
 <style>
-@font-face{font-family:"VazirmatnLocal";src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"VazirmatnLocal";src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
-body{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
-input,select,textarea,button,.historyItem,.chip{user-select:text!important;-webkit-user-select:text!important;-moz-user-select:text!important;-ms-user-select:text!important}
-.refresh-btn{position:fixed;top:16px;left:16px;z-index:999;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all .25s ease;backdrop-filter:blur(12px);background:rgba(255,255,255,.06)}
-.refresh-btn:hover{transform:rotate(60deg) scale(1.05);border-color:var(--accent);background:rgba(110,168,254,.15)}
-.refresh-btn:active{transform:rotate(60deg) scale(0.92)}
-.refresh-btn i{transition:transform .3s ease}
-.refresh-btn:hover i{transform:rotate(-60deg)}
-body.light .refresh-btn{background:#fff;border-color:rgba(0,0,0,.1);color:#0b1220}
-body.light .refresh-btn:hover{border-color:var(--accent);background:rgba(59,130,246,.08)}
-.preloader{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(24px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .7s ease,visibility .7s ease}
-.preloader-box{display:flex;flex-direction:column;align-items:center;gap:20px}
-.preloader-logo{position:relative;width:100px;height:100px;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.12),transparent 40%),radial-gradient(circle at 75% 88%,rgba(0,0,0,.50),transparent 45%),linear-gradient(185deg,#232e40,#1b2535,#121c2a);box-shadow:0 20px 40px rgba(0,0,0,.6),0 8px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.10),inset 0 -12px 18px rgba(0,0,0,.55),inset 10px 0 16px rgba(0,0,0,.20),inset -10px 0 16px rgba(0,0,0,.20)}
-.preloader-logo::before{content:"";position:absolute;inset:-8px;border-radius:30px;background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);filter:blur(18px);opacity:.6;animation:spin 6s linear infinite}
-@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-.preloader-sa{position:absolute;left:50%;top:50%;transform:translate(-50%,-44%);font-family:"Arial Black",Arial,sans-serif;font-size:52px;font-weight:900;letter-spacing:-8px;color:#289CFF;text-shadow:0 7px 12px rgba(0,0,0,.5),0 2px 4px rgba(0,0,0,.35),0 0 20px rgba(40,156,255,.30),0 0 40px rgba(40,156,255,.15),0 -1px 3px rgba(255,255,255,.08)}
-.preloader-badge{position:absolute;top:-4px;right:12px;padding:5px 12px;font-size:15px;font-weight:900;border-radius:0 0 14px 14px;color:#289CFF;font-family:"Arial Black",Arial,sans-serif;background:linear-gradient(180deg,rgba(40,52,72,.95),rgba(22,29,42,.98));border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 18px rgba(0,0,0,.50),inset 0 -6px 9px rgba(0,0,0,.55),inset 0 4px 6px rgba(255,255,255,.07),0 3px 10px rgba(0,0,0,.35);text-shadow:0 2px 4px rgba(0,0,0,.35),0 0 10px rgba(40,156,255,.18)}
-.preloader .loader-text{color:rgba(255,255,255,.7);font-size:15px;letter-spacing:2px;animation:pulseText 1.6s infinite;margin-top:8px}
-@keyframes pulseText{0%,100%{opacity:.4;transform:scale(0.98)}50%{opacity:1;transform:scale(1)}}
-.preloader .loader-sub{color:rgba(255,255,255,.35);font-size:12px;margin-top:2px;letter-spacing:1px}
-.preloader.hide{opacity:0;visibility:hidden;pointer-events:none}
-:root{--bg:#0b1220;--card:#111a2e;--text:#e8eefc;--muted:#a9b6d6;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 60px rgba(0,0,0,.35);--danger:#ff5c7a;--ok:#2dd4bf;--card-hover:rgba(110,168,254,.08);--glow:0 0 30px rgba(110,168,254,.1)}
-body.light{--bg:#e7ecff;--card:#ffffff;--text:#111827;--muted:#6b7280;--accent:#4f8bff;--accent2:#7c3aed;--border:rgba(15,23,42,.08);--shadow:0 18px 40px rgba(15,23,42,.10);--card-hover:rgba(79,139,255,.06);--glow:0 0 30px rgba(79,139,255,.08)}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;min-height:100vh}
-body{font-family:"VazirmatnLocal",sans-serif;background:radial-gradient(1200px 600px at 20% 10%,rgba(110,168,254,.18),transparent 55%),radial-gradient(1000px 500px at 80% 0%,rgba(139,92,246,.16),transparent 60%),var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px;transition:background .35s ease,color .35s ease}
-.container{width:min(1000px,100%);display:flex;flex-direction:column;gap:16px}
-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.title{display:flex;flex-direction:column;gap:6px}
-.title h1{margin:0;font-size:clamp(20px,3vw,30px);letter-spacing:-.02em}
-.title p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}
-.badge{padding:10px 14px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);color:var(--muted);font-size:13px;white-space:nowrap;display:flex;align-items:center;gap:8px}
-.theme-toggle{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.10);color:var(--text);font-size:16px;cursor:pointer;transition:.2s ease}
-body.light .theme-toggle{background:rgba(255,255,255,.9)}
-.theme-toggle:active{transform:translateY(1px) scale(.97)}
-.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
-@media (max-width:900px){.grid{grid-template-columns:1fr}}
-.card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;transition:background .35s ease,border-color .35s ease,box-shadow .35s ease}
-.card .inner{padding:18px}
-.card h2{margin:0 0 10px 0;font-size:16px;color:var(--text);display:flex;align-items:center;gap:10px}
-.dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 6px rgba(110,168,254,.12)}
-.select-field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:100px}
-.select-field label{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px;font-weight:500;letter-spacing:.3px}
-.select-trigger{padding:10px 14px;border-radius:14px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;transition:all .25s cubic-bezier(.16,1,.3,1);min-height:42px;position:relative;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.06)}
-body.light .select-trigger{background:rgba(255,255,255,.85);border-color:rgba(0,0,0,.08)}
-.select-trigger:hover{border-color:var(--accent);background:var(--card-hover);transform:translateY(-1px);box-shadow:var(--glow),0 4px 16px rgba(0,0,0,.08)}
-.select-trigger:active{transform:translateY(0px) scale(.99)}
-.select-trigger .sel-label{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px;font-weight:500}
-.select-trigger .sel-label i{color:var(--accent);font-size:14px;width:18px;text-align:center}
-.select-trigger .arrow{font-size:12px;color:var(--muted);transition:transform .3s ease;opacity:.6}
-.select-trigger:hover .arrow{opacity:1;transform:translateX(-2px)}
-.select-trigger .badge-count{font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(110,168,254,.12);color:var(--accent);font-weight:700}
-body.light .select-trigger .badge-count{background:rgba(79,139,255,.08)}
-.floating-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(20px);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease;padding:20px}
-.floating-picker-overlay.show{opacity:1;visibility:visible}
-.floating-picker{background:var(--card);border:1px solid var(--border);border-radius:28px;max-width:460px;width:100%;max-height:80vh;box-shadow:0 40px 80px rgba(0,0,0,.5),0 20px 40px rgba(0,0,0,.3);transform:scale(.92) translateY(30px);transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .35s ease;opacity:0;overflow:hidden;display:flex;flex-direction:column}
-.floating-picker-overlay.show .floating-picker{transform:scale(1) translateY(0);opacity:1}
-.floating-picker-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(255,255,255,.02)}
-.floating-picker-header h3{margin:0;font-size:15px;display:flex;align-items:center;gap:10px;color:var(--text);font-weight:700}
-.floating-picker-header h3 i{color:var(--accent);font-size:16px}
-.floating-picker-header .close-picker{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:999px;cursor:pointer;transition:.2s ease;display:flex;align-items:center;justify-content:center;font-size:14px}
-.floating-picker-header .close-picker:hover{background:rgba(255,255,255,.08);color:var(--text);transform:rotate(90deg)}
-.floating-picker-search{padding:12px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
-.floating-picker-search input{width:100%;padding:9px 14px;border-radius:14px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);outline:0;font-size:13px;transition:border-color .2s ease}
-body.light .floating-picker-search input{background:rgba(0,0,0,.04)}
-.floating-picker-search input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(110,168,254,.08)}
-.floating-picker-search input::placeholder{color:var(--muted);opacity:.5}
-.floating-picker-list{overflow-y:auto;padding:6px 0;flex:1}
-.floating-picker-list::-webkit-scrollbar{width:5px}
-.floating-picker-list::-webkit-scrollbar-track{background:transparent}
-.floating-picker-list::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px}
-.floating-picker-item{padding:10px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s ease;font-size:13px;color:var(--text);border-right:3px solid transparent;position:relative}
-.floating-picker-item:hover{background:var(--card-hover);padding-right:24px}
-.floating-picker-item.active{background:rgba(110,168,254,.1);border-right-color:var(--accent)}
-body.light .floating-picker-item.active{background:rgba(79,139,255,.08)}
-.floating-picker-item .item-icon{color:var(--accent);font-size:16px;width:24px;text-align:center}
-.floating-picker-item .item-label{flex:1;font-weight:500}
-.floating-picker-item .item-sub{font-size:11px;color:var(--muted);opacity:.6}
-.floating-picker-item .item-check{color:var(--accent);font-size:14px;opacity:0;transition:opacity .2s ease}
-.floating-picker-item.active .item-check{opacity:1}
-.floating-picker-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
-.floating-picker-empty i{font-size:28px;display:block;margin-bottom:12px;opacity:.3}
-.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.field{flex:1;min-width:140px;display:flex;flex-direction:column;gap:8px}
-label{color:var(--muted);font-size:13px}
-input[type="text"],input[type="number"]{width:100%;padding:9px 12px;border-radius:14px;border:1px solid var(--border);background:rgba(0,0,0,.18);color:var(--text);outline:0;transition:.15s ease;font-size:14px}
-body.light input[type="text"],body.light input[type="number"]{background:rgba(255,255,255,.9)}
-input::placeholder{color:rgba(233,238,252,.35)}
-input:focus{border-color:rgba(110,168,254,.55);box-shadow:0 0 0 4px rgba(110,168,254,.15)}
-.actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
-button{cursor:pointer;border:0;padding:9px 14px;border-radius:14px;font-weight:700;color:#071022;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 24px rgba(110,168,254,.22);transition:transform .08s ease,filter .15s ease,box-shadow .15s ease;display:inline-flex;align-items:center;gap:8px;font-size:13px}
-button:hover{filter:brightness(1.05)}
-button:active{transform:translateY(1px) scale(.98);box-shadow:0 4px 14px rgba(110,168,254,.28)}
-.ghost{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border);box-shadow:none}
-body.light .ghost{background:rgba(255,255,255,.9)}
-.resultBox{padding:18px;display:flex;flex-direction:column;gap:12px;height:100%}
-.resultTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
-.resultBig{font-size:clamp(24px,3vw,36px);letter-spacing:-.02em;font-weight:900;line-height:1.1;transform:scale(.96) translateY(4px);opacity:0;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .24s ease}
-.resultBig.show{transform:scale(1) translateY(0);opacity:1}
-.resultMeta{color:var(--muted);font-size:13px;line-height:1.7;opacity:0;transform:translateY(4px);transition:transform .25s ease,opacity .2s ease}
-.resultMeta.show{opacity:1;transform:translateY(0)}
-.miniCards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
-@media (max-width:500px){.miniCards{grid-template-columns:1fr}}
-.mini{border-radius:16px;border:1px solid var(--border);padding:9px 12px;background:rgba(0,0,0,.12);transition:background .3s ease,border-color .3s ease,transform .18s ease}
-body.light .mini{background:rgba(255,255,255,.9)}
-.mini .k{font-size:11px;color:var(--muted);margin-bottom:4px}
-.mini .v{font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;font-size:13px}
-.mini.active{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(110,168,254,.18)}
-.pill{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.03);transition:background .2s ease,color .2s ease,border-color .2s ease}
-.error{color:var(--danger);font-size:13px;display:none;margin-top:8px}
-.show-error{display:block}
-footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
-.swap{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);font-size:16px;user-select:none;cursor:pointer;transition:.15s ease;margin-bottom:2px}
-.swap:hover{background:rgba(255,255,255,.06)}
-.swap:active{transform:translateY(1px) scale(.95)}
-.tag{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--muted)}
-.category-row{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.category-row .select-field{min-width:150px;flex:1}
-@media (max-width:600px){body{padding:16px}header{flex-direction:column;align-items:flex-start}.title,.badge,.sa-logo-center{width:100%;justify-content:space-between;margin-bottom:10px}.sa-logo-center{margin-top:10px}}
-.sa-logo-center{width:100%;display:flex;justify-content:center;align-items:center;margin:10px 0 20px 0}
-.sa-logo{width:80px;height:80px;position:relative;border-radius:18px;overflow:hidden;user-select:none;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.10),transparent 40%),radial-gradient(circle at 75% 88%,rgba(0,0,0,.40),transparent 45%),linear-gradient(185deg,#232e40,#1b2535,#121c2a);box-shadow:0 14px 28px rgba(0,0,0,.55),0 5px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.10),inset 0 -12px 18px rgba(0,0,0,.55),inset 10px 0 16px rgba(0,0,0,.20),inset -10px 0 16px rgba(0,0,0,.20)}
-.sa-logo::before{content:"";position:absolute;inset:2px;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 0 18px rgba(255,255,255,.03);pointer-events:none}
-.sa-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-42%);font-family:"Arial Black",Arial,sans-serif;font-size:46px;font-weight:900;letter-spacing:-7px;color:#289CFF;text-shadow:0 7px 12px rgba(0,0,0,.44),0 2px 4px rgba(0,0,0,.30),0 0 14px rgba(40,156,255,.25),0 0 28px rgba(40,156,255,.12),0 -1px 3px rgba(255,255,255,.08)}
-.sa-badge{position:absolute;top:-3px;right:10px;padding:4px 10px;font-size:13px;font-weight:900;border-radius:0 0 12px 12px;color:#289CFF;font-family:"Arial Black",Arial,sans-serif;background:linear-gradient(180deg,rgba(40,52,72,.95),rgba(22,29,42,.98));border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 18px rgba(0,0,0,.50),inset 0 -6px 9px rgba(0,0,0,.55),inset 0 4px 6px rgba(255,255,255,.07),0 3px 10px rgba(0,0,0,.35);text-shadow:0 2px 4px rgba(0,0,0,.35),0 0 10px rgba(40,156,255,.18)}
-.sign-buttons{display:flex;gap:6px;align-items:center}
-.sign-btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);font-size:14px;font-weight:700;cursor:pointer;transition:.15s ease;display:flex;align-items:center;justify-content:center;padding:0}
-.sign-btn:hover{background:rgba(255,255,255,.10)}
-.sign-btn:active{transform:scale(.92)}
-body.light .sign-btn{background:rgba(0,0,0,.05)}
-body.light .sign-btn:hover{background:rgba(0,0,0,.10)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:10000;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease;padding:20px}
-.modal-overlay.show{opacity:1;visibility:visible}
-.modal-box{background:var(--card);border:1px solid var(--border);border-radius:28px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;box-shadow:var(--shadow);transform:scale(.94) translateY(12px);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s ease;opacity:0;color:var(--text)}
-.modal-overlay.show .modal-box{transform:scale(1) translateY(0);opacity:1}
-.modal-box h2{font-size:22px;margin-top:0;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:16px}
-.modal-box h2 i{color:var(--accent)}
-.modal-box .close-modal{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:999px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:8px;margin-top:18px}
-.modal-box .close-modal:hover{background:rgba(255,255,255,.12)}
-.modal-box .content{line-height:1.9;font-size:14px;color:var(--muted)}
-.modal-box .content strong{color:var(--text)}
-.modal-box .content hr{border:0;border-top:1px solid var(--border);margin:20px 0}
-.modal-box .content ul{padding-right:20px}
-.modal-box .content ul li{margin-bottom:8px}
-.modal-box .content .highlight{background:rgba(110,168,254,.08);padding:12px 16px;border-radius:16px;border-right:3px solid var(--accent);margin:12px 0}
-.modal-box .content a{color:var(--accent);text-decoration:none}
-.modal-box .content a:hover{text-decoration:underline}
+@font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:VazirmatnLocal;src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+:root{--bg:#0b1220;--bg2:#0f172a;--text:#e8eefc;--muted:#9fb0d0;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 50px rgba(0,0,0,.45);--glass:blur(14px);--radius:24px;--bg-light:#eef2f7;--bg2-light:#d5dee8;--text-light:#1a202c;--muted-light:#5a6a7e;--border-light:rgba(0,0,0,.1);--shadow-light:0 10px 30px rgba(0,0,0,.08);--tab-bg:rgba(255,255,255,.04);--tab-active:rgba(110,168,254,.15);--card-bg:rgba(255,255,255,.04);--card-bg-light:rgba(255,255,255,.7);--online-color:#4ade80;--offline-color:#f87171;--splash-bg:#0b1220;--splash-text:rgba(255,255,255,0.8);--splash-subtitle:rgba(255,255,255,0.2);--step-bg:rgba(255,255,255,.08)}
+body.light-mode{--bg:var(--bg-light);--bg2:var(--bg2-light);--text:var(--text-light);--muted:var(--muted-light);--border:var(--border-light);--shadow:var(--shadow-light);--tab-bg:rgba(0,0,0,.04);--tab-active:rgba(110,168,254,.12);--card-bg:rgba(255,255,255,.7);--splash-bg:#eef2f7;--splash-text:rgba(0,0,0,0.8);--splash-subtitle:rgba(0,0,0,0.15);--step-bg:rgba(0,0,0,.08);background:#eef2f7}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+html{scroll-behavior:smooth}
+body{min-height:100vh;font-family:VazirmatnLocal,sans-serif;background:#0b1220;background-image:radial-gradient(circle at top left,rgba(110,168,254,.2),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.18),transparent 34%);background-attachment:fixed;color:var(--text);transition:all .3s}
+body.light-mode{background:#eef2f7;background-image:radial-gradient(circle at top left,rgba(110,168,254,.08),transparent 28%),radial-gradient(circle at bottom right,rgba(139,92,246,.06),transparent 34%)}
+.container{width:min(1120px,100%);margin:auto;padding:20px;position:relative;opacity:0;transition:opacity .8s ease}
+.container.loaded{opacity:1}
+.orb{position:absolute;border-radius:50%;filter:blur(30px);opacity:.35;pointer-events:none;z-index:0;transition:opacity .3s}
+body.light-mode .orb{opacity:.1}
+.orb1{width:170px;height:170px;background:linear-gradient(135deg,var(--accent),transparent);top:-40px;right:20px}
+.orb2{width:200px;height:200px;background:linear-gradient(135deg,var(--accent2),transparent);bottom:-60px;left:10px}
+.panel{position:relative;z-index:1;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--border);backdrop-filter:var(--glass);border-radius:32px;box-shadow:var(--shadow);padding:28px;transition:all .3s}
+body.light-mode .panel{background:rgba(255,255,255,.75);border-color:rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.topbar-left{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.brand-badge{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,168,254,.28),rgba(139,92,246,.24));border:1px solid rgba(255,255,255,.1);font-weight:800;font-size:24px;box-shadow:0 10px 30px rgba(0,0,0,.18);flex-shrink:0;transition:all .3s;color:var(--text)}
+body.light-mode .brand-badge{background:linear-gradient(135deg,rgba(110,168,254,.2),rgba(139,92,246,.15));border-color:rgba(0,0,0,.06);box-shadow:0 10px 20px rgba(0,0,0,.06);color:var(--text-light)}
+.brand-title h1{margin:0;font-size:28px;transition:color .3s;color:var(--text);letter-spacing:-0.5px}
+body.light-mode .brand-title h1{color:var(--text-light)}
+.brand-title p{margin:0;color:var(--muted);font-size:15px;transition:color .3s;font-weight:300}
+body.light-mode .brand-title p{color:var(--muted-light)}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+.search-input{width:180px;padding:11px 18px;border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);border-radius:14px;color:var(--text);font-size:15px;transition:all .3s;font-family:inherit}
+.search-input::placeholder{color:var(--muted);transition:color .3s}
+body.light-mode .search-input{background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.1);color:var(--text-light)}
+body.light-mode .search-input::placeholder{color:#999}
+.search-input:focus{width:240px;outline:none;background:rgba(255,255,255,.08);border-color:var(--accent)}
+body.light-mode .search-input:focus{background:rgba(255,255,255,.95);border-color:var(--accent)}
+.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn,.back-top-btn{border:1px solid var(--border);background:rgba(255,255,255,.05);backdrop-filter:var(--glass);color:var(--text);border-radius:14px;cursor:pointer;font-family:inherit;transition:all .3s;display:inline-flex;align-items:center;justify-content:center;gap:0;white-space:nowrap;width:48px;height:48px;padding:0;font-size:20px;flex-shrink:0}
+body.light-mode .theme-switcher,body.light-mode .about-btn-icon,body.light-mode .help-btn,body.light-mode .refresh-btn,body.light-mode .back-top-btn{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);color:var(--text-light)}
+body.light-mode .theme-switcher:hover,body.light-mode .about-btn-icon:hover,body.light-mode .help-btn:hover,body.light-mode .refresh-btn:hover,body.light-mode .back-top-btn:hover{background:rgba(255,255,255,.9);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.theme-switcher:hover,.about-btn-icon:hover,.help-btn:hover,.refresh-btn:hover,.back-top-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.theme-switcher .icon{width:24px;height:24px}
+.about-btn-icon .about-tooltip{position:relative;display:inline-block}
+.about-btn-icon .tooltip-text{visibility:hidden;width:auto;min-width:160px;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);color:#fff;text-align:center;padding:5px 10px;border-radius:8px;position:absolute;bottom:110%;right:50%;transform:translateX(50%);font-size:11px;font-weight:400;white-space:nowrap;border:1px solid rgba(255,255,255,.1);opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
+body.light-mode .about-btn-icon .tooltip-text{background:rgba(255,255,255,.95);color:var(--text-light);border-color:rgba(0,0,0,.08)}
+.about-btn-icon .tooltip-text::after{content:'';position:absolute;top:100%;right:50%;transform:translateX(50%);border:6px solid transparent;border-top-color:rgba(0,0,0,.85)}
+body.light-mode .about-btn-icon .tooltip-text::after{border-top-color:rgba(255,255,255,.95)}
+.about-btn-icon:hover .tooltip-text{visibility:visible;opacity:1}
+.tabs-wrapper{margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.tabs-wrapper::-webkit-scrollbar{display:none}
+.tabs{display:flex;gap:6px;padding:4px 0;flex-wrap:nowrap;min-width:max-content}
+.tab-btn{padding:8px 18px;border-radius:999px;border:1px solid var(--border);background:var(--tab-bg);color:var(--muted);font-family:inherit;font-size:14px;cursor:pointer;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+body.light-mode .tab-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
+body.light-mode .tab-btn:hover{border-color:var(--accent);color:var(--text-light)}
+body.light-mode .tab-btn.active{background:rgba(110,168,254,.12);border-color:var(--accent);color:var(--text-light);box-shadow:0 0 20px rgba(110,168,254,.08)}
+.tab-btn:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--text)}
+.tab-btn.active{background:var(--tab-active);border-color:var(--accent);color:var(--text);box-shadow:0 0 20px rgba(110,168,254,.15)}
+.tab-btn .count{background:rgba(255,255,255,.08);padding:0 6px;border-radius:999px;font-size:10px;color:var(--muted)}
+body.light-mode .tab-btn .count{background:rgba(0,0,0,.06);color:var(--muted-light)}
+.category{animation:fadeUp .45s ease both}
+.category.hidden-cat{display:none!important}
+.category-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 8px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:6px}
+.category-title{margin:0;font-size:18px;font-weight:700;color:var(--text);padding-right:4px;transition:color .3s}
+body.light-mode .category-title{color:var(--text-light)}
+.category-title i{margin-left:8px;color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:16px 10px;margin-top:6px}
+.card{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-decoration:none;color:inherit;background:transparent;border:none;border-radius:18px;padding:12px 6px 8px 6px;transition:all .25s ease;cursor:pointer;position:relative;text-align:center;height:130px;min-height:130px;max-height:130px;overflow:hidden;user-select:none;-webkit-user-select:none}
+.card:hover{background:rgba(255,255,255,.04)}
+body.light-mode .card:hover{background:rgba(0,0,0,.03)}
+.card .ripple-effect{position:absolute;border-radius:50%;background:rgba(110,168,254,.35);transform:scale(0);animation:rippleAnim .7s ease-out forwards;pointer-events:none;will-change:transform,opacity}
+body.light-mode .card .ripple-effect{background:rgba(110,168,254,.2)}
+@keyframes rippleAnim{0%{transform:scale(0);opacity:1}100%{transform:scale(4);opacity:0}}
+.card:active .card-icon{transform:scale(.85);transition:transform .12s ease}
+.card .card-icon{width:60px;height:60px;border-radius:50%;background:var(--card-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);transition:all .3s ease;margin-bottom:4px;flex-shrink:0;position:relative;z-index:1}
+body.light-mode .card .card-icon{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.06)}
+.card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 8px 20px rgba(110,168,254,.3)}
+body.light-mode .card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card .card-name{font-size:13px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0 2px;min-height:30px;max-height:34px;word-break:break-word;font-weight:500;position:relative;z-index:1}
+body.light-mode .card .card-name{color:var(--muted-light)}
+.dev-badge-grid{font-size:8px;background:rgba(255,200,0,.15);color:#fbbf24;padding:1px 8px;border-radius:999px;border:1px solid rgba(255,200,0,.1);white-space:nowrap;flex-shrink:0;line-height:1.5;position:relative;z-index:1;min-height:18px;display:inline-flex;align-items:center;justify-content:center}
+body.light-mode .dev-badge-grid{background:rgba(255,200,0,.1);border-color:rgba(255,200,0,.08)}
+.card .card-spacer{height:18px;flex-shrink:0}
+.card{animation:cardFadeIn .4s ease both}
+.card:nth-child(1){animation-delay:.02s}
+.card:nth-child(2){animation-delay:.04s}
+.card:nth-child(3){animation-delay:.06s}
+.card:nth-child(4){animation-delay:.08s}
+.card:nth-child(5){animation-delay:.10s}
+.card:nth-child(6){animation-delay:.12s}
+.card:nth-child(7){animation-delay:.14s}
+.card:nth-child(8){animation-delay:.16s}
+.card:nth-child(9){animation-delay:.18s}
+.card:nth-child(10){animation-delay:.20s}
+.card:nth-child(11){animation-delay:.22s}
+.card:nth-child(12){animation-delay:.24s}
+@keyframes cardFadeIn{0%{opacity:0;transform:translateY(12px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+#emptyState{display:none;margin-top:20px;padding:28px 18px;text-align:center;border:1px dashed var(--border);border-radius:22px;color:var(--muted);transition:all .3s}
+body.light-mode #emptyState{border-color:rgba(0,0,0,.08);color:var(--muted-light)}
+.footer{text-align:center;padding:20px 0;margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);transition:all .3s;background:transparent!important}
+body.light-mode .footer{color:var(--muted-light);border-color:rgba(0,0,0,.08);background:transparent!important}
+.about-modal,.help-modal,.offline-modal{position:fixed;inset:0;background:rgba(0,0,0,.44);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .38s,visibility .38s;z-index:5000}
+.about-modal.show,.help-modal.show,.offline-modal.show{opacity:1;visibility:visible;pointer-events:auto}
+.about-box,.help-box,.offline-box{width:min(560px,100%);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid var(--border);border-radius:26px;padding:26px;backdrop-filter:var(--glass);box-shadow:var(--shadow);transform:translateY(18px) scale(.96);opacity:0;transition:all .42s cubic-bezier(.2,.8,.2,1);max-height:90vh;overflow-y:auto}
+body.light-mode .about-box,body.light-mode .help-box,body.light-mode .offline-box{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.08);box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.about-modal.show .about-box,.help-modal.show .help-box,.offline-modal.show .offline-box{transform:translateY(0) scale(1);opacity:1}
+.about-header,.help-header,.offline-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.about-logo,.help-logo,.offline-logo{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,168,254,.3),rgba(139,92,246,.24));border:1px solid rgba(255,255,255,.1);font-size:18px;font-weight:800;flex-shrink:0;transition:all .3s;color:var(--text)}
+body.light-mode .about-logo,body.light-mode .help-logo,body.light-mode .offline-logo{background:linear-gradient(135deg,rgba(110,168,254,.15),rgba(139,92,246,.1));border-color:rgba(0,0,0,.06);color:var(--text-light)}
+.help-logo i,.offline-logo i{font-size:22px;color:var(--accent)}
+.about-title h2,.help-title h2,.offline-title h2{margin:0;font-size:20px;transition:color .3s;color:var(--text)}
+body.light-mode .about-title h2,body.light-mode .help-title h2,body.light-mode .offline-title h2{color:var(--text-light)}
+.about-title p,.help-title p,.offline-title p{margin:4px 0 0;color:var(--muted);font-size:13px;transition:color .3s}
+body.light-mode .about-title p,body.light-mode .help-title p,body.light-mode .offline-title p{color:var(--muted-light)}
+.about-content p,.help-content p,.offline-content p{color:var(--muted);line-height:1.95;font-size:14px;margin:0 0 14px;transition:color .3s}
+body.light-mode .about-content p,body.light-mode .help-content p,body.light-mode .offline-content p{color:var(--muted-light)}
+.offline-content .offline-icon{font-size:64px;text-align:center;display:block;margin:10px 0;color:var(--offline-color)}
+.offline-content .offline-icon i{font-size:64px}
+.offline-content .offline-message{text-align:center;font-size:16px;color:var(--text);margin:10px 0}
+body.light-mode .offline-content .offline-message{color:var(--text-light)}
+.offline-content .offline-sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px}
+.help-content ul{list-style:none;padding:0;margin:0 0 16px 0}
+.help-content li{color:var(--muted);font-size:14px;line-height:1.8;padding:6px 12px;border-right:3px solid var(--accent);margin-bottom:6px;background:rgba(255,255,255,.03);border-radius:0 8px 8px 0;transition:all .3s}
+body.light-mode .help-content li{background:rgba(0,0,0,.03);color:var(--muted-light)}
+.help-content li i{margin-left:10px;color:var(--accent);width:20px;text-align:center}
+.help-content .warning-box{background:rgba(255,200,0,.08);border:1px solid rgba(255,200,0,.15);border-radius:12px;padding:14px 16px;margin:12px 0;transition:all .3s}
+body.light-mode .help-content .warning-box{background:rgba(255,200,0,.05);border-color:rgba(255,200,0,.1)}
+.help-content .warning-box strong{color:#fbbf24;display:block;margin-bottom:6px}
+.help-content .warning-box p{margin:0;color:var(--muted);font-size:13px}
+.help-content .warning-box i{color:#fbbf24;margin-left:8px}
+.help-content .danger-box{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.15);border-radius:12px;padding:14px 16px;margin:12px 0;transition:all .3s}
+body.light-mode .help-content .danger-box{background:rgba(255,80,80,.05);border-color:rgba(255,80,80,.1)}
+.help-content .danger-box strong{color:#f87171;display:block;margin-bottom:6px}
+.help-content .danger-box p{margin:0;color:var(--muted);font-size:13px}
+.help-content .danger-box i{color:#f87171;margin-left:8px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.meta-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;transition:all .3s}
+body.light-mode .meta-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.06)}
+.meta-label{font-size:12px;color:var(--muted);margin-bottom:6px;transition:color .3s}
+body.light-mode .meta-label{color:var(--muted-light)}
+.meta-value{font-size:14px;color:var(--text);font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;transition:color .3s}
+body.light-mode .meta-value{color:var(--text-light)}
+.meta-value a{color:var(--accent);text-decoration:none;cursor:pointer;font-weight:500}
+.meta-value .action-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(110,168,254,.12);padding:3px 10px;border-radius:999px;font-size:12px;color:var(--accent);border:1px solid rgba(110,168,254,.15);cursor:pointer;transition:all .2s;font-weight:400;white-space:nowrap}
+body.light-mode .meta-value .action-chip{background:rgba(110,168,254,.08);border-color:rgba(110,168,254,.12);color:var(--accent)}
+.meta-value .action-chip:hover{background:rgba(110,168,254,.2);transform:scale(1.02)}
+.meta-value .action-chip.copied{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.2);color:#4ade80}
+body.light-mode .meta-value .action-chip.copied{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.15);color:#22c55e}
+.about-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px;flex-wrap:wrap}
+.action-btn{padding:10px 16px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;transition:all .25s}
+body.light-mode .action-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--text-light)}
+body.light-mode .action-btn:hover{border-color:rgba(110,168,254,.38)}
+.action-btn:hover{transform:translateY(-2px);border-color:rgba(110,168,254,.38)}
+.action-btn.primary{background:linear-gradient(135deg,rgba(110,168,254,.2),rgba(139,92,246,.18));border-color:rgba(110,168,254,.28)}
+body.light-mode .action-btn.primary{background:linear-gradient(135deg,rgba(110,168,254,.12),rgba(139,92,246,.08));border-color:rgba(110,168,254,.15)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(0,0,0,.85);backdrop-filter:blur(12px);color:#fff;padding:14px 28px;border-radius:16px;font-size:15px;z-index:99999;opacity:0;transition:all .4s cubic-bezier(.2,.8,.2,1);border:1px solid rgba(255,255,255,.1);pointer-events:none;text-align:center;max-width:90%}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.help-scroll{max-height:55vh;overflow-y:auto;padding-left:4px}
+.help-scroll::-webkit-scrollbar{width:4px}
+.help-scroll::-webkit-scrollbar-track{background:transparent}
+.help-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
+.back-top-btn{position:fixed;bottom:30px;right:30px;z-index:100;padding:14px 18px;border-radius:50%;background:rgba(110,168,254,.2);border:1px solid rgba(110,168,254,.3);color:var(--text);cursor:pointer;font-size:20px;transition:all .3s;opacity:0;transform:translateY(20px);backdrop-filter:blur(10px)}
+.back-top-btn.visible{opacity:1;transform:translateY(0)}
+.back-top-btn:hover{transform:translateY(-4px) scale(1.05);background:rgba(110,168,254,.3)}
+body.light-mode .back-top-btn{background:rgba(110,168,254,.12);border-color:rgba(110,168,254,.2);color:var(--text-light)}
+body.light-mode .back-top-btn:hover{background:rgba(110,168,254,.2)}
+.connection-status{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:11px;color:var(--muted);transition:all .3s;white-space:nowrap;flex-shrink:0;min-width:90px}
+body.light-mode .connection-status{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted-light)}
+.connection-status .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;transition:all .3s;flex-shrink:0}
+.connection-status .status-dot.online{background:var(--online-color);box-shadow:0 0 12px rgba(74,222,128,.3)}
+.connection-status .status-dot.offline{background:var(--offline-color);box-shadow:0 0 12px rgba(248,113,113,.3)}
+.connection-status .status-dot.measuring{background:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.3);animation:pulse-dot 1s ease-in-out infinite}
+.connection-status .status-text{font-size:10px;color:var(--muted);font-weight:400}
+body.light-mode .connection-status .status-text{color:var(--muted-light)}
+.connection-status .speed-text{font-size:9px;opacity:.7;margin-right:4px;color:var(--muted)}
+body.light-mode .connection-status .speed-text{color:var(--muted-light)}
+@keyframes pulse-dot{0%,100%{transform:scale(1)}50%{transform:scale(1.5)}}
+.offline-box .offline-actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.offline-box .offline-actions .action-btn i{margin-left:6px}
+
+/* ===== اسپلش ===== */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--splash-bg);transition:opacity .8s ease,visibility .8s ease;overflow:hidden}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+#splash.hide .splash-wrapper{transform:scale(1.08);opacity:0}
+body.light-mode #splash{background:#eef2f7}
+#splash canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.splash-wrapper{display:flex;flex-direction:column;align-items:center;gap:36px;z-index:1;position:relative;transition:all .8s ease}
+.splash-logo{width:140px;height:140px;border-radius:36px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);display:grid;place-items:center;font-size:58px;font-weight:800;color:#fff;box-shadow:0 30px 80px rgba(110,168,254,.45);position:relative;animation:logoFloat 2.8s ease-in-out infinite}
+.splash-logo .glow-ring{position:absolute;inset:-12px;border-radius:44px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);z-index:-1;opacity:.25;filter:blur(40px);animation:ringPulse 2.2s ease-in-out infinite}
+.splash-logo .glow-ring-2{position:absolute;inset:-25px;border-radius:60px;background:linear-gradient(135deg,#6ea8fe,#8b5cf6);z-index:-2;opacity:.1;filter:blur(60px);animation:ringPulse 3s ease-in-out infinite reverse}
+.splash-logo .sparkle-top{position:absolute;top:-16px;right:-10px;font-size:26px;animation:sparkleAnim 1.5s ease-in-out infinite}
+.splash-logo .sparkle-bottom{position:absolute;bottom:-12px;left:-8px;font-size:20px;animation:sparkleAnim 2s ease-in-out infinite reverse}
+.splash-logo .logo-shine{position:absolute;inset:0;border-radius:36px;background:linear-gradient(135deg,rgba(255,255,255,.3) 0%,transparent 50%,rgba(255,255,255,.15) 100%);pointer-events:none}
+.splash-logo .logo-shine-2{position:absolute;inset:0;border-radius:36px;background:linear-gradient(180deg,rgba(255,255,255,.2) 0%,transparent 60%);pointer-events:none}
+.splash-progress{width:280px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.splash-progress .track{width:100%;height:5px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;position:relative}
+body.light-mode .splash-progress .track{background:rgba(0,0,0,.08)}
+.splash-progress .bar{height:100%;width:0%;background:linear-gradient(90deg,#6ea8fe,#8b5cf6,#6ea8fe);background-size:200% 100%;border-radius:999px;transition:width .2s ease;animation:barShine 1.5s ease-in-out infinite}
+.splash-progress .label{color:var(--splash-text);font-size:14px;letter-spacing:3px;font-weight:300;font-family:inherit}
+.splash-progress .label .pct{color:var(--splash-text);font-weight:600;font-size:16px}
+.splash-steps{display:flex;gap:10px;margin-top:6px}
+.splash-steps .step{width:14px;height:14px;border-radius:50%;background:var(--step-bg);transition:all .4s ease;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:transparent}
+.splash-steps .step.active{background:var(--accent);border-color:rgba(110,168,254,.4);box-shadow:0 0 30px rgba(110,168,254,.35);transform:scale(1.15);color:#fff}
+.splash-steps .step.done{background:#4ade80;border-color:rgba(74,222,128,.3);box-shadow:0 0 20px rgba(74,222,128,.2);color:#fff}
+.splash-steps .step.done::after{content:'✓';font-size:9px}
+.splash-subtitle{color:var(--splash-subtitle);font-size:11px;letter-spacing:4px;font-weight:300;margin-top:-8px;font-family:inherit}
+body.light-mode .splash-subtitle{color:rgba(0,0,0,.15)}
+@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes ringPulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
+@keyframes sparkleAnim{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(40deg)}}
+@keyframes barShine{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+
+/* ===== استایل توسعه‌دهندگان ===== */
+.developers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.developer-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center;transition:all .3s}
+body.light-mode .developer-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.06)}
+.developer-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+body.light-mode .developer-card:hover{box-shadow:0 6px 18px rgba(0,0,0,.05)}
+.developer-card .dev-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:20px;font-weight:700;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.developer-card .dev-avatar.hossein{background:linear-gradient(135deg,#6ea8fe,#4f46e5)}
+.developer-card .dev-avatar.saleh{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+.developer-card .dev-name{font-size:14px;font-weight:700;color:var(--text);transition:color .3s}
+body.light-mode .developer-card .dev-name{color:var(--text-light)}
+.developer-card .dev-role{display:none}
+.developer-card .dev-desc{font-size:11px;color:var(--muted);margin-top:4px;opacity:.7;transition:color .3s}
+body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
+.developer-card .dev-social{display:flex;justify-content:center;gap:6px;margin-top:6px}
+.developer-card .dev-social a{color:var(--muted);font-size:14px;transition:all .3s;text-decoration:none}
+.developer-card .dev-social a:hover{color:var(--accent);transform:scale(1.12)}
+
+/* ===== ریسپانسیو ===== */
+@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}.card{height:115px;min-height:115px;max-height:115px;padding:8px 4px 6px 4px}.card .card-icon{width:50px;height:50px;font-size:20px;margin-bottom:2px}.card .card-name{font-size:11px;min-height:26px;max-height:28px}.dev-badge-grid{font-size:7px;padding:0 6px;min-height:16px}.card .card-spacer{height:16px}.category-title{font-size:16px}.search-input{width:100%;max-width:140px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:10px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:5px 12px;font-size:12px}.help-box{padding:18px}.meta-grid{grid-template-columns:1fr}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:10px;padding:4px 10px;min-width:auto;gap:4px}.connection-status .status-dot{width:6px;height:6px}.connection-status .status-text{font-size:9px}.connection-status .speed-text{font-size:8px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:36px;height:36px;font-size:14px}.developers-grid{grid-template-columns:1fr}}
+
+@media(max-width:480px){.topbar-left{flex:1;min-width:0}.brand-title h1{font-size:20px}.brand-title p{font-size:12px}.brand-badge{width:48px;height:48px;font-size:19px}.topbar-right{flex-wrap:wrap;justify-content:center;gap:6px}.search-input{width:100%;max-width:140px;font-size:13px;padding:8px 12px}.search-input:focus{width:100%;max-width:140px}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:38px;height:38px;font-size:15px}.connection-status{padding:4px 10px;font-size:10px;min-width:auto;gap:4px}.connection-status .status-text{font-size:9px}.connection-status .speed-text{font-size:8px}.connection-status .status-dot{width:6px;height:6px}}
 </style>
 </head>
 <body>
-<button class="refresh-btn" onclick="location.reload()" title="رفرش"><i class="fas fa-sync-alt"></i></button>
-<div class="preloader" id="preloader"><div class="preloader-box"><div class="preloader-logo"><div class="preloader-sa">SA</div><div class="preloader-badge">UC</div></div><div class="loader-text">✦ مبدل واحد هوشمند ✦</div><div class="loader-sub">SA-Unit Converter</div></div></div>
-<div class="container">
-<header>
-<div class="title"><h1>SA-Unit Converter</h1><p>تبدیل واحد هوشمند بین ده‌ها واحد و ۴۰+ دسته</p></div>
-<div class="sa-logo-center"><div class="sa-logo"><div class="sa-text">SA</div><div class="sa-badge">UC</div></div></div>
-<div class="badge"><span id="themeLabel">حالت تیره</span><div class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></div></div>
-<div class="badge"><i class="fas fa-user-astronaut"></i> صالح عمو</div>
-</header>
-<div class="grid">
-<div class="card"><div class="inner">
-<h2><span class="dot"></span> تنظیمات تبدیل</h2>
-<div class="category-row">
-<label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;"><i class="fas fa-tags"></i> دسته واحد:</label>
-<div class="select-field" id="categoryField">
-<div class="select-trigger" id="categoryTrigger">
-<span class="sel-label"><i class="fas fa-ruler"></i> طول</span>
-<span class="arrow"><i class="fas fa-chevron-down"></i></span>
+<div id="splash"><canvas id="splashCanvas"></canvas>
+<div class="splash-wrapper"><div class="splash-logo"><span>SA</span><div class="glow-ring"></div><div class="glow-ring-2"></div><div class="logo-shine"></div><div class="logo-shine-2"></div><span class="sparkle-top">✦</span><span class="sparkle-bottom">✦</span></div>
+<div class="splash-progress"><div class="track"><div class="bar" id="progressBar"></div></div><div class="label">بارگذاری <span class="pct" id="progressPercent">۰</span>%</div></div>
+<div class="splash-steps" id="splashSteps"><span class="step"></span><span class="step"></span><span class="step"></span><span class="step"></span></div>
+<div class="splash-subtitle">SA‑APPS v16.4.0</div></div></div>
+<div class="container" id="mainContainer"><div class="orb orb1"></div><div class="orb orb2"></div>
+<section class="panel">
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="brand-badge">SA</div>
+            <div class="brand-title">
+                <h1>برنامه‌های SA</h1>
+                <p>لانچر اصلی ابزارهای SA</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="search-input-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="جستجو..." autocomplete="off" />
+            </div>
+            <div class="connection-status" id="connectionStatus">
+                <i class="fa fa-wifi" id="statusIcon" style="font-size:13px;"></i>
+                <span class="status-dot" id="statusDot"></span>
+                <span class="status-text" id="statusText">در حال بررسی</span>
+                <span class="speed-text" id="speedText"></span>
+            </div>
+            <button class="refresh-btn" onclick="refreshPage()" aria-label="رفرش"><i class="fa fa-rotate"></i></button>
+            <button class="theme-switcher" onclick="toggleTheme()" aria-label="تغییر تم">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M12 2.5V5.5M12 18.5V21.5M5.5 12H2.5M21.5 12H18.5M18.364 5.636l-2 2M7.636 16.364l-2 2M16.364 16.364l2 2M5.636 5.636l2 2"/>
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                </svg>
+            </button>
+            <button class="help-btn" onclick="openHelp()"><i class="fa-regular fa-circle-question"></i></button>
+            <button class="about-btn-icon" onclick="openAbout()">
+                <i class="fa fa-circle-info"></i>
+                <span class="about-tooltip"><span class="tooltip-text">نسخه v16.4.0</span></span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="tabs-wrapper"><div class="tabs" id="tabsContainer"></div></div>
+    <div id="appGrid"></div>
+    <div id="emptyState">هیچ نتیجه‌ای پیدا نشد.</div>
+</section>
+<footer class="footer"><span id="versionDisplay"></span> | SA‑APPS &copy; 2026</footer></div>
+<button class="back-top-btn" id="backTopBtn" onclick="scrollToTop()" aria-label="بازگشت به بالا"><i class="fa fa-arrow-up"></i></button>
+
+<div id="aboutModal" class="about-modal" onclick="closeAboutOnBackdrop(event)"><div class="about-box"><div class="about-header"><div class="about-logo">SA</div><div class="about-title"><h2>درباره SA‑APPS</h2><p>لانچر ابزارهای کاربردی، آموزشی و سرگرمی</p></div></div>
+<div class="about-content"><p>SA‑APPS مجموعه‌ای از ابزارهای تحت وب است که با تمرکز بر سرعت، طراحی مدرن و دسترسی آسان ساخته شده است.</p>
+<div style="margin:12px 0 6px 0"><h3 style="color:var(--text);font-size:15px;margin-bottom:8px;transition:color .3s"><i class="fa fa-code" style="color:var(--accent);margin-left:8px"></i>توسعه‌دهندگان</h3></div>
+<div class="developers-grid">
+<div class="developer-card">
+<div class="dev-avatar hossein">H</div>
+<div class="dev-name">حسین عمو</div>
+<div class="dev-desc">ایده پردازی،طراحی،بهینه سازی برای موبایل،طراحی رابط کاربری</div>
+<div class="dev-social">
+<a href="https://github.com/Amoo189" target="_blank" title="گیت‌هاب"><i class="fa-brands fa-github"></i></a>
+<a href="mailto:salehamoo1389@gmail.com" title="ایمیل"><i class="fa fa-envelope"></i></a>
 </div>
 </div>
-<span class="tag"><i class="fas fa-layer-group"></i> ۴۰+ دسته</span>
-</div>
-<div class="row-select">
-<div class="field" style="flex:1;min-width:100px;"><label><i class="fas fa-edit"></i> مقدار</label><div style="display:flex;gap:6px;align-items:center;"><input id="valueInput" type="text" inputmode="decimal" placeholder="مثلا 3.5" style="flex:1;"/></div></div>
-<div class="sign-buttons" style="margin-top:16px;"><button class="sign-btn" id="signPlus"><i class="fas fa-plus"></i></button><button class="sign-btn" id="signMinus"><i class="fas fa-minus"></i></button></div>
-</div>
-<div class="row-select">
-<div class="select-field" id="fromField">
-<label><i class="fas fa-arrow-right"></i> از واحد</label>
-<div class="select-trigger" id="fromTrigger">
-<span class="sel-label">متر (m)</span>
-<span class="arrow"><i class="fas fa-chevron-down"></i></span>
-</div>
-</div>
-<div class="swap" id="swapBtn"><i class="fas fa-exchange-alt"></i></div>
-<div class="select-field" id="toField">
-<label><i class="fas fa-arrow-left"></i> به واحد</label>
-<div class="select-trigger" id="toTrigger">
-<span class="sel-label">سانتی‌متر (cm)</span>
-<span class="arrow"><i class="fas fa-chevron-down"></i></span>
+<div class="developer-card">
+<div class="dev-avatar saleh">S</div>
+<div class="dev-name">صالح عمو</div>
+<div class="dev-desc">برنامه نویسی،منطق،،برنامه نویسی ابزار ها،ساخت هسته</div>
+<div class="dev-social">
+<a href="https://github.com/Amoo189" target="_blank" title="گیت‌هاب"><i class="fa-brands fa-github"></i></a>
+<a href="mailto:salehamoo1389@gmail.com" title="ایمیل"><i class="fa fa-envelope"></i></a>
 </div>
 </div>
 </div>
-<div class="actions"><button class="ghost" id="resetBtn"><i class="fas fa-undo-alt"></i> پاک کردن</button><button class="ghost" id="copyBtn"><i class="fas fa-copy"></i> کپی نتیجه</button><span class="tag"><i class="fas fa-sync-alt fa-fw"></i> خودکار</span></div>
-<div id="errorBox" class="error"><i class="fas fa-exclamation-circle"></i> لطفاً مقدار معتبر وارد کنید.</div>
-</div></div>
-<div class="card"><div class="resultBox">
-<div class="resultTop"><div><div class="resultBig" id="resultValue">—</div><div class="resultMeta" id="resultMeta">ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.</div></div><div class="pill" id="statusPill"><i class="fas fa-check-circle"></i> آماده</div></div>
-<div class="miniCards"><div class="mini" id="miniInput"><div class="k"><i class="fas fa-sign-in-alt"></i> مقدار ورودی</div><div class="v"><span id="inputPreview">—</span></div></div><div class="mini" id="miniRatio"><div class="k"><i class="fas fa-balance-scale"></i> نسبت تقریبی</div><div class="v"><span id="ratioPreview">—</span></div></div></div>
-<footer><i class="fas fa-bolt"></i> Powerd By Saleh Amoo</footer>
-</div></div>
 </div>
-<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px;"><button class="ghost" id="aboutBtn"><i class="fas fa-info-circle"></i> درباره ما</button><button class="ghost" id="helpBtn"><i class="fas fa-question-circle"></i> راهنما</button></div>
-</div>
-<div class="floating-picker-overlay" id="pickerOverlay">
-<div class="floating-picker">
-<div class="floating-picker-header">
-<h3 id="pickerTitle"><i class="fas fa-list"></i> انتخاب</h3>
-<button class="close-picker" id="pickerClose"><i class="fas fa-times"></i></button>
-</div>
-<div class="floating-picker-search">
-<input type="text" id="pickerSearch" placeholder="جستجو...">
-</div>
-<div class="floating-picker-list" id="pickerList"></div>
-</div>
-</div>
-<div class="modal-overlay" id="aboutModal"><div class="modal-box"><h2><i class="fas fa-user-astronaut"></i> درباره ما</h2><div class="content"><p><strong>توسعه‌دهنده:</strong> صالح عمو</p><p><strong>وب‌سایت:</strong> <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">amoo189.github.io/Saleh-Amoo</a></p><p><strong>ایمیل:</strong> <a href="mailto:salehamoo1389@gmail.com">salehamoo1389@gmail.com</a></p><hr><p>این مبدل واحد هوشمند با بیش از ۴۰ دسته و صدها واحد، توسط صالح عمو طراحی و توسعه یافته است.</p></div><button class="close-modal" id="closeAbout"><i class="fas fa-times"></i> بستن</button></div></div>
-<div class="modal-overlay" id="helpModal"><div class="modal-box"><h2><i class="fas fa-life-ring"></i> راهنمای استفاده</h2><div class="content">
-<p><strong>نحوه استفاده:</strong></p>
-<ul>
-<li><i class="fas fa-tags"></i> <strong>دسته واحد:</strong> کلیک کنید و از صفحه شناور انتخاب کنید.</li>
-<li><i class="fas fa-edit"></i> <strong>مقدار:</strong> عدد مدنظر را وارد کنید.</li>
-<li><i class="fas fa-arrow-right"></i> <strong>از واحد / به واحد:</strong> کلیک کنید و از صفحه شناور انتخاب کنید.</li>
-<li><i class="fas fa-exchange-alt"></i> <strong>جابجایی:</strong> با کلیک روی دکمه ↔ واحدها را جابجا کنید.</li>
-<li><i class="fas fa-sync-alt"></i> <strong>محاسبه خودکار:</strong> نتیجه به‌محض تایپ نمایش داده می‌شود.</li>
-</ul>
-<div class="highlight"><p><i class="fas fa-moon"></i> <strong>تغییر تم:</strong> با کلیک روی دکمه ماه/خورشید در هدر، بین حالت تیره و روشن جابجا شوید.</p></div>
-<hr>
-<p><strong><i class="fas fa-wifi"></i>استفاده آفلاین:</strong></p>
-<p>پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:</p>
-<ul>
-<li><i class="fas fa-arrow-left"></i> برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
-<li><i class="fas fa-redo"></i> اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه‌ی تلاش مجدد را دوبار بزنید و با دکمه برگشت گوشی به صفحه اصلی بروید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
-</ul>
-</div>
-<button class="close-modal" id="closeHelp"><i class="fas fa-times"></i> بستن</button>
-</div></div>
+<div class="meta-grid"><div class="meta-card"><div class="meta-label">نسخه</div><div class="meta-value" id="modalVersion"></div></div>
+<div class="meta-card"><div class="meta-label">وضعیت</div><div class="meta-value">نسخه پایدار</div></div>
+<div class="meta-card"><div class="meta-label">سایت</div><div class="meta-value"><a href="javascript:void(0)" id="githubLinkText" onclick="openExternal(config.siteUrl)"></a><span class="action-chip" onclick="event.stopPropagation();copyToClipboard(config.siteUrl,this)"><i class="fa fa-copy"></i> کپی</span><span class="action-chip" onclick="event.stopPropagation();openExternal(config.siteUrl)"><i class="fa fa-external-link"></i> بازدید</span></div></div>
+<div class="meta-card"><div class="meta-label">ارتباط</div><div class="meta-value"><a href="javascript:void(0)" id="contactEmailLink" onclick="openEmail(config.contactEmail)"></a><span class="action-chip" onclick="event.stopPropagation();copyToClipboard(config.contactEmail,this)"><i class="fa fa-copy"></i> کپی</span><span class="action-chip" onclick="event.stopPropagation();openEmail(config.contactEmail)"><i class="fa fa-envelope"></i> ایمیل</span></div></div>
+</div><div class="about-actions"><a class="action-btn primary" href="javascript:void(0)" id="githubLinkButton" onclick="openExternal(config.githubRepo)">مشاهده گیت هاب</a><button class="action-btn" onclick="closeAbout()">بستن</button></div></div></div>
+
+<div id="helpModal" class="help-modal" onclick="closeHelpOnBackdrop(event)"><div class="help-box"><div class="help-header"><div class="help-logo"><i class="fa fa-question-circle"></i></div><div class="help-title"><h2>راهنما</h2><p>راهنمای استفاده از SA‑APPS</p></div></div>
+<div class="help-content"><div class="help-scroll"><div class="warning-box"><strong><i class="fa fa-lightbulb"></i> راهنما:</strong><ul><li><i class="fa fa-arrow-left"></i> برای بازگشت از ابزارها از دکمه برگشت گوشی استفاده کنید</li><li><i class="fa fa-wifi"></i> ابزارهایی که در توضیحات آن‌ها ذکر شده است که با اینترنت وارد شوید، بدین معناست که باید پیش از باز کردن ابزار اینترنت خود را روشن کنید</li></ul></div>
+<div class="warning-box"><strong><i class="fa fa-triangle-exclamation"></i> هشدار - برخی محدودیت‌ها:</strong><ul><li><i class="fa fa-file"></i> متأسفانه به یکسری دلایل امکان آپلود فایل وجود ندارد</li><li><i class="fa fa-image"></i> امکان دانلود فایل‌های خروجی همانند دانلود عکس وجود ندارد، اما شما می‌توانید از آن اسکرین‌شات بگیرید</li></ul></div>
+<div class="danger-box"><strong><i class="fa fa-circle-exclamation"></i> هشدار مهم:</strong><p>سرعت اجرای برنامه به سخت‌افزار شما بستگی دارد</p></div>
+</div></div><div class="about-actions"><button class="action-btn primary" onclick="closeHelp()">متوجه شدم</button></div></div></div>
+
+<div id="offlineModal" class="offline-modal" onclick="closeOfflineOnBackdrop(event)"><div class="offline-box"><div class="offline-header"><div class="offline-logo"><i class="fa fa-wifi"></i></div><div class="offline-title"><h2>اتصال اینترنت قطع شد</h2><p>لطفاً اتصال خود را بررسی کنید</p></div></div>
+<div class="offline-content"><span class="offline-icon"><i class="fa fa-wifi"></i></span><p class="offline-message">برای استفاده از برنامه باید اینترنت وصل باشد</p><p class="offline-sub">لطفاً اتصال اینترنت خود را بررسی کنید</p>
+<div class="offline-actions"><button class="action-btn primary" onclick="refreshPage()"><i class="fa fa-rotate"></i> تلاش مجدد</button></div></div></div></div>
+<div id="toast" class="toast"></div>
+
 <script>
-document.addEventListener('contextmenu',e=>{e.preventDefault()});
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='c'){const t=e.target;if(t.tagName!=='INPUT'&&t.tagName!=='TEXTAREA'&&t.tagName!=='SELECT'){e.preventDefault()}}});
-const $=id=>document.getElementById(id), qs=(s,p=document)=>p.querySelector(s);
-const aboutModal=$('aboutModal'),helpModal=$('helpModal');
-$('aboutBtn').onclick=()=>{aboutModal.classList.add('show');document.body.style.overflow='hidden'};
-$('helpBtn').onclick=()=>{helpModal.classList.add('show');document.body.style.overflow='hidden'};
-$('closeAbout').onclick=()=>{aboutModal.classList.remove('show');document.body.style.overflow=''};
-$('closeHelp').onclick=()=>{helpModal.classList.remove('show');document.body.style.overflow=''};
-aboutModal.onclick=e=>{if(e.target===aboutModal){aboutModal.classList.remove('show');document.body.style.overflow=''}};
-helpModal.onclick=e=>{if(e.target===helpModal){helpModal.classList.remove('show');document.body.style.overflow=''}};
-window.onload=()=>setTimeout(()=>$('preloader').classList.add('hide'),1800);
-const categoriesAllowNegative=['temperature','angle','charge','voltage','current'];
-const unitCategories={length:{title:'طول',baseLabel:'متر',allowNegative:!1,units:{nm:{label:'نانومتر (nm)',factor:1e-9},um:{label:'میکرومتر (µm)',factor:1e-6},mm:{label:'میلی‌متر (mm)',factor:1e-3},cm:{label:'سانتی‌متر (cm)',factor:1e-2},dm:{label:'دسی‌متر (dm)',factor:.1},m:{label:'متر (m)',factor:1},dam:{label:'دکامتر (dam)',factor:10},hm:{label:'هکتومتر (hm)',factor:100},km:{label:'کیلومتر (km)',factor:1e3},in:{label:'اینچ (inch)',factor:.0254},ft:{label:'فوت (ft)',factor:.3048},yd:{label:'یارد (yd)',factor:.9144},mi:{label:'مایل (mile)',factor:1609.34},nmi:{label:'مایل دریایی (nmi)',factor:1852},au:{label:'واحد نجومی (au)',factor:149597870700},ly:{label:'سال نوری (ly)',factor:9460730472580800},pc:{label:'پارسک (pc)',factor:3.08567758e16},angstrom:{label:'آنگستروم (Å)',factor:1e-10},mil:{label:'میل (mil)',factor:2.54e-5},chain:{label:'زنجیر (chain)',factor:20.1168},rod:{label:'میله (rod)',factor:5.0292},fathom:{label:'فتوم (fathom)',factor:1.8288}}},area:{title:'مساحت',baseLabel:'متر مربع',allowNegative:!1,units:{mm2:{label:'میلی‌متر مربع (mm²)',factor:1e-6},cm2:{label:'سانتی‌متر مربع (cm²)',factor:1e-4},dm2:{label:'دسی‌متر مربع (dm²)',factor:.01},m2:{label:'متر مربع (m²)',factor:1},dam2:{label:'دکامتر مربع (dam²)',factor:100},hm2:{label:'هکتومتر مربع (hm²)',factor:1e4},km2:{label:'کیلومتر مربع (km²)',factor:1e6},ft2:{label:'فوت مربع (ft²)',factor:.092903},yd2:{label:'یارد مربع (yd²)',factor:.836127},acre:{label:'آکر (acre)',factor:4046.856},ha:{label:'هکتار (ha)',factor:1e4},in2:{label:'اینچ مربع (in²)',factor:6.4516e-4},mi2:{label:'مایل مربع (mi²)',factor:2.58999e6},rood:{label:'رود (rood)',factor:1011.71},section:{label:'بخش (section)',factor:2.58999e6},township:{label:'تاونشیپ (township)',factor:9.32396e7}}},volume:{title:'حجم',baseLabel:'متر مکعب',allowNegative:!1,units:{ml:{label:'میلی‌لیتر (mL)',factor:1e-6},cl:{label:'سانتی‌لیتر (cL)',factor:1e-5},dl:{label:'دسی‌لیتر (dL)',factor:1e-4},l:{label:'لیتر (L)',factor:1e-3},m3:{label:'متر مکعب (m³)',factor:1},cm3:{label:'سانتی‌متر مکعب (cm³)',factor:1e-6},dm3:{label:'دسی‌متر مکعب (dm³)',factor:.001},ft3:{label:'فوت مکعب (ft³)',factor:.0283168},in3:{label:'اینچ مکعب (in³)',factor:1.6387e-5},gal:{label:'گالن (US gal)',factor:.00378541},qt:{label:'کوارت (qt)',factor:.000946353},barrel:{label:'بشکه (barrel)',factor:.158987},cup:{label:'فنجان (cup)',factor:2.36588e-4},floz:{label:'اونس مایع (fl oz)',factor:2.95735e-5},pt:{label:'پاینت (pt)',factor:4.73176e-4},gallon_uk:{label:'گالن بریتانیایی (gal UK)',factor:.00454609},liter_uk:{label:'لیتر بریتانیایی (L UK)',factor:.001}}},mass:{title:'جرم/وزن',baseLabel:'کیلوگرم',allowNegative:!1,units:{ug:{label:'میکروگرم (µg)',factor:1e-9},mg:{label:'میلی‌گرم (mg)',factor:1e-6},cg:{label:'سانتی‌گرم (cg)',factor:1e-5},dg:{label:'دسی‌گرم (dg)',factor:1e-4},g:{label:'گرم (g)',factor:1e-3},dag:{label:'دکاگرم (dag)',factor:.01},hg:{label:'هکتوگرم (hg)',factor:.1},kg:{label:'کیلوگرم (kg)',factor:1},t:{label:'تن (t)',factor:1e3},lb:{label:'پوند (lb)',factor:.453592},oz:{label:'اونس (oz)',factor:.0283495},st:{label:'استون (st)',factor:6.35029},slug:{label:'اسلاگ (slug)',factor:14.5939},ton_us:{label:'تن کوچک (US ton)',factor:907.185},ton_uk:{label:'تن بزرگ (UK ton)',factor:1016.05},gr:{label:'گرین (gr)',factor:6.47989e-5},dwt:{label:'پنی‌وزیت (dwt)',factor:.00155517},ct:{label:'قیراط (ct)',factor:.0002}}},time:{title:'زمان',baseLabel:'ثانیه',allowNegative:!1,units:{ms:{label:'میلی‌ثانیه (ms)',factor:1e-3},s:{label:'ثانیه (s)',factor:1},min:{label:'دقیقه (min)',factor:60},h:{label:'ساعت (h)',factor:3600},day:{label:'روز',factor:86400},week:{label:'هفته',factor:604800},month:{label:'ماه (۳۰ روز)',factor:2592000},year:{label:'سال (۳۶۵ روز)',factor:31536000},decade:{label:'دهه',factor:315360000},century:{label:'قرن',factor:3153600000},millennium:{label:'هزاره',factor:31536000000},micro_s:{label:'میکروثانیه (µs)',factor:1e-6},ns:{label:'نانوثانیه (ns)',factor:1e-9},ps:{label:'پیکوثانیه (ps)',factor:1e-12},fortnight:{label:'فورت‌نایت (fortnight)',factor:1209600}}},speed:{title:'سرعت',baseLabel:'متر بر ثانیه',allowNegative:!1,units:{mps:{label:'متر بر ثانیه (m/s)',factor:1},kmh:{label:'کیلومتر بر ساعت (km/h)',factor:1/3.6},mph:{label:'مایل بر ساعت (mph)',factor:.44704},kn:{label:'گره دریایی (kn)',factor:.514444},fts:{label:'فوت بر ثانیه (ft/s)',factor:.3048},c:{label:'سرعت نور (c)',factor:299792458},mach:{label:'ماخ (mach)',factor:343},cm_s:{label:'سانتی‌متر بر ثانیه (cm/s)',factor:.01},mm_s:{label:'میلی‌متر بر ثانیه (mm/s)',factor:.001},in_s:{label:'اینچ بر ثانیه (in/s)',factor:.0254},yd_s:{label:'یارد بر ثانیه (yd/s)',factor:.9144}}},temperature:{title:'دما',baseLabel:'سلسیوس',allowNegative:!0,units:{C:{label:'درجه سلسیوس (°C)',custom:!0},F:{label:'درجه فارنهایت (°F)',custom:!0},K:{label:'کلوین (K)',custom:!0},R:{label:'رنکین (°R)',custom:!0},De:{label:'درجه دلایل (°De)',custom:!0},N:{label:'درجه نیوتن (°N)',custom:!0},Re:{label:'درجه رومر (°Ré)',custom:!0},Ro:{label:'درجه رومر (°Rø)',custom:!0}}},pressure:{title:'فشار',baseLabel:'پاسکال',allowNegative:!1,units:{Pa:{label:'پاسکال (Pa)',factor:1},kPa:{label:'کیلوپاسکال (kPa)',factor:1e3},MPa:{label:'مگاپاسکال (MPa)',factor:1e6},bar:{label:'بار (bar)',factor:1e5},mbar:{label:'میلی‌بار (mbar)',factor:100},atm:{label:'اتمسفر (atm)',factor:101325},psi:{label:'پوند بر اینچ مربع (psi)',factor:6894.76},Torr:{label:'تور (Torr)',factor:133.322},mmHg:{label:'میلی‌متر جیوه (mmHg)',factor:133.322},cmHg:{label:'سانتی‌متر جیوه (cmHg)',factor:1333.22},inHg:{label:'اینچ جیوه (inHg)',factor:3386.39},kgf_cm2:{label:'کیلوگرم-نیرو بر سانتی‌متر مربع (kgf/cm²)',factor:98066.5},lbf_in2:{label:'پوند-نیرو بر اینچ مربع (lbf/in²)',factor:6894.76},ftH2O:{label:'فوت آب (ftH₂O)',factor:2989.07},mmH2O:{label:'میلی‌متر آب (mmH₂O)',factor:9.80665}}},energy:{title:'انرژی',baseLabel:'ژول',allowNegative:!1,units:{J:{label:'ژول (J)',factor:1},kJ:{label:'کیلوژول (kJ)',factor:1e3},MJ:{label:'مگاژول (MJ)',factor:1e6},cal:{label:'کالری (cal)',factor:4.184},kcal:{label:'کیلوکالری (kcal)',factor:4184},Wh:{label:'وات‌ساعت (Wh)',factor:3600},kWh:{label:'کیلووات‌ساعت (kWh)',factor:3.6e6},MWh:{label:'مگاوات‌ساعت (MWh)',factor:3.6e9},eV:{label:'الکترون‌ولت (eV)',factor:1.602176634e-19},BTU:{label:'بی‌تی‌یو (BTU)',factor:1055.06},erg:{label:'ارگ (erg)',factor:1e-7},therm:{label:'ترم (therm)',factor:1.05506e8},ton_tnt:{label:'تن تی‌ان‌تی (ton TNT)',factor:4.184e9},hp_h:{label:'اسب‌بخار-ساعت (hp·h)',factor:2684520}}},power:{title:'توان',baseLabel:'وات',allowNegative:!1,units:{W:{label:'وات (W)',factor:1},kW:{label:'کیلووات (kW)',factor:1e3},MW:{label:'مگاوات (MW)',factor:1e6},GW:{label:'گیگاوات (GW)',factor:1e9},hp:{label:'اسب بخار (hp)',factor:745.7},BTU_h:{label:'بی‌تی‌یو بر ساعت (BTU/h)',factor:.293071},cal_s:{label:'کالری بر ثانیه (cal/s)',factor:4.184},kcal_h:{label:'کیلوکالری بر ساعت (kcal/h)',factor:1.16222},ft_lb_s:{label:'پوند-فوت بر ثانیه (ft·lb/s)',factor:1.35582},ton_ref:{label:'تن تبرید (ton ref)',factor:3516.85}}},data:{title:'حجم داده',baseLabel:'بیت',allowNegative:!1,units:{bit:{label:'بیت (bit)',factor:1},B:{label:'بایت (B)',factor:8},KB:{label:'کیلوبایت (KB)',factor:8*1024},MB:{label:'مگابایت (MB)',factor:8*1024**2},GB:{label:'گیگابایت (GB)',factor:8*1024**3},TB:{label:'ترابایت (TB)',factor:8*1024**4},PB:{label:'پتابایت (PB)',factor:8*1024**5},Kib:{label:'کیبی‌بیت (Kibit)',factor:1024},MiB:{label:'مبی‌بایت (MiB)',factor:8*1024**2},GiB:{label:'گیبی‌بایت (GiB)',factor:8*1024**3},TiB:{label:'تبی‌بایت (TiB)',factor:8*1024**4},PiB:{label:'پبی‌بایت (PiB)',factor:8*1024**5},Kb:{label:'کیلوبیت (Kb)',factor:1000},Mb:{label:'مگابیت (Mb)',factor:1e6},Gb:{label:'گیگابیت (Gb)',factor:1e9},Tb:{label:'ترابیت (Tb)',factor:1e12}}},frequency:{title:'فرکانس',baseLabel:'هرتز',allowNegative:!1,units:{Hz:{label:'هرتز (Hz)',factor:1},kHz:{label:'کیلوهرتز (kHz)',factor:1e3},MHz:{label:'مگاهرتز (MHz)',factor:1e6},GHz:{label:'گیگاهرتز (GHz)',factor:1e9},THz:{label:'تراهرتز (THz)',factor:1e12},rpm:{label:'دور بر دقیقه (rpm)',factor:1/60},rps:{label:'دور بر ثانیه (rps)',factor:1},rad_s:{label:'رادیان بر ثانیه (rad/s)',factor:1/(2*Math.PI)},deg_s:{label:'درجه بر ثانیه (°/s)',factor:1/360}}},angle:{title:'زاویه',baseLabel:'درجه',allowNegative:!0,units:{deg:{label:'درجه (°)',factor:1},rad:{label:'رادیان (rad)',factor:180/Math.PI},grad:{label:'گراد (gon)',factor:.9},arcmin:{label:'دقیقه قوسی (′)',factor:1/60},arcsec:{label:'ثانیه قوسی (″)',factor:1/3600},rev:{label:'دور (rev)',factor:360},mil_angle:{label:'میلی‌رادیان (mil)',factor:.0572958},quadrant:{label:'ربع (quadrant)',factor:90},sextant:{label:'سکستانت (sextant)',factor:60}}},force:{title:'نیرو',baseLabel:'نیوتن',allowNegative:!1,units:{N:{label:'نیوتن (N)',factor:1},kN:{label:'کیلونیوتن (kN)',factor:1e3},MN:{label:'مگانیوتن (MN)',factor:1e6},kgf:{label:'کیلوگرم-نیرو (kgf)',factor:9.80665},lbf:{label:'پوند-نیرو (lbf)',factor:4.44822},dyn:{label:'داین (dyn)',factor:1e-5},pdl:{label:'پوندال (pdl)',factor:.138255},ton_force:{label:'تن-نیرو (tonf)',factor:9806.65}}},torque:{title:'گشتاور',baseLabel:'نیوتن متر',allowNegative:!1,units:{Nm:{label:'نیوتن‌متر (N·m)',factor:1},kNm:{label:'کیلونیوتن‌متر (kN·m)',factor:1e3},MNm:{label:'مگانیوتن‌متر (MN·m)',factor:1e6},lbf_ft:{label:'پوند-فوت (lbf·ft)',factor:1.35582},kgf_m:{label:'کیلوگرم-نیرو متر (kgf·m)',factor:9.80665},lbf_in:{label:'پوند-اینچ (lbf·in)',factor:.112985},ozf_in:{label:'اونس-اینچ (ozf·in)',factor:.00706155},dyn_cm:{label:'داین-سانتی‌متر (dyn·cm)',factor:1e-7}}},density:{title:'چگالی',baseLabel:'کیلوگرم بر متر مکعب',allowNegative:!1,units:{kg_m3:{label:'kg/m³',factor:1},g_cm3:{label:'g/cm³',factor:1e3},lb_ft3:{label:'lb/ft³',factor:16.0185},lb_in3:{label:'lb/in³',factor:27679.9},slug_ft3:{label:'slug/ft³',factor:515.379},g_L:{label:'g/L',factor:1},kg_L:{label:'kg/L',factor:1e3},oz_in3:{label:'oz/in³',factor:1729.99}}},flow:{title:'دبی حجمی',baseLabel:'متر مکعب بر ثانیه',allowNegative:!1,units:{m3_s:{label:'m³/s',factor:1},L_s:{label:'L/s',factor:1e-3},L_min:{label:'L/min',factor:1e-3/60},m3_h:{label:'m³/h',factor:1/3600},ft3_s:{label:'ft³/s',factor:.0283168},gal_min:{label:'gal/min',factor:6.30902e-5},gal_h:{label:'gal/h',factor:1.0515e-6},ft3_min:{label:'ft³/min',factor:.000471947},bbl_day:{label:'بشکه در روز (bbl/day)',factor:1.84013e-6}}},viscosity:{title:'ویسکوزیته دینامیکی',baseLabel:'پاسکال-ثانیه',allowNegative:!1,units:{Pa_s:{label:'Pa·s',factor:1},mPa_s:{label:'mPa·s',factor:.001},cP:{label:'سانتی‌پواز (cP)',factor:.001},P:{label:'پواز (P)',factor:.1},kgf_s_m2:{label:'kgf·s/m²',factor:9.80665},lbf_s_ft2:{label:'lbf·s/ft²',factor:47.8803}}},charge:{title:'بار الکتریکی',baseLabel:'کولن',allowNegative:!0,units:{C:{label:'کولن (C)',factor:1},mC:{label:'میلی‌کولن (mC)',factor:1e-3},uC:{label:'میکروکولن (µC)',factor:1e-6},nC:{label:'نانوکولن (nC)',factor:1e-9},Ah:{label:'آمپر ساعت (Ah)',factor:3600},mAh:{label:'میلی‌آمپر ساعت (mAh)',factor:3.6},pC:{label:'پیکوکولن (pC)',factor:1e-12},statC:{label:'استات‌کولن (statC)',factor:3.33564e-10}}},voltage:{title:'ولتاژ',baseLabel:'ولت',allowNegative:!0,units:{V:{label:'ولت (V)',factor:1},kV:{label:'کیلوولت (kV)',factor:1e3},mV:{label:'میلی‌ولت (mV)',factor:1e-3},uV:{label:'میکروولت (µV)',factor:1e-6},MV:{label:'مگاولت (MV)',factor:1e6},statV:{label:'استات‌ولت (statV)',factor:299.792458}}},current:{title:'جریان الکتریکی',baseLabel:'آمپر',allowNegative:!0,units:{A:{label:'آمپر (A)',factor:1},mA:{label:'میلی‌آمپر (mA)',factor:1e-3},uA:{label:'میکروآمپر (µA)',factor:1e-6},kA:{label:'کیلوآمپر (kA)',factor:1e3},MA:{label:'مگاآمپر (MA)',factor:1e6},statA:{label:'استات‌آمپر (statA)',factor:3.33564e-10}}},resistance:{title:'مقاومت الکتریکی',baseLabel:'اهم',allowNegative:!1,units:{ohm:{label:'اهم (Ω)',factor:1},kOhm:{label:'کیلو‌اهم (kΩ)',factor:1e3},MOhm:{label:'مگا‌اهم (MΩ)',factor:1e6},mOhm:{label:'میلی‌اهم (mΩ)',factor:.001},uOhm:{label:'میکرواهم (µΩ)',factor:1e-6}}},capacitance:{title:'ظرفیت خازنی',baseLabel:'فاراد',allowNegative:!1,units:{F:{label:'فاراد (F)',factor:1},mF:{label:'میلی‌فاراد (mF)',factor:1e-3},uF:{label:'میکرو‌فاراد (µF)',factor:1e-6},nF:{label:'نانوفاراد (nF)',factor:1e-9},pF:{label:'پیکوفاراد (pF)',factor:1e-12},aF:{label:'اتوفاراد (aF)',factor:1e-18}}},inductance:{title:'اندوکتانس',baseLabel:'هنری',allowNegative:!1,units:{H:{label:'هنری (H)',factor:1},mH:{label:'میلی‌هنری (mH)',factor:1e-3},uH:{label:'میکروهنری (µH)',factor:1e-6},nH:{label:'نانوهنری (nH)',factor:1e-9},pH:{label:'پیکوهنری (pH)',factor:1e-12}}},illuminance:{title:'روشنایی (تابندگی سطحی)',baseLabel:'لوکس',allowNegative:!1,units:{lx:{label:'لوکس (lx)',factor:1},fc:{label:'فوت-کندل (fc)',factor:10.7639},phot:{label:'فوت (phot)',factor:10000}}},radioactivity:{title:'پرتوزایی',baseLabel:'بکرل',allowNegative:!1,units:{Bq:{label:'بکرل (Bq)',factor:1},kBq:{label:'کیلوبکرل (kBq)',factor:1e3},MBq:{label:'مگابکرل (MBq)',factor:1e6},GBq:{label:'گیگابکرل (GBq)',factor:1e9},Ci:{label:'کوری (Ci)',factor:3.7e10},mCi:{label:'میلی‌کوری (mCi)',factor:3.7e7},uCi:{label:'میکروکوری (µCi)',factor:3.7e4},Rd:{label:'رادرفورد (Rd)',factor:1e6}}},luminous_flux:{title:'شار نوری',baseLabel:'لومن',allowNegative:!1,units:{lm:{label:'لومن (lm)',factor:1},cd_sr:{label:'کاندلا-استرادیان (cd·sr)',factor:1}}},luminous_intensity:{title:'شدت نور',baseLabel:'کاندلا',allowNegative:!1,units:{cd:{label:'کاندلا (cd)',factor:1},mcd:{label:'میلی‌کاندلا (mcd)',factor:.001}}},magnetic_flux:{title:'شار مغناطیسی',baseLabel:'وبر',allowNegative:!1,units:{Wb:{label:'وبر (Wb)',factor:1},mWb:{label:'میلی‌وبر (mWb)',factor:.001},uWb:{label:'میکرووبر (µWb)',factor:1e-6},Mx:{label:'مکسول (Mx)',factor:1e-8},lines:{label:'خطوط نیرو (lines)',factor:1e-8}}},magnetic_flux_density:{title:'چگالی شار مغناطیسی',baseLabel:'تسلا',allowNegative:!1,units:{T:{label:'تسلا (T)',factor:1},mT:{label:'میلی‌تسلا (mT)',factor:.001},uT:{label:'میکروتسلا (µT)',factor:1e-6},G:{label:'گاوس (G)',factor:1e-4},nT:{label:'نانوتسلا (nT)',factor:1e-9}}},angle_solid:{title:'زاویه فضایی',baseLabel:'استرادیان',allowNegative:!1,units:{sr:{label:'استرادیان (sr)',factor:1},deg2:{label:'درجه مربع (deg²)',factor:Math.PI**2/32400},sp:{label:'اسفر (sp)',factor:4*Math.PI}}},acceleration:{title:'شتاب',baseLabel:'متر بر مجذور ثانیه',allowNegative:!1,units:{m_s2:{label:'m/s²',factor:1},cm_s2:{label:'cm/s²',factor:.01},g:{label:'g (شتاب گرانش)',factor:9.80665},ft_s2:{label:'ft/s²',factor:.3048},in_s2:{label:'in/s²',factor:.0254},gal:{label:'گال (gal)',factor:.01},km_h_s:{label:'km/(h·s)',factor:.277778}}},mass_flow:{title:'دبی جرمی',baseLabel:'کیلوگرم بر ثانیه',allowNegative:!1,units:{kg_s:{label:'kg/s',factor:1},g_s:{label:'g/s',factor:.001},kg_h:{label:'kg/h',factor:1/3600},lb_s:{label:'lb/s',factor:.453592},lb_h:{label:'lb/h',factor:.453592/3600},ton_h:{label:'ton/h',factor:.277778}}},stress:{title:'تنش',baseLabel:'پاسکال',allowNegative:!1,units:{Pa:{label:'پاسکال (Pa)',factor:1},kPa:{label:'کیلوپاسکال (kPa)',factor:1e3},MPa:{label:'مگاپاسکال (MPa)',factor:1e6},GPa:{label:'گیگاپاسکال (GPa)',factor:1e9},psi:{label:'psi',factor:6894.76},ksi:{label:'ksi',factor:6.89476e6},psf:{label:'psf',factor:47.8803}}},strain:{title:'کرنش',baseLabel:'بی‌بعد',allowNegative:!0,units:{m_m:{label:'m/m',factor:1},um_m:{label:'µm/m',factor:1e-6},in_in:{label:'in/in',factor:1},pc:{label:'% (درصد)',factor:.01},ppm:{label:'ppm',factor:1e-6},ppb:{label:'ppb',factor:1e-9}}},young_modulus:{title:'مدول یانگ',baseLabel:'پاسکال',allowNegative:!1,units:{Pa:{label:'پاسکال (Pa)',factor:1},kPa:{label:'کیلوپاسکال (kPa)',factor:1e3},MPa:{label:'مگاپاسکال (MPa)',factor:1e6},GPa:{label:'گیگاپاسکال (GPa)',factor:1e9},psi:{label:'psi',factor:6894.76},ksi:{label:'ksi',factor:6.89476e6}}},moment_inertia:{title:'گشتاور اینرسی',baseLabel:'کیلوگرم متر مربع',allowNegative:!1,units:{kg_m2:{label:'kg·m²',factor:1},g_cm2:{label:'g·cm²',factor:1e-7},lb_ft2:{label:'lb·ft²',factor:.0421401},slug_ft2:{label:'slug·ft²',factor:1.35582},oz_in2:{label:'oz·in²',factor:1.829e-5}}},angular_momentum:{title:'تکانه زاویه‌ای',baseLabel:'کیلوگرم متر مربع بر ثانیه',allowNegative:!1,units:{kg_m2_s:{label:'kg·m²/s',factor:1},g_cm2_s:{label:'g·cm²/s',factor:1e-7},lb_ft2_s:{label:'lb·ft²/s',factor:.0421401},slug_ft2_s:{label:'slug·ft²/s',factor:1.35582}}},thermal_conductivity:{title:'رسانایی گرمایی',baseLabel:'وات بر متر-کلوین',allowNegative:!1,units:{W_mK:{label:'W/(m·K)',factor:1},W_cmK:{label:'W/(cm·K)',factor:100},BTU_h_ft_F:{label:'BTU/(h·ft·°F)',factor:1.73073},cal_s_cm_C:{label:'cal/(s·cm·°C)',factor:418.4}}},specific_heat:{title:'ظرفیت گرمایی ویژه',baseLabel:'ژول بر کیلوگرم-کلوین',allowNegative:!1,units:{J_kgK:{label:'J/(kg·K)',factor:1},kJ_kgK:{label:'kJ/(kg·K)',factor:1e3},cal_gC:{label:'cal/(g·°C)',factor:4184},BTU_lbF:{label:'BTU/(lb·°F)',factor:4184},kcal_kgK:{label:'kcal/(kg·K)',factor:4184}}},enthalpy:{title:'آنتالپی',baseLabel:'ژول بر کیلوگرم',allowNegative:!1,units:{J_kg:{label:'J/kg',factor:1},kJ_kg:{label:'kJ/kg',factor:1e3},cal_g:{label:'cal/g',factor:4184},BTU_lb:{label:'BTU/lb',factor:2326}}},entropy:{title:'آنتروپی',baseLabel:'ژول بر کیلوگرم-کلوین',allowNegative:!1,units:{J_kgK:{label:'J/(kg·K)',factor:1},kJ_kgK:{label:'kJ/(kg·K)',factor:1e3},cal_gC:{label:'cal/(g·°C)',factor:4184},BTU_lbF:{label:'BTU/(lb·°F)',factor:4184}}},absorbed_dose:{title:'دز جذبی',baseLabel:'گری',allowNegative:!1,units:{Gy:{label:'گری (Gy)',factor:1},mGy:{label:'میلی‌گری (mGy)',factor:.001},rad:{label:'راد (rad)',factor:.01},uGy:{label:'میکروگری (µGy)',factor:1e-6}}},equivalent_dose:{title:'دز معادل',baseLabel:'زیورت',allowNegative:!1,units:{Sv:{label:'زیورت (Sv)',factor:1},mSv:{label:'میلی‌زیورت (mSv)',factor:.001},rem:{label:'رم (rem)',factor:.01},uSv:{label:'میکروزیورت (µSv)',factor:1e-6}}},refractive_index:{title:'ضریب شکست',baseLabel:'بی‌بعد',allowNegative:!1,units:{n:{label:'n (بی‌بعد)',factor:1}}},speed_of_sound:{title:'سرعت صوت',baseLabel:'متر بر ثانیه',allowNegative:!1,units:{m_s:{label:'m/s',factor:1},km_h:{label:'km/h',factor:1/3.6},mph:{label:'mph',factor:.44704},ft_s:{label:'ft/s',factor:.3048},kn:{label:'گره (kn)',factor:.514444},mach:{label:'ماخ (mach)',factor:343}}},current_density:{title:'چگالی جریان',baseLabel:'آمپر بر متر مربع',allowNegative:!1,units:{A_m2:{label:'A/m²',factor:1},A_cm2:{label:'A/cm²',factor:1e4},A_in2:{label:'A/in²',factor:1550},A_ft2:{label:'A/ft²',factor:10.7639}}},kinematic_viscosity:{title:'ویسکوزیته سینماتیکی',baseLabel:'متر مربع بر ثانیه',allowNegative:!1,units:{m2_s:{label:'m²/s',factor:1},cm2_s:{label:'cm²/s',factor:1e-4},st:{label:'استوکس (St)',factor:1e-4},cSt:{label:'سانتی‌استوکس (cSt)',factor:1e-6},ft2_s:{label:'ft²/s',factor:.092903},in2_s:{label:'in²/s',factor:6.4516e-4}}},permittivity:{title:'گذردهی الکتریکی',baseLabel:'فاراد بر متر',allowNegative:!1,units:{F_m:{label:'F/m',factor:1},pF_m:{label:'pF/m',factor:1e-12},nF_m:{label:'nF/m',factor:1e-9}}},permeability:{title:'تراوایی مغناطیسی',baseLabel:'هنری بر متر',allowNegative:!1,units:{H_m:{label:'H/m',factor:1},uH_m:{label:'µH/m',factor:1e-6},nH_m:{label:'nH/m',factor:1e-9}}},magnetic_field_intensity:{title:'شدت میدان مغناطیسی',baseLabel:'آمپر بر متر',allowNegative:!1,units:{A_m:{label:'A/m',factor:1},Oe:{label:'اورستد (Oe)',factor:79.5775},kA_m:{label:'kA/m',factor:1000}}},electrical_conductivity:{title:'رسانایی الکتریکی',baseLabel:'زیمنس بر متر',allowNegative:!1,units:{S_m:{label:'S/m',factor:1},mS_m:{label:'mS/m',factor:.001},uS_m:{label:'µS/m',factor:1e-6},kS_m:{label:'kS/m',factor:1000}}},wavenumber:{title:'عدد موج',baseLabel:'متر به توان -۱',allowNegative:!1,units:{"m-1":{label:'m⁻¹',factor:1},"cm-1":{label:'cm⁻¹',factor:100},"mm-1":{label:'mm⁻¹',factor:1000}}},wavelength:{title:'طول موج',baseLabel:'متر',allowNegative:!1,units:{m:{label:'متر (m)',factor:1},cm:{label:'سانتی‌متر (cm)',factor:.01},mm:{label:'میلی‌متر (mm)',factor:.001},um:{label:'میکرومتر (µm)',factor:1e-6},nm:{label:'نانومتر (nm)',factor:1e-9},A:{label:'آنگستروم (Å)',factor:1e-10},pm:{label:'پیکومتر (pm)',factor:1e-12},fm:{label:'فمتومتر (fm)',factor:1e-15}}},angular_frequency:{title:'فرکانس زاویه‌ای',baseLabel:'رادیان بر ثانیه',allowNegative:!1,units:{rad_s:{label:'rad/s',factor:1},deg_s:{label:'deg/s',factor:Math.PI/180},rpm:{label:'rpm',factor:Math.PI/30}}},period:{title:'دوره تناوب',baseLabel:'ثانیه',allowNegative:!1,units:{s:{label:'ثانیه (s)',factor:1},ms:{label:'میلی‌ثانیه (ms)',factor:.001},us:{label:'میکروثانیه (µs)',factor:1e-6},ns:{label:'نانوثانیه (ns)',factor:1e-9},ps:{label:'پیکوثانیه (ps)',factor:1e-12},fs:{label:'فمتوثانیه (fs)',factor:1e-15}}}};
-const categoryOrder=['length','area','volume','mass','time','speed','temperature','pressure','energy','power','data','frequency','angle','force','torque','density','flow','viscosity','charge','voltage','current','resistance','capacitance','inductance','illuminance','radioactivity','luminous_flux','luminous_intensity','magnetic_flux','magnetic_flux_density','angle_solid','acceleration','mass_flow','stress','strain','young_modulus','moment_inertia','angular_momentum','thermal_conductivity','specific_heat','enthalpy','entropy','absorbed_dose','equivalent_dose','refractive_index','speed_of_sound','current_density','kinematic_viscosity','permittivity','permeability','magnetic_field_intensity','electrical_conductivity','wavenumber','wavelength','angular_frequency','period'];
+var config={version:"v16.4.0",siteUrl:"https://amoo189.github.io/Saleh-Amoo/",githubRepo:"https://github.com/Amoo189",contactEmail:"salehamoo1389@gmail.com",theme:localStorage.getItem("sa-apps-theme")||"dark"};
+var currentFilter="all";
+var historyLog=[];
+var isOnline=true;
+var splashHidden=!!sessionStorage.getItem("splashShown");
 
-// ===== آیکون‌های دسته‌ها با اصلاح مساحت =====
-const categoryIcons = {
-    length: 'fa-ruler',
-    area: 'fa-square',
-    volume: 'fa-cube',
-    mass: 'fa-weight-hanging',
-    time: 'fa-clock',
-    speed: 'fa-tachometer-alt',
-    temperature: 'fa-thermometer-half',
-    pressure: 'fa-compress-alt',
-    energy: 'fa-bolt',
-    power: 'fa-bolt',
-    data: 'fa-database',
-    frequency: 'fa-wave-square',
-    angle: 'fa-angle-double-up',
-    force: 'fa-arrow-alt-circle-right',
-    torque: 'fa-sync-alt',
-    density: 'fa-flask',
-    flow: 'fa-water',
-    viscosity: 'fa-tint',
-    charge: 'fa-bolt',
-    voltage: 'fa-bolt',
-    current: 'fa-bolt',
-    resistance: 'fa-arrow-left',
-    capacitance: 'fa-bolt',
-    inductance: 'fa-bolt',
-    illuminance: 'fa-lightbulb',
-    radioactivity: 'fa-radiation',
-    luminous_flux: 'fa-sun',
-    luminous_intensity: 'fa-sun',
-    magnetic_flux: 'fa-magnet',
-    magnetic_flux_density: 'fa-magnet',
-    angle_solid: 'fa-circle',
-    acceleration: 'fa-rocket',
-    mass_flow: 'fa-weight-hanging',
-    stress: 'fa-compress-arrows-alt',
-    strain: 'fa-arrows-alt-h',
-    young_modulus: 'fa-compress-arrows-alt',
-    moment_inertia: 'fa-circle-notch',
-    angular_momentum: 'fa-circle-notch',
-    thermal_conductivity: 'fa-fire',
-    specific_heat: 'fa-fire',
-    enthalpy: 'fa-fire',
-    entropy: 'fa-fire',
-    absorbed_dose: 'fa-radiation',
-    equivalent_dose: 'fa-radiation',
-    refractive_index: 'fa-eye',
-    speed_of_sound: 'fa-volume-up',
-    current_density: 'fa-bolt',
-    kinematic_viscosity: 'fa-tint',
-    permittivity: 'fa-bolt',
-    permeability: 'fa-magnet',
-    magnetic_field_intensity: 'fa-magnet',
-    electrical_conductivity: 'fa-bolt',
-    wavenumber: 'fa-wave-square',
-    wavelength: 'fa-wave-square',
-    angular_frequency: 'fa-wave-square',
-    period: 'fa-clock'
+(function(){
+    var splash=document.getElementById("splash");
+    var container=document.getElementById("mainContainer");
+    var progressBar=document.getElementById("progressBar");
+    var progressPercent=document.getElementById("progressPercent");
+    var steps=document.querySelectorAll("#splashSteps .step");
+    if(splashHidden){splash.style.display="none";container.classList.add("loaded");return}
+    var progress=0,currentStep=0,totalSteps=4;
+    var c=document.getElementById("splashCanvas");
+    if(c){var ctx=c.getContext("2d"),W,H,particles=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}resize();window.addEventListener("resize",resize);for(var i=0;i<50;i++){particles.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+0.5,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5,color:"hsla("+(220+Math.random()*40)+",80%,65%,0.10)"})}function draw(){ctx.clearRect(0,0,W,H);particles.forEach(function(p){p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill()});requestAnimationFrame(draw)}draw()}
+    function updateProgress(){var pct=Math.min(100,Math.round(progress));if(progressBar)progressBar.style.width=pct+"%";if(progressPercent)progressPercent.textContent=pct;var activeIdx=Math.min(totalSteps-1,Math.floor(pct/25));steps.forEach(function(step,idx){step.className="step";if(idx<activeIdx)step.classList.add("done");else if(idx===activeIdx)step.classList.add("active")})}
+    function advanceStep(){if(currentStep>=totalSteps){progress=100;updateProgress();setTimeout(function(){splash.classList.add("hide");container.classList.add("loaded");sessionStorage.setItem("splashShown","true");splashHidden=true},400);return}var target=Math.min(100,Math.round(((currentStep+1)/totalSteps)*100));var start=progress;var diff=target-start;var duration=currentStep===0?250:currentStep===1?300:currentStep===2?280:200;var startTime=Date.now();function animate(){var elapsed=Date.now()-startTime;var t=Math.min(1,elapsed/duration);var ease=1-Math.pow(1-t,3);progress=start+(diff*ease);updateProgress();if(t<1){requestAnimationFrame(animate)}else{progress=target;updateProgress();currentStep++;setTimeout(advanceStep,currentStep===1?120:currentStep===2?100:80)}}animate()}setTimeout(advanceStep,120);setTimeout(function(){if(!splash.classList.contains("hide")){splash.classList.add("hide");container.classList.add("loaded");sessionStorage.setItem("splashShown","true");splashHidden=true}},4000)
+})();
+
+function checkConnection(){
+    var sd=document.getElementById("statusDot"),st=document.getElementById("statusText"),sp=document.getElementById("speedText"),si=document.getElementById("statusIcon"),om=document.getElementById("offlineModal");
+    if(!navigator.onLine){isOnline=false;sd.className="status-dot offline";st.textContent="آفلاین";sp.textContent="";si.className="fa fa-wifi";si.style.color="var(--offline-color)";if(om)om.classList.add("show");return}
+    isOnline=true;sd.className="status-dot measuring";st.textContent="در حال اندازه‌گیری";sp.textContent="";si.className="fa fa-wifi";si.style.color="#fbbf24";if(om)om.classList.remove("show");
+    measureSpeed(function(speed){
+        if(!navigator.onLine){isOnline=false;sd.className="status-dot offline";st.textContent="آفلاین";sp.textContent="";si.className="fa fa-wifi";si.style.color="var(--offline-color)";if(om)om.classList.add("show");return}
+        isOnline=true;sd.className="status-dot online";st.textContent="آنلاین";si.className="fa fa-wifi";si.style.color="var(--online-color)";
+        if(speed!==null){sp.textContent=speed<1?(speed*1000).toFixed(0)+" Kbps":speed.toFixed(1)+" Mbps"}else{sp.textContent=""}
+    })
+}
+function measureSpeed(callback){
+    var startTime=Date.now();
+    var url="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css?cache="+Date.now();
+    var xhr=new XMLHttpRequest();
+    xhr.open("GET",url,true);
+    xhr.onload=function(){
+        if(xhr.status===200){
+            var duration=(Date.now()-startTime)/1000;
+            if(duration>0){
+                var size=parseInt(xhr.getResponseHeader("content-length")||xhr.responseText?.length||100000);
+                var speedMbps=(size*8/duration)/(1024*1024);
+                callback(speedMbps<0.001?speedMbps*1000/1024:speedMbps);
+            }else{callback(null)}
+        }else{callback(null)}
+    };
+    xhr.onerror=function(){callback(null)};
+    xhr.ontimeout=function(){callback(null)};
+    xhr.timeout=6000;
+    xhr.send();
+}
+function showOfflineModal(){var om=document.getElementById("offlineModal");if(om)om.classList.add("show")}
+function hideOfflineModal(){var om=document.getElementById("offlineModal");if(om)om.classList.remove("show")}
+function closeOfflineOnBackdrop(e){if(e.target===e.currentTarget&&navigator.onLine){hideOfflineModal()}}
+function refreshPage(){if(navigator.onLine){hideOfflineModal();window.location.reload()}else{checkConnection();showToast("هنوز اتصال برقرار نیست")}}
+
+var newTools={
+"شیمی":[{name:"محاسبه‌گر pH",icon:"fa-vial",desc:"محاسبه pH اسیدها و بازها"},{name:"وزن مولکولی",icon:"fa-weight-hanging",desc:"محاسبه وزن مولکولی ترکیبات"},{name:"تبدیل واحد شیمی",icon:"fa-arrows-left-right",desc:"تبدیل مول، گرم و حجم"},{name:"جدول حلالیت",icon:"fa-border-all",desc:"جدول حلالیت ترکیبات یونی"},{name:"ترازوی الکترونیکی",icon:"fa-scale-balanced",desc:"ترازوی دیجیتال برای آزمایشگاه"}],
+"ریاضی":[{name:"حل‌کننده ماتریس",icon:"fa-table-cells-large",desc:"عملیات روی ماتریس‌ها"},{name:"محاسبه‌گر احتمال",icon:"fa-dice-five",desc:"محاسبه احتمالات"},{name:"آمار توصیفی",icon:"fa-chart-pie",desc:"محاسبه میانگین، میانه و واریانس"},{name:"حل‌کننده معادله دیفرانسیل",icon:"fa-wave-square",desc:"حل معادلات دیفرانسیل"},{name:"مثلثات‌یاب",icon:"fa-circle-dot",desc:"محاسبه توابع مثلثاتی"}],
+"متن":[{name:"تغییر قلم",icon:"fa-font",desc:"تغییر فونت و اندازه متن"},{name:"جستجو و جایگزینی",icon:"fa-search",desc:"جستجو و جایگزینی در متن"},{name:"تولید متن تصادفی",icon:"fa-shuffle",desc:"تولید متن تصادفی"},{name:"تبدیل حروف بزرگ/کوچک",icon:"fa-arrow-up-1-9",desc:"تبدیر حروف به بزرگ/کوچک"}],
+"برنامه‌نویسی":[{name:"شکل‌دهنده HTML",icon:"fa-code",desc:"بهبود ظاهر کد HTML"},{name:"مینی‌فایر CSS",icon:"fa-file-code",desc:"فشرده‌سازی کد CSS"},{name:"JavaScript Beautifier",icon:"fa-bolt",desc:"زیباسازی کد جاوااسکریپت"},{name:"تبدیل CSV به JSON",icon:"fa-table",desc:"تبدیل فایل CSV به JSON"},{name:"تولیدکننده رنگ",icon:"fa-palette",desc:"تولید کد رنگ Hex"},{name:"تست API",icon:"fa-cloud",desc:"تست درخواست‌های API"},{name:"مبدل تاریخ",icon:"fa-calendar",desc:"تبدیل تاریخ در برنامه‌نویسی"}],
+"مذهبی":[{name:"اذان‌گو",icon:"fa-mosque",desc:"پخش اذان با صدای دلنشین"},{name:"تسبیح‌خوان",icon:"fa-hands-praying",desc:"تسبیح الکترونیکی"},{name:"قبله‌یاب",icon:"fa-compass",desc:"جهت‌یابی قبله"},{name:"دعا‌نامه",icon:"fa-hands",desc:"مجموعه دعاهای روزانه"}],
+"زمان":[{name:"زمان جهانی",icon:"fa-globe",desc:"نمایش زمان شهرهای جهان"},{name:"یادآور",icon:"fa-bell",desc:"تنظیم یادآور"},{name:"مناسبت‌ها",icon:"fa-star",desc:"مناسبت‌های مهم"},{name:"مبدل منطقه زمانی",icon:"fa-clock-rotate-left",desc:"تبدیل منطقه زمانی"},{name:"تقویم قمری",icon:"fa-moon",desc:"تقویم قمری"}],
+"ابزارها":[{name:"مبدل ارز",icon:"fa-dollar-sign",desc:"تبدیل ارزهای جهان"},{name:"مشخصات سیستم",icon:"fa-laptop",desc:"نمایش مشخصات سیستم"},{name:"تولید نام کاربری",icon:"fa-user",desc:"تولید نام کاربری تصادفی"},{name:"تست سرعت اینترنت",icon:"fa-wifi",desc:"تست سرعت اینترنت"}],
+"بهره‌وری":[{name:"مدیریت زمان",icon:"fa-clock",desc:"مدیریت زمان کارها"},{name:"هدف‌گذاری",icon:"fa-bullseye",desc:"تعیین اهداف روزانه"},{name:"یادآور عادت",icon:"fa-heart",desc:"پیگیری عادت‌ها"},{name:"دفترچه یادداشت",icon:"fa-book",desc:"دفترچه دیجیتال"},{name:"برنامه‌ریزی",icon:"fa-calendar-plus",desc:"برنامه‌ریزی هفتگی"}],
+"سلامتی":[{name:"پیگیری کالری",icon:"fa-utensils",desc:"شمارش کالری روزانه"},{name:"یادآور آب",icon:"fa-droplet",desc:"یادآور نوشیدن آب"},{name:"محاسبه‌گر چربی",icon:"fa-weight-scale",desc:"محاسبه چربی بدن"},{name:"پیگیری خواب",icon:"fa-bed",desc:"مدیریت خواب"}],
+"مهندسی":[{name:"محاسبه‌گر مقاومت",icon:"fa-bolt",desc:"محاسبه مقاومت الکتریکی"},{name:"توان الکتریکی",icon:"fa-lightbulb",desc:"محاسبه توان و جریان"},{name:"محاسبه‌گر سیم پیچ",icon:"fa-bolt",desc:"محاسبه سیم پیچ"},{name:"نمودار نیرو",icon:"fa-arrows-up-down",desc:"نمودار نیروهای مهندسی"}],
+"مالی":[{name:"محاسبه وام",icon:"fa-hand-holding-dollar",desc:"محاسبه اقساط وام"},{name:"سود مرکب",icon:"fa-chart-line",desc:"محاسبه سود مرکب"},{name:"تبدیل ارز",icon:"fa-dollar-sign",desc:"تبدیل ارزهای جهان"},{name:"محاسبه مالیات",icon:"fa-file-invoice",desc:"محاسبه مالیات"}],
+"امنیت":[{name:"تولید کلید SSH",icon:"fa-key",desc:"تولید کلید SSH"},{name:"تست قدرت رمز",icon:"fa-shield-halved",desc:"بررسی قدرت رمز"},{name:"رمزنگاری فایل",icon:"fa-lock",desc:"رمزنگاری فایل‌ها"},{name:"امضای دیجیتال",icon:"fa-pen",desc:"امضای دیجیتال"}],
+"هوش مصنوعی":[{name:"تشخیص تصویر",icon:"fa-image",desc:"تشخیص اشیاء در تصویر"},{name:"ترجمه هوشمند",icon:"fa-language",desc:"ترجمه با هوش مصنوعی"},{name:"تولید متن",icon:"fa-pen",desc:"تولید متن با هوش مصنوعی"},{name:"پاسخ‌گویی خودکار",icon:"fa-comment",desc:"پاسخ‌گویی هوشمند"}],
+"طراحی":[{name:"ویرایشگر تصویر",icon:"fa-image",desc:"ویرایش ساده تصاویر"},{name:"نقاشی با ماوس",icon:"fa-paintbrush",desc:"نقاشی با ماوس"},{name:"تولید لوگو",icon:"fa-pen-nib",desc:"تولید لوگوی ساده"},{name:"فونت‌یاب",icon:"fa-font",desc:"پیدا کردن فونت"}],
+"بازی‌ها":[{name:"مار",icon:"fa-turn-up",desc:"بازی مار"},{name:"پازل",icon:"fa-puzzle-piece",desc:"بازی پازل"}]
 };
 
-function toPersianDigits(num) {
-    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
-    return num.toString().replace(/\d/g, function(m) {
-        return persianDigits[parseInt(m)];
-    });
-}
-
-// ===== تابع fmt اصلاح‌شده با دقت بالاتر =====
-function fmt(n) {
-    if (!isFinite(n)) return 'نامعتبر';
-    if (n === 0) return '۰';
-    
-    // برای اعداد خیلی بزرگ یا خیلی کوچک از فرمت علمی با دقت بالا استفاده کن
-    if (Math.abs(n) >= 1e10 || (Math.abs(n) <= 1e-10 && Math.abs(n) > 0)) {
-        let sign = '';
-        let num = n;
-        if (num < 0) {
-            sign = '−';
-            num = -num;
-        }
-        
-        let exp = Math.floor(Math.log10(num));
-        let mantissa = num / Math.pow(10, exp);
-        
-        // اصلاح mantissa برای دقت بیشتر
-        if (mantissa >= 9.999999) {
-            mantissa /= 10;
-            exp += 1;
-        }
-        
-        // استفاده از ۶ رقم اعشار برای دقت بیشتر
-        let mStr = mantissa.toFixed(6);
-        mStr = mStr.replace(/\.?0+$/, '');
-        
-        let mantissaPersian = toPersianDigits(mStr);
-        let expPersian = toPersianDigits(exp.toString());
-        
-        return `<span dir="ltr" style="display:inline-block;direction:ltr;unicode-bidi:embed;">${sign}${mantissaPersian}×۱۰^${expPersian}</span>`;
-    }
-    
-    // برای اعداد معمولی با دقت بالا
-    let numStr = n.toFixed(10);
-    numStr = numStr.replace(/\.?0+$/, '');
-    
-    // جلوگیری از نمایش بیش از حد اعداد اعشاری
-    let parts = numStr.split('.');
-    let intPart = parts[0];
-    let decPart = parts[1] || '';
-    
-    // محدود کردن تعداد ارقام اعشار به ۶ رقم
-    if (decPart.length > 6) {
-        decPart = decPart.substring(0, 6);
-    }
-    
-    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    
-    let result = toPersianDigits(intPart);
-    if (decPart) {
-        result += '٫' + toPersianDigits(decPart);
-    }
-    
-    return result;
-}
-
-function vib(t=15){if(navigator.vibrate)navigator.vibrate(t)}
-const pickerOverlay=$('pickerOverlay'),pickerTitle=$('pickerTitle'),pickerSearch=$('pickerSearch'),pickerList=$('pickerList'),pickerClose=$('pickerClose');
-let pickerItems=[],pickerOnSelect=null,pickerCurrentKey='';
-let pickerMode = 'category';
-
-function openPicker(title, items, currentValue, onSelect, mode = 'category') {
-    pickerItems = items;
-    pickerOnSelect = onSelect;
-    pickerCurrentKey = currentValue || (items.length ? items[0].value : '');
-    pickerMode = mode;
-    pickerTitle.innerHTML = `<i class="fas ${mode === 'category' ? 'fa-tags' : 'fa-ruler'}"></i> ${title}`;
-    pickerSearch.value = '';
-    renderPickerItems();
-    pickerOverlay.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closePicker(){
-    pickerOverlay.classList.remove('show');
-    document.body.style.overflow = '';
-}
-
-function renderPickerItems(){
-    const q = pickerSearch.value.trim().toLowerCase();
-    const filtered = pickerItems.filter(i => {
-        // جستجو در تمام فیلدهای متنی
-        const searchText = (i.label || '') + ' ' + (i.sub || '') + ' ' + (i.value || '');
-        return searchText.toLowerCase().includes(q);
-    });
-    
-    if (!filtered.length) {
-        pickerList.innerHTML = `<div class="floating-picker-empty"><i class="fas fa-search"></i>موردی یافت نشد</div>`;
-        return;
-    }
-    
-    pickerList.innerHTML = '';
-    filtered.forEach(i => {
-        const d = document.createElement('div');
-        d.className = 'floating-picker-item' + (i.value === pickerCurrentKey ? ' active' : '');
-        
-        const icon = pickerMode === 'category' 
-            ? `<span class="item-icon"><i class="fas ${categoryIcons[i.value] || 'fa-tag'}"></i></span>`
-            : `<span class="item-icon"><i class="fas fa-ruler"></i></span>`;
-        
-        // برجسته‌سازی عبارت جستجو شده
-        let labelHtml = i.label;
-        if (q.length > 0) {
-            const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            labelHtml = labelHtml.replace(regex, '<strong style="color:var(--accent);">$1</strong>');
-        }
-        
-        d.innerHTML = `
-            ${icon}
-            <span class="item-label">${labelHtml}</span>
-            ${i.sub ? `<span class="item-sub">${i.sub}</span>` : ''}
-            <span class="item-check"><i class="fas fa-check-circle"></i></span>
-        `;
-        d.onclick = () => {
-            if (pickerOnSelect) requestAnimationFrame(() => pickerOnSelect(i.value));
-            closePicker();
-        };
-        pickerList.appendChild(d);
-    });
-}
-
-pickerSearch.oninput = renderPickerItems;
-pickerClose.onclick = closePicker;
-pickerOverlay.onclick = e => { if (e.target === pickerOverlay) closePicker(); };
-document.onkeydown = e => { if (e.key === 'Escape' && pickerOverlay.classList.contains('show')) closePicker(); };
-
-let currentCategory='length',currentFrom='m',currentTo='cm';
-
-function getCategoryItems(){
-    return categoryOrder.map(k => ({
-        value: k,
-        label: unitCategories[k].title,
-        sub: Object.keys(unitCategories[k].units).length + ' واحد'
-    }));
-}
-
-function getUnitItems(catKey){
-    const c = unitCategories[catKey];
-    return c ? Object.entries(c.units).map(([k,v]) => ({
-        value: k,
-        label: v.label,
-        sub: k
-    })) : [];
-}
-
-function updTrigger(el, label, icon = null){
-    const s = el.querySelector('.sel-label');
-    if(s) {
-        if(icon) {
-            s.innerHTML = `<i class="fas ${icon}"></i> ${label}`;
-        } else {
-            s.innerHTML = label;
-        }
-    }
-}
-
-function populateUnits(catKey){
-    const items = getUnitItems(catKey);
-    if(!items.length) return;
-    if(!items.some(i=>i.value===currentFrom)) currentFrom = items[0].value;
-    if(!items.some(i=>i.value===currentTo)) currentTo = items.length>1 ? items[1].value : items[0].value;
-    const fl = items.find(i=>i.value===currentFrom)?.label || items[0].label;
-    const tl = items.find(i=>i.value===currentTo)?.label || items[0].label;
-    updTrigger($('fromTrigger'), fl);
-    updTrigger($('toTrigger'), tl);
-}
-
-function populateCategory(){
-    const items = getCategoryItems();
-    const cl = items.find(i=>i.value===currentCategory)?.label || items[0].label;
-    const icon = categoryIcons[currentCategory] || 'fa-tag';
-    updTrigger($('categoryTrigger'), cl, icon);
-    populateUnits(currentCategory);
-}
-
-$('categoryTrigger').onclick = () => {
-    const items = getCategoryItems();
-    openPicker('انتخاب دسته واحد', items, currentCategory, v => {
-        currentCategory = v;
-        populateCategory();
-        if(valueInput.value.trim()) convert();
-        else resetAll();
-    }, 'category');
+var mainTools={
+"شیمی":[{name:"موازنه‌گر شیمیایی",icon:"fa-flask",desc:"موازنه معادلات شیمیایی با رابط کاربری مدرن",link:"b.html"},{name:"جدول تناوبی",icon:"fa-table",desc:"جدول تناوبی مناسب موبایل و استفاده سریع",link:"pt.html"},{name:"محاسبه‌گر غلظت محلول",icon:"fa-flask",desc:"محاسبه غلظت مولی، درصدی و رقت‌سازی",link:"concentration-calculator.html"}],
+"ریاضی":[{name:"حل‌کننده چندجمله‌ای",icon:"fa-calculator",desc:"حل معادلات ریاضی از درجه ۱ تا ۲۰",link:"ps.html"},{name:"حل‌کننده نامعادله",icon:"fa-chart-line",desc:"حل نامعادله با نمایش نمودار آن",link:"ls.html"},{name:"ماشین حساب مهندسی",icon:"fa-calculator",desc:"ماشین حساب پیشرفته با قابلیت حل معادله",link:"calcu.html"},{name:"محاسبه‌گر درصد",icon:"fa-percent",desc:"محاسبه درصد از عدد، نسبت درصدی و تغییرات درصدی",link:"percent-calculator.html"},{name:"ابزار حرفه ای ریاضی",icon:"fa-infinity",desc:"مشتق، انتگرال، حد، معادله، سیستم، نمودار و محاسبات پیشرفته آفلاین",link:"math-solver-pro.html"},{name:"حل‌کننده پیشرفته معادلات",icon:"fa-superscript",desc:"حل معادلات، دستگاه، مشتق، انتگرال، حد و نمودار",link:"equation-solver-pro.html"}],
+"متن":[{name:"شمارشگر متن",icon:"fa-pen-nib",desc:"محاسبه تعداد کلمات، حروف، خطوط و زمان مطالعه",link:"word-counter.html"},{name:"پاک‌ساز متن",icon:"fa-broom",desc:"حذف فاصله‌های اضافی، خطوط خالی و مرتب‌سازی سریع متن",link:"text-cleaner.html"}],
+"برنامه‌نویسی":[{name:"فرمت‌کننده JSON",icon:"fa-code",desc:"زیباسازی، فشرده‌سازی و بررسی صحت ساختار JSON",link:"json-formatter.html"},{name:"تولیدکننده هش",icon:"fa-hashtag",desc:"تولید هش MD5، SHA-1 و SHA-256 برای متن ورودی",link:"hash-generator.html"},{name:"تولیدکننده UUID",icon:"fa-fingerprint",desc:"تولید UUID نسخه 4 برای استفاده در پروژه‌ها",link:"uuid-generator.html"},{name:"رمزگذار Base64",icon:"fa-arrows-left-right",desc:"تبدیل متن به Base64 و رمزگشایی آن",link:"base64-tool.html"},{name:"تست‌کننده Regex",icon:"fa-search",desc:"بررسی الگوهای Regex و نمایش نتایج تطبیق",link:"regex-tester.html"},{name:"URL Encoder / Decoder",icon:"fa-link",desc:"کدگذاری و رمزگشایی URL",link:"url-encoder.html"}],
+"تبدیل":[{name:"مبدل واحد",icon:"fa-ruler-combined",desc:"تبدیل واحد در دسته‌بندی‌های مختلف",link:"u.html"},{name:"تولیدکننده Ascii Art",icon:"fa-font",desc:"تبدیل متن به خروجی ASCII Art",link:"ascii.html"}],
+"مذهبی":[{name:"قرآن آنلاین",icon:"fa-book",desc:"قرآن آنلاین (با اینترنت وارد شوید)",link:"Quran.html"}],
+"زمان":[{name:"تقویم شمسی",icon:"fa-calendar-days",desc:"تقویم شمسی با دقت بالا و مناسبت‌ها",link:"s.html"},{name:"فاصله دو تاریخ",icon:"fa-calendar-minus",desc:"محاسبه اختلاف بین دو تاریخ",link:"date-difference.html"},{name:"تبدیل تاریخ دقیق",icon:"fa-calendar-check",desc:"تبدیل دقیق بین شمسی، میلادی و قمری",link:"date-converter.html"},{name:"تایمر پومودورو",icon:"fa-stopwatch-20",desc:"تایمر تمرکز و استراحت برای افزایش بهره‌وری",link:"pomodoro.html"},{name:"محاسبه‌گر سن",icon:"fa-cake-candles",desc:"محاسبه سن دقیق بر اساس تاریخ تولد",link:"age.html"},{name:"ساعت آنالوگ",icon:"fa-clock",desc:"ساعت آنالوگ، تایمر و استاپ‌واچ",link:"ac.html"}],
+"ابزارها":[{name:"عدد تصادفی",icon:"fa-dice",desc:"تولید عدد تصادفی بین یک بازه دلخواه",link:"random.html"},{name:"کد مورس آفلاین",icon:"fa-tower-broadcast",desc:"مترجم و پخش‌کننده صوتی مورس ۱۰۰٪ آفلاین",link:"morse.html"},{name:"انتخاب‌گر تصادفی",icon:"fa-hand-pointer",desc:"انتخاب یک گزینه تصادفی از بین چند ورودی",link:"random-picker.html"},{name:"سازنده QR",icon:"fa-qrcode",desc:"تبدیل سریع لینک و متن به کد QR",link:"qr.html"}],
+"بهره‌وری":[{name:"لیست کارها",icon:"fa-circle-check",desc:"مدیریت وظایف روزانه با ذخیره‌سازی محلی",link:"todo.html"},{name:"نوت‌برداری حرفه‌ای",icon:"fa-note-sticky",desc:"یادداشت با Markdown ساده و ذخیره محلی",link:"notes.html"},{name:"تست سرعت تایپ حرفه‌ای",icon:"fa-keyboard",desc:"اندازه‌گیری WPM، دقت و رکورد عملکرد",link:"typing-speed.html"}],
+"سلامتی":[{name:"محاسبه‌گر BMI",icon:"fa-scale-balanced",desc:"محاسبه شاخص توده بدنی با قد و وزن",link:"bmi.html"},{name:"محاسبه‌گر BMR",icon:"fa-fire",desc:"محاسبه متابولیسم پایه و تخمین کالری روزانه",link:"bmr.html"}],
+"مهندسی":[{name:"تبدیل مبنای اعداد",icon:"fa-code",desc:"تبدیل حرفه‌ای بین مبناهای باینری و هگز",link:"base-converter.html"}],
+"مالی":[{name:"محاسبه تخفیف",icon:"fa-tag",desc:"محاسبه مبلغ تخفیف و قیمت نهایی",link:"discount-calculator.html"},{name:"تقسیم هزینه",icon:"fa-file-invoice-dollar",desc:"تقسیم مبلغ بین چند نفر با محاسبه مالیات",link:"expense-splitter.html"}],
+"امنیت":[{name:"رمزساز حرفه‌ای",icon:"fa-key",desc:"ساخت رمز امن با بررسی قدرت و تنظیمات",link:"pg.html"}],
+"هوش مصنوعی":[{name:"هوش مصنوعی آنلاین",icon:"fa-robot",desc:"هوش مصنوعی رایگان و سریع (با اینترنت وارد شوید)",link:"https://amoo189.github.io/Hoosh/"}],
+"طراحی":[{name:"پالت‌ساز رنگ",icon:"fa-palette",desc:"تولید رنگ تصادفی و کپی سریع کد Hex",link:"palette.html"},{name:"گرادینت‌ساز CSS",icon:"fa-rainbow",desc:"ساخت گرادینت با پیش‌نمایش زنده و کپی کد",link:"gradient-generator.html"}],
+"بازی‌ها":[{name:"بازی حافظه",icon:"fa-brain",desc:"کارت‌های مشابه را پیدا کنید",link:"memory-match.html"},{name:"سودوکو",icon:"fa-th",desc:"جدول ۹×۹ را با اعداد ۱ تا ۹ کامل کنید",link:"sudoku-game.html"},{name:"شطرنج",icon:"fa-chess",desc:"بازی شطرنج آفلاین دونفره",link:"chess.html"},{name:"تتریس",icon:"fa-cubes",desc:"بازی تتریس نئونی",link:"tet.html"},{name:"بازی دوز",icon:"fa-x",desc:"دوز با قابلیت بازی دونفره و رقابت با ربات",link:"ttt.html"}]
 };
 
-$('fromTrigger').onclick = () => {
-    const items = getUnitItems(currentCategory);
-    openPicker('انتخاب واحد مبدأ', items, currentFrom, v => {
-        currentFrom = v;
-        populateUnits(currentCategory);
-        if(valueInput.value.trim()) convert();
-    }, 'unit');
-};
-
-$('toTrigger').onclick = () => {
-    const items = getUnitItems(currentCategory);
-    openPicker('انتخاب واحد مقصد', items, currentTo, v => {
-        currentTo = v;
-        populateUnits(currentCategory);
-        if(valueInput.value.trim()) convert();
-    }, 'unit');
-};
-
-const valueInput=$('valueInput'),resetBtn=$('resetBtn'),swapBtn=$('swapBtn'),copyBtn=$('copyBtn'),errorBox=$('errorBox'),resultValue=$('resultValue'),resultMeta=$('resultMeta'),statusPill=$('statusPill'),inputPreview=$('inputPreview'),ratioPreview=$('ratioPreview'),miniInput=$('miniInput'),miniRatio=$('miniRatio'),signPlus=$('signPlus'),signMinus=$('signMinus');
-let convertPending=!1;
-
-function convertTemp(v,f,t){
-    let c;
-    if(f==='C') c=v;
-    else if(f==='F') c=(v-32)*5/9;
-    else if(f==='K') c=v-273.15;
-    else if(f==='R') c=(v-491.67)*5/9;
-    else if(f==='De') c=100-v*2/3;
-    else if(f==='N') c=v*100/33;
-    else if(f==='Re') c=v*5/4;
-    else if(f==='Ro') c=(v-7.5)*40/21;
-    else return NaN;
-    
-    let o;
-    if(t==='C') o=c;
-    else if(t==='F') o=c*9/5+32;
-    else if(t==='K') o=c+273.15;
-    else if(t==='R') o=(c+273.15)*9/5;
-    else if(t==='De') o=(100-c)*3/2;
-    else if(t==='N') o=c*33/100;
-    else if(t==='Re') o=c*4/5;
-    else if(t==='Ro') o=c*21/40+7.5;
-    else return NaN;
-    return o;
-}
-
-function doConvert(){
-    const raw=valueInput.value.trim();
-    const norm=raw.replace(',','.').replace(/[^\d\.\-\+eE]/g,'');
-    const val=Number(norm);
-    const cat=unitCategories[currentCategory];
-    
-    if(!raw||isNaN(val)){
-        showErr('لطفاً عدد معتبری وارد کنید.');
-        return;
-    }
-    if(val<0 && cat.allowNegative===!1){
-        showErr(`برای دسته «${cat.title}»، مقدار منفی مجاز نیست.`);
-        return;
-    }
-    const from=currentFrom,to=currentTo;
-    if(!cat||!cat.units[from]||!cat.units[to]){
-        showErr('واحد انتخاب شده در این دسته پشتیبانی نمی‌شود.');
-        return;
-    }
-    
-    let converted;
-    if(currentCategory==='temperature' || cat.units[from].custom || cat.units[to].custom){
-        converted=convertTemp(val,from,to);
-    } else {
-        // استفاده از دقت بالاتر برای محاسبه
-        const fromFactor = cat.units[from].factor;
-        const toFactor = cat.units[to].factor;
-        converted = val * (fromFactor / toFactor);
-        // جلوگیری از خطای گرد کردن
-        if (Math.abs(converted) < 1e-12) converted = 0;
-    }
-    
-    if(!isFinite(converted)){
-        showErr('خطا در محاسبه: نتیجه نامعتبر است.');
-        return;
-    }
-    
-    const fl=cat.units[from].label;
-    const tl=cat.units[to].label;
-    
-    resultValue.innerHTML = `${fmt(converted)} ${tl}`;
-    resultMeta.innerHTML = `${fmt(val)} ${fl} ≈ ${fmt(converted)} ${tl}`;
-    statusPill.innerHTML='<i class="fas fa-check-circle"></i> تبدیل انجام شد';
-    statusPill.style.color='var(--ok)';
-    inputPreview.innerHTML = `${fmt(val)} ${fl}`;
-    
-    if(val!==0 && isFinite(converted)){
-        const r=converted/val;
-        if(isFinite(r) && Math.abs(r) < 1e12) {
-            // نمایش نسبت با دقت مناسب
-            let ratioStr = fmt(r);
-            ratioPreview.innerHTML = `۱ ${fl} ≈ ${ratioStr} ${tl}`;
-        } else {
-            ratioPreview.textContent='—';
+function addToHistory(name){if(name&&!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
+function updateHistoryTab(){
+    var h=document.querySelector('.tab-btn[data-tab="history"]');
+    if(h){var c=h.querySelector(".count");if(c)c.textContent=historyLog.length}
+    var grid=document.querySelector('.category[data-tab="history"] .grid');
+    if(grid){
+        grid.innerHTML="";
+        if(historyLog.length===0){
+            grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>';
+        }else{
+            historyLog.forEach(function(name){
+                var found=null;
+                Object.keys(mainTools).forEach(function(cat){
+                    mainTools[cat].forEach(function(t){
+                        if(t.name===name){found=t;found.cat=cat}
+                    });
+                });
+                if(!found){
+                    Object.keys(newTools).forEach(function(cat){
+                        newTools[cat].forEach(function(t){
+                            if(t.name===name){found=t;found.cat=cat;found.isNew=true}
+                        });
+                    });
+                }
+                if(found){
+                    var isDev=found.isNew||false;
+                    var html='<div class="card" ';
+                    if(found.link){html+='data-link="'+found.link+'"';}
+                    html+=' data-name="'+found.name+'" onclick="cardClickHandler(event)">';
+                    html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';
+                    html+='<span class="card-name">'+found.name+'</span>';
+                    if(isDev){
+                        html+='<span class="dev-badge-grid">در حال توسعه</span>';
+                    }else{
+                        html+='<div class="card-spacer"></div>';
+                    }
+                    html+='</div>';
+                    grid.innerHTML+=html;
+                }
+            });
         }
-    } else {
-        ratioPreview.textContent='—';
     }
-    
-    resultValue.classList.remove('show');
-    resultMeta.classList.remove('show');
-    miniInput.classList.add('active');
-    miniRatio.classList.add('active');
-    void resultValue.offsetWidth;
-    requestAnimationFrame(()=>{
-        resultValue.classList.add('show');
-        resultMeta.classList.add('show');
+}
+function buildHistoryTab(){
+    var c=document.getElementById("tabsContainer");
+    var h=document.createElement("button");
+    h.className="tab-btn";
+    h.dataset.tab="history";
+    h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';
+    c.appendChild(h);
+    h.addEventListener("click",function(){
+        document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});
+        this.classList.add("active");
+        var tab=this.dataset.tab;
+        document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});
+        applyFilterAndSearch()
     });
-    vib(10);
+    var grid=document.getElementById("appGrid");
+    var section=document.createElement("section");
+    section.className="category hidden-cat";
+    section.dataset.tab="history";
+    section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2></div><div class="grid"></div>';
+    grid.appendChild(section)
 }
-
-function convert(){
-    if(convertPending) return;
-    convertPending=!0;
-    requestAnimationFrame(()=>{
-        doConvert();
-        convertPending=!1;
-    });
-}
-
-function showErr(msg){
-    errorBox.classList.add('show-error');
-    errorBox.innerHTML=`<i class="fas fa-exclamation-circle"></i> ${msg}`;
-    resultValue.textContent='—';
-    resultMeta.textContent='لطفاً ورودی و تنظیمات را بررسی کنید.';
-    statusPill.innerHTML='<i class="fas fa-exclamation-triangle"></i> خطا';
-    statusPill.style.color='var(--danger)';
-    inputPreview.textContent='—';
-    ratioPreview.textContent='—';
-    resultValue.classList.remove('show');
-    resultMeta.classList.remove('show');
-    miniInput.classList.remove('active');
-    miniRatio.classList.remove('active');
-}
-
-function resetAll(){
-    valueInput.value='';
-    errorBox.classList.remove('show-error');
-    resultValue.textContent='—';
-    resultMeta.textContent='ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.';
-    statusPill.innerHTML='<i class="fas fa-check-circle"></i> آماده';
-    statusPill.style.color='';
-    inputPreview.textContent='—';
-    ratioPreview.textContent='—';
-    resultValue.classList.remove('show');
-    resultMeta.classList.remove('show');
-    miniInput.classList.remove('active');
-    miniRatio.classList.remove('active');
-    vib(8);
-}
-
-function swapUnits(){
-    const t=currentFrom;
-    currentFrom=currentTo;
-    currentTo=t;
-    populateUnits(currentCategory);
-    if(valueInput.value.trim()) convert();
-}
-
-resetBtn.onclick=resetAll;
-swapBtn.onclick=swapUnits;
-
-copyBtn.onclick=()=>{
-    const t=resultValue.textContent;
-    if(t && t!=='—'){
-        navigator.clipboard.writeText(t).then(()=>{
-            const o=statusPill.innerHTML;
-            statusPill.innerHTML='<i class="fas fa-check-circle"></i> کپی شد!';
-            statusPill.style.color='var(--ok)';
-            setTimeout(()=>{
-                statusPill.innerHTML=o;
-                statusPill.style.color='';
-            },1200);
+function copyToClipboard(text,e){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){showCopyFeedback(e)})["catch"](function(){fallbackCopy(text,e)})}else{fallbackCopy(text,e)}}
+function fallbackCopy(text,e){var t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.opacity="0";t.style.left="-9999px";document.body.appendChild(t);t.select();try{document.execCommand("copy");showCopyFeedback(e)}catch(err){showToast("کپی نشد! لطفاً دستی کپی کنید")}document.body.removeChild(t)}
+function showCopyFeedback(e){e.classList.add("copied");var t=e.innerHTML;e.innerHTML='<i class="fa fa-check"></i> کپی شد';showToast("متن با موفقیت کپی شد");setTimeout(function(){e.classList.remove("copied");e.innerHTML=t},2000)}
+function applyFilterAndSearch(){
+    var q=document.getElementById("searchInput").value.trim().toLowerCase();
+    var cats=document.querySelectorAll(".category");
+    var total=0;
+    cats.forEach(function(cat){
+        var cards=cat.querySelectorAll(".card");
+        var visible=0;
+        var catName=cat.dataset.category?cat.dataset.category.toLowerCase():"";
+        cards.forEach(function(card){
+            var isDev=!!card.querySelector(".dev-badge-grid");
+            var isActive=!isDev;
+            var fm=true;
+            if(currentFilter==="active")fm=isActive;
+            else if(currentFilter==="dev")fm=isDev;
+            var txt=(card.querySelector(".card-name")?.textContent||"")+(card.getAttribute("title")||"");
+            var sm=txt.toLowerCase().includes(q)||catName.includes(q);
+            var show=fm&&sm;
+            card.style.display=show?"":"none";
+            if(show)visible++
         });
+        total+=visible
+    });
+    var es=document.getElementById("emptyState");
+    if(es)es.style.display=total?"none":"block"
+}
+function buildCards(){
+    var grid=document.getElementById("appGrid");
+    var html="";
+    Object.keys(mainTools).forEach(function(cat){
+        var mc=mainTools[cat]||[],nc=newTools[cat]||[];
+        if(mc.length===0&&nc.length===0)return;
+        html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'">';
+        html+='<div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2></div>';
+        html+='<div class="grid">';
+        mc.forEach(function(t){
+            html+='<div class="card" data-link="'+t.link+'" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';
+            html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';
+            html+='<span class="card-name">'+t.name+'</span>';
+            html+='<div class="card-spacer"></div>';
+            html+='</div>';
+        });
+        nc.forEach(function(t){
+            html+='<div class="card" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';
+            html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';
+            html+='<span class="card-name">'+t.name+'</span>';
+            html+='<span class="dev-badge-grid">در حال توسعه</span>';
+            html+='</div>';
+        });
+        html+='</div></section>';
+    });
+    grid.innerHTML=html;
+}
+function buildTabs(){
+    var c=document.getElementById("tabsContainer");
+    var html='<button class="tab-btn active" data-tab="all">همه</button>';
+    Object.keys(mainTools).forEach(function(k){
+        var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);
+        if(count>0){
+            html+='<button class="tab-btn" data-tab="'+k+'">'+k+'</button>';
+        }
+    });
+    c.innerHTML=html;
+    c.querySelectorAll(".tab-btn").forEach(function(b){
+        b.addEventListener("click",function(){
+            document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});
+            this.classList.add("active");
+            var tab=this.dataset.tab;
+            document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});
+            if(tab==='history'){updateHistoryTab()}
+            applyFilterAndSearch()
+        })
+    })
+}
+var toastTimer;function showToast(m){var t=document.getElementById("toast");if(!t)return;t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},3000)}
+function initBridge(){try{if(window.WebView?.isReady||window.jsBridge||window.webkit?.messageHandlers||window.android){return true}return false}catch(e){return false}}
+function openLinkWithBridge(u){try{if(window.WebView?.isReady){window.WebView.platform.openUrl(u);return true}if(window.jsBridge?.openUrl){window.jsBridge.openUrl(u);return true}if(window.webkit?.messageHandlers?.openUrl){window.webkit.messageHandlers.openUrl.postMessage({url:u});return true}if(window.android?.openUrl){window.android.openUrl(u);return true}return false}catch(e){return false}}
+
+function cardClickHandler(e){
+    e.preventDefault();
+    var card=e.currentTarget;
+    var name=card.dataset.name||"";
+    var link=card.dataset.link||"";
+    
+    if(name) addToHistory(name);
+    
+    var rect=card.getBoundingClientRect();
+    var size=Math.max(rect.width,rect.height);
+    var x=e.clientX-rect.left-size/2;
+    var y=e.clientY-rect.top-size/2;
+    var ripple=document.createElement("span");
+    ripple.className="ripple-effect";
+    ripple.style.width=size+"px";
+    ripple.style.height=size+"px";
+    ripple.style.left=x+"px";
+    ripple.style.top=y+"px";
+    card.appendChild(ripple);
+    
+    var icon=card.querySelector(".card-icon");
+    if(icon){
+        icon.style.transform="scale(0.85)";
+        setTimeout(function(){ icon.style.transform=""; }, 200);
     }
-};
-
-let inputTimer=null;
-valueInput.oninput=()=>{
-    let c=valueInput.value.replace(',','.').replace(/[^0-9.\-+\eE]/g,'');
-    if(valueInput.value!==c) valueInput.value=c;
-    if(inputTimer) clearTimeout(inputTimer);
-    if(valueInput.value.trim()){
-        inputTimer=setTimeout(convert,50);
-    } else {
-        resetAll();
-    }
-};
-
-signPlus.onclick=()=>{
-    let v=valueInput.value.trim();
-    if(v===''||v==='-'){ valueInput.value=''; return; }
-    if(v.startsWith('-')) v=v.substring(1);
-    if(!v.startsWith('+')) v='+'+v;
-    valueInput.value=v;
-    valueInput.dispatchEvent(new Event('input'));
-};
-
-signMinus.onclick=()=>{
-    let v=valueInput.value.trim();
-    if(v===''||v==='+'){ valueInput.value=''; return; }
-    if(v.startsWith('+')) v=v.substring(1);
-    if(!v.startsWith('-')) v='-'+v;
-    valueInput.value=v;
-    valueInput.dispatchEvent(new Event('input'));
-};
-
-function applyTheme(theme){
-    const t=$('themeToggle'), l=$('themeLabel');
-    if(theme==='light'){
-        document.body.classList.add('light');
-        t.innerHTML='<i class="fas fa-sun"></i>';
-        l.textContent='حالت روشن';
-    } else {
-        document.body.classList.remove('light');
-        t.innerHTML='<i class="fas fa-moon"></i>';
-        l.textContent='حالت تیره';
-    }
+    
+    setTimeout(function(){
+        if(link){
+            var used=openLinkWithBridge(link);
+            if(!used){
+                document.body.style.transition="opacity 0.3s";
+                document.body.style.opacity="0";
+                setTimeout(function(){
+                    window.location.assign(link);
+                },300);
+            }
+        } else {
+            showToast("این ابزار در نسخه‌های بعدی کامل می‌شود");
+        }
+        ripple.remove();
+    }, 250);
 }
 
-function initTheme(){
-    applyTheme(localStorage.getItem('unitConverterTheme')||'dark');
-}
+function applyTheme(t){document.body.classList.toggle("light-mode",t==="light");localStorage.setItem("sa-apps-theme",t)}
+function toggleTheme(){var isLight=document.body.classList.toggle("light-mode");localStorage.setItem("sa-apps-theme",isLight?"light":"dark")}
+function openAbout(){var m=document.getElementById("aboutModal");if(m)m.classList.add("show");document.body.style.overflow="hidden"}
+function closeAbout(){var m=document.getElementById("aboutModal");if(m)m.classList.remove("show");document.body.style.overflow=""}
+function closeAboutOnBackdrop(e){if(e.target===e.currentTarget)closeAbout()}
+function openExternal(u){window.open(u,"_blank")}
+function openEmail(e){window.open("mailto:"+e)}
+function openHelp(){var m=document.getElementById("helpModal");if(m)m.classList.add("show");document.body.style.overflow="hidden"}
+function closeHelp(){var m=document.getElementById("helpModal");if(m)m.classList.remove("show");document.body.style.overflow=""}
+function closeHelpOnBackdrop(e){if(e.target===e.currentTarget)closeHelp()}
+function scrollToTop(){window.scrollTo({top:0,behavior:"smooth"})}
 
-$('themeToggle').onclick=()=>{
-    const isLight=document.body.classList.toggle('light');
-    applyTheme(isLight?'light':'dark');
-    localStorage.setItem('unitConverterTheme', isLight?'light':'dark');
-    vib(12);
-};
-
-window.addEventListener('DOMContentLoaded',()=>{
-    populateCategory();
-    initTheme();
+document.addEventListener("DOMContentLoaded",function(){
+    initBridge();
+    applyTheme(config.theme);
+    var vd=document.getElementById("versionDisplay");if(vd)vd.textContent="نسخه: "+config.version;
+    var mv=document.getElementById("modalVersion");if(mv)mv.textContent=config.version;
+    var gl=document.getElementById("githubLinkText");if(gl)gl.textContent=config.siteUrl.replace(/^https?:\/\//,"");
+    var ce=document.getElementById("contactEmailLink");if(ce)ce.textContent=config.contactEmail;
+    buildCards();
+    buildHistoryTab();
+    buildTabs();
+    var si=document.getElementById("searchInput");if(si)si.addEventListener("input",applyFilterAndSearch);
+    var backBtn=document.getElementById("backTopBtn");
+    window.addEventListener("scroll",function(){
+        if(window.scrollY>300){backBtn.classList.add("visible")}else{backBtn.classList.remove("visible")}
+    });
+    setTimeout(checkConnection,600);
+    setInterval(checkConnection,30000);
+    window.addEventListener("online",function(){
+        checkConnection();
+        hideOfflineModal();
+        showToast("اتصال اینترنت برقرار شد");
+    });
+    window.addEventListener("offline",function(){
+        isOnline=false;
+        var sd=document.getElementById("statusDot");if(sd)sd.className="status-dot offline";
+        var st=document.getElementById("statusText");if(st)st.textContent="آفلاین";
+        var sp=document.getElementById("speedText");if(sp)sp.textContent="";
+        var si=document.getElementById("statusIcon");if(si){si.className="fa fa-wifi";si.style.color="var(--offline-color)"}
+        showOfflineModal();
+        showToast("اتصال اینترنت قطع شد");
+    });
 });
 </script>
 </body>
-    </html>
+                                                            </html>
