@@ -66,21 +66,22 @@ body.light-mode .tab-btn .count{background:rgba(0,0,0,.06);color:var(--muted-lig
 body.light-mode .category-title{color:var(--text-light)}
 .category-title i{margin-left:8px;color:var(--accent)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:16px 10px;margin-top:6px}
-.card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:inherit;background:transparent;border:none;border-radius:18px;padding:12px 6px;transition:all .25s ease;cursor:pointer;position:relative;text-align:center;height:130px;min-height:130px;max-height:130px;overflow:hidden;user-select:none;-webkit-user-select:none}
+.card{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-decoration:none;color:inherit;background:transparent;border:none;border-radius:18px;padding:12px 6px 8px 6px;transition:all .25s ease;cursor:pointer;position:relative;text-align:center;height:130px;min-height:130px;max-height:130px;overflow:hidden;user-select:none;-webkit-user-select:none}
 .card:hover{background:rgba(255,255,255,.04)}
 body.light-mode .card:hover{background:rgba(0,0,0,.03)}
 .card .ripple-effect{position:absolute;border-radius:50%;background:rgba(110,168,254,.35);transform:scale(0);animation:rippleAnim .7s ease-out forwards;pointer-events:none;will-change:transform,opacity}
 body.light-mode .card .ripple-effect{background:rgba(110,168,254,.2)}
 @keyframes rippleAnim{0%{transform:scale(0);opacity:1}100%{transform:scale(4);opacity:0}}
 .card:active .card-icon{transform:scale(.85);transition:transform .12s ease}
-.card .card-icon{width:60px;height:60px;border-radius:50%;background:var(--card-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);transition:all .3s ease;margin-bottom:6px;flex-shrink:0;position:relative;z-index:1}
+.card .card-icon{width:60px;height:60px;border-radius:50%;background:var(--card-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);transition:all .3s ease;margin-bottom:4px;flex-shrink:0;position:relative;z-index:1}
 body.light-mode .card .card-icon{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.06)}
 .card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 8px 20px rgba(110,168,254,.3)}
 body.light-mode .card:hover .card-icon{background:var(--accent);color:#fff;border-color:var(--accent)}
 .card .card-name{font-size:13px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0 2px;min-height:30px;max-height:34px;word-break:break-word;font-weight:500;position:relative;z-index:1}
 body.light-mode .card .card-name{color:var(--muted-light)}
-.dev-badge-grid{font-size:8px;background:rgba(255,200,0,.15);color:#fbbf24;padding:1px 8px;border-radius:999px;margin-top:2px;border:1px solid rgba(255,200,0,.1);white-space:nowrap;flex-shrink:0;line-height:1.5;position:relative;z-index:1}
+.dev-badge-grid{font-size:8px;background:rgba(255,200,0,.15);color:#fbbf24;padding:1px 8px;border-radius:999px;border:1px solid rgba(255,200,0,.1);white-space:nowrap;flex-shrink:0;line-height:1.5;position:relative;z-index:1;min-height:18px;display:inline-flex;align-items:center;justify-content:center}
 body.light-mode .dev-badge-grid{background:rgba(255,200,0,.1);border-color:rgba(255,200,0,.08)}
+.card .card-spacer{height:18px;flex-shrink:0}
 .card{animation:cardFadeIn .4s ease both}
 .card:nth-child(1){animation-delay:.02s}
 .card:nth-child(2){animation-delay:.04s}
@@ -179,7 +180,7 @@ body.light-mode .connection-status .speed-text{color:var(--muted-light)}
 .offline-box .offline-actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
 .offline-box .offline-actions .action-btn i{margin-left:6px}
 
-/* ===== اصلاحات اسپلش برای تم سفید ===== */
+/* ===== اسپلش ===== */
 #splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--splash-bg);transition:opacity .8s ease,visibility .8s ease;overflow:hidden}
 #splash.hide{opacity:0;visibility:hidden;pointer-events:none}
 #splash.hide .splash-wrapper{transform:scale(1.08);opacity:0}
@@ -211,7 +212,7 @@ body.light-mode .splash-subtitle{color:rgba(0,0,0,.15)}
 @keyframes sparkleAnim{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(40deg)}}
 @keyframes barShine{0%{background-position:0% 0%}100%{background-position:200% 0%}}
 
-/* ===== استایل توسعه‌دهندگان - نسخه کوچک‌تر ===== */
+/* ===== استایل توسعه‌دهندگان ===== */
 .developers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
 .developer-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center;transition:all .3s}
 body.light-mode .developer-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.06)}
@@ -222,35 +223,17 @@ body.light-mode .developer-card:hover{box-shadow:0 6px 18px rgba(0,0,0,.05)}
 .developer-card .dev-avatar.saleh{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
 .developer-card .dev-name{font-size:14px;font-weight:700;color:var(--text);transition:color .3s}
 body.light-mode .developer-card .dev-name{color:var(--text-light)}
-.developer-card .dev-role{font-size:11px;color:var(--muted);margin-top:2px;transition:color .3s}
-body.light-mode .developer-card .dev-role{color:var(--muted-light)}
+.developer-card .dev-role{display:none}
 .developer-card .dev-desc{font-size:11px;color:var(--muted);margin-top:4px;opacity:.7;transition:color .3s}
 body.light-mode .developer-card .dev-desc{color:var(--muted-light)}
 .developer-card .dev-social{display:flex;justify-content:center;gap:6px;margin-top:6px}
 .developer-card .dev-social a{color:var(--muted);font-size:14px;transition:all .3s;text-decoration:none}
 .developer-card .dev-social a:hover{color:var(--accent);transform:scale(1.12)}
 
-/* ===== حذف نوشته "وظایف" از کارت‌های توسعه‌دهندگان ===== */
-.developer-card .dev-role{display:none}
+/* ===== ریسپانسیو ===== */
+@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}.card{height:115px;min-height:115px;max-height:115px;padding:8px 4px 6px 4px}.card .card-icon{width:50px;height:50px;font-size:20px;margin-bottom:2px}.card .card-name{font-size:11px;min-height:26px;max-height:28px}.dev-badge-grid{font-size:7px;padding:0 6px;min-height:16px}.card .card-spacer{height:16px}.category-title{font-size:16px}.search-input{width:100%;max-width:140px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:10px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:5px 12px;font-size:12px}.help-box{padding:18px}.meta-grid{grid-template-columns:1fr}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:10px;padding:4px 10px;min-width:auto;gap:4px}.connection-status .status-dot{width:6px;height:6px}.connection-status .status-text{font-size:9px}.connection-status .speed-text{font-size:8px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:36px;height:36px;font-size:14px}.developers-grid{grid-template-columns:1fr}}
 
-/* ===== ریسپانسیو برای گوشی‌های کوچک ===== */
-@media(max-width:640px){.container{padding:16px}.panel{padding:18px;border-radius:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px 8px}.card{height:115px;min-height:115px;max-height:115px;padding:8px 4px}.card .card-icon{width:50px;height:50px;font-size:20px}.card .card-name{font-size:11px;min-height:26px;max-height:28px}.category-title{font-size:16px}.search-input{width:100%;max-width:140px}.search-input:focus{width:100%}.topbar{justify-content:center;gap:10px}.topbar-left,.topbar-right{width:100%;justify-content:center}.search-input-container{width:100%;display:flex;justify-content:center}.tab-btn{padding:5px 12px;font-size:12px}.help-box{padding:18px}.meta-grid{grid-template-columns:1fr}.meta-value .action-chip{font-size:11px;padding:2px 8px}.meta-value{font-size:13px}.back-top-btn{bottom:20px;right:20px;padding:12px 16px;font-size:18px}.connection-status{font-size:10px;padding:4px 10px;min-width:auto;gap:4px}.connection-status .status-dot{width:6px;height:6px}.connection-status .status-text{font-size:9px}.connection-status .speed-text{font-size:8px}.splash-logo{width:110px;height:110px;font-size:44px;border-radius:28px}.splash-progress{width:200px}.splash-progress .label{font-size:12px}.splash-steps .step{width:12px;height:12px}.about-btn-icon .tooltip-text{display:none}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:36px;height:36px;font-size:14px}.developers-grid{grid-template-columns:1fr}}
-
-/* ===== تنظیمات جستجو در گوشی‌های کوچک ===== */
-@media(max-width:480px){
-    .topbar-left{flex:1;min-width:0}
-    .brand-title h1{font-size:20px}
-    .brand-title p{font-size:12px}
-    .brand-badge{width:48px;height:48px;font-size:19px}
-    .topbar-right{flex-wrap:wrap;justify-content:center;gap:6px}
-    .search-input{width:100%;max-width:140px;font-size:13px;padding:8px 12px}
-    .search-input:focus{width:100%;max-width:140px}
-    .theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:38px;height:38px;font-size:15px}
-    .connection-status{padding:4px 10px;font-size:10px;min-width:auto;gap:4px}
-    .connection-status .status-text{font-size:9px}
-    .connection-status .speed-text{font-size:8px}
-    .connection-status .status-dot{width:6px;height:6px}
-}
+@media(max-width:480px){.topbar-left{flex:1;min-width:0}.brand-title h1{font-size:20px}.brand-title p{font-size:12px}.brand-badge{width:48px;height:48px;font-size:19px}.topbar-right{flex-wrap:wrap;justify-content:center;gap:6px}.search-input{width:100%;max-width:140px;font-size:13px;padding:8px 12px}.search-input:focus{width:100%;max-width:140px}.theme-switcher,.about-btn-icon,.help-btn,.refresh-btn{width:38px;height:38px;font-size:15px}.connection-status{padding:4px 10px;font-size:10px;min-width:auto;gap:4px}.connection-status .status-text{font-size:9px}.connection-status .speed-text{font-size:8px}.connection-status .status-dot{width:6px;height:6px}}
 </style>
 </head>
 <body>
@@ -436,14 +419,145 @@ var mainTools={
 };
 
 function addToHistory(name){if(name&&!historyLog.includes(name)){historyLog.unshift(name);if(historyLog.length>20)historyLog.pop();updateHistoryTab()}}
-function updateHistoryTab(){var h=document.querySelector('.tab-btn[data-tab="history"]');if(h){var c=h.querySelector(".count");if(c)c.textContent=historyLog.length}var grid=document.querySelector('.category[data-tab="history"] .grid');if(grid){grid.innerHTML="";if(historyLog.length===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>'}else{historyLog.forEach(function(name){var found=null;Object.keys(mainTools).forEach(function(cat){mainTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat}})});if(!found){Object.keys(newTools).forEach(function(cat){newTools[cat].forEach(function(t){if(t.name===name){found=t;found.cat=cat;found.isNew=true}})});}if(found){var isDev=found.isNew||false;var html='<div class="card" ';if(found.link){html+='data-link="'+found.link+'"';}html+=' data-name="'+found.name+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';html+='<span class="card-name">'+found.name+'</span>';if(isDev){html+='<span class="dev-badge-grid">در حال توسعه</span>'}html+='</div>';grid.innerHTML+=html}})}}}
-function buildHistoryTab(){var c=document.getElementById("tabsContainer");var h=document.createElement("button");h.className="tab-btn";h.dataset.tab="history";h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';c.appendChild(h);h.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});applyFilterAndSearch()});var grid=document.getElementById("appGrid");var section=document.createElement("section");section.className="category hidden-cat";section.dataset.tab="history";section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2></div><div class="grid"></div>';grid.appendChild(section)}
+function updateHistoryTab(){
+    var h=document.querySelector('.tab-btn[data-tab="history"]');
+    if(h){var c=h.querySelector(".count");if(c)c.textContent=historyLog.length}
+    var grid=document.querySelector('.category[data-tab="history"] .grid');
+    if(grid){
+        grid.innerHTML="";
+        if(historyLog.length===0){
+            grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)">تاریخچه خالی است</div>';
+        }else{
+            historyLog.forEach(function(name){
+                var found=null;
+                Object.keys(mainTools).forEach(function(cat){
+                    mainTools[cat].forEach(function(t){
+                        if(t.name===name){found=t;found.cat=cat}
+                    });
+                });
+                if(!found){
+                    Object.keys(newTools).forEach(function(cat){
+                        newTools[cat].forEach(function(t){
+                            if(t.name===name){found=t;found.cat=cat;found.isNew=true}
+                        });
+                    });
+                }
+                if(found){
+                    var isDev=found.isNew||false;
+                    var html='<div class="card" ';
+                    if(found.link){html+='data-link="'+found.link+'"';}
+                    html+=' data-name="'+found.name+'" onclick="cardClickHandler(event)">';
+                    html+='<div class="card-icon"><i class="fa '+found.icon+'"></i></div>';
+                    html+='<span class="card-name">'+found.name+'</span>';
+                    if(isDev){
+                        html+='<span class="dev-badge-grid">در حال توسعه</span>';
+                    }else{
+                        html+='<div class="card-spacer"></div>';
+                    }
+                    html+='</div>';
+                    grid.innerHTML+=html;
+                }
+            });
+        }
+    }
+}
+function buildHistoryTab(){
+    var c=document.getElementById("tabsContainer");
+    var h=document.createElement("button");
+    h.className="tab-btn";
+    h.dataset.tab="history";
+    h.innerHTML='<i class="fa fa-clock-rotate-left"></i> تاریخچه <span class="count">0</span>';
+    c.appendChild(h);
+    h.addEventListener("click",function(){
+        document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});
+        this.classList.add("active");
+        var tab=this.dataset.tab;
+        document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});
+        applyFilterAndSearch()
+    });
+    var grid=document.getElementById("appGrid");
+    var section=document.createElement("section");
+    section.className="category hidden-cat";
+    section.dataset.tab="history";
+    section.innerHTML='<div class="category-header"><h2 class="category-title"><i class="fa fa-clock-rotate-left"></i> تاریخچه</h2></div><div class="grid"></div>';
+    grid.appendChild(section)
+}
 function copyToClipboard(text,e){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){showCopyFeedback(e)})["catch"](function(){fallbackCopy(text,e)})}else{fallbackCopy(text,e)}}
 function fallbackCopy(text,e){var t=document.createElement("textarea");t.value=text;t.style.position="fixed";t.style.opacity="0";t.style.left="-9999px";document.body.appendChild(t);t.select();try{document.execCommand("copy");showCopyFeedback(e)}catch(err){showToast("کپی نشد! لطفاً دستی کپی کنید")}document.body.removeChild(t)}
 function showCopyFeedback(e){e.classList.add("copied");var t=e.innerHTML;e.innerHTML='<i class="fa fa-check"></i> کپی شد';showToast("متن با موفقیت کپی شد");setTimeout(function(){e.classList.remove("copied");e.innerHTML=t},2000)}
-function applyFilterAndSearch(){var q=document.getElementById("searchInput").value.trim().toLowerCase();var cats=document.querySelectorAll(".category");var total=0;cats.forEach(function(cat){var cards=cat.querySelectorAll(".card");var visible=0;var catName=cat.dataset.category?cat.dataset.category.toLowerCase():"";cards.forEach(function(card){var isDev=!!card.querySelector(".dev-badge-grid");var isActive=!isDev;var fm=true;if(currentFilter==="active")fm=isActive;else if(currentFilter==="dev")fm=isDev;var txt=(card.querySelector(".card-name")?.textContent||"")+(card.getAttribute("title")||"");var sm=txt.toLowerCase().includes(q)||catName.includes(q);var show=fm&&sm;card.style.display=show?"":"none";if(show)visible++});total+=visible});var es=document.getElementById("emptyState");if(es)es.style.display=total?"none":"block"}
-function buildCards(){var grid=document.getElementById("appGrid");var html="";Object.keys(mainTools).forEach(function(cat){var mc=mainTools[cat]||[],nc=newTools[cat]||[];if(mc.length===0&&nc.length===0)return;html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'">';html+='<div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2></div>';html+='<div class="grid">';mc.forEach(function(t){html+='<div class="card" data-link="'+t.link+'" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='</div>'});nc.forEach(function(t){html+='<div class="card" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';html+='<span class="card-name">'+t.name+'</span>';html+='<span class="dev-badge-grid">در حال توسعه</span>';html+='</div>'});html+='</div></section>'});grid.innerHTML=html}
-function buildTabs(){var c=document.getElementById("tabsContainer");var html='<button class="tab-btn active" data-tab="all">همه</button>';Object.keys(mainTools).forEach(function(k){var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);if(count>0){html+='<button class="tab-btn" data-tab="'+k+'">'+k+'</button>'}});c.innerHTML=html;c.querySelectorAll(".tab-btn").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});this.classList.add("active");var tab=this.dataset.tab;document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});if(tab==='history'){updateHistoryTab()}applyFilterAndSearch()})})}
+function applyFilterAndSearch(){
+    var q=document.getElementById("searchInput").value.trim().toLowerCase();
+    var cats=document.querySelectorAll(".category");
+    var total=0;
+    cats.forEach(function(cat){
+        var cards=cat.querySelectorAll(".card");
+        var visible=0;
+        var catName=cat.dataset.category?cat.dataset.category.toLowerCase():"";
+        cards.forEach(function(card){
+            var isDev=!!card.querySelector(".dev-badge-grid");
+            var isActive=!isDev;
+            var fm=true;
+            if(currentFilter==="active")fm=isActive;
+            else if(currentFilter==="dev")fm=isDev;
+            var txt=(card.querySelector(".card-name")?.textContent||"")+(card.getAttribute("title")||"");
+            var sm=txt.toLowerCase().includes(q)||catName.includes(q);
+            var show=fm&&sm;
+            card.style.display=show?"":"none";
+            if(show)visible++
+        });
+        total+=visible
+    });
+    var es=document.getElementById("emptyState");
+    if(es)es.style.display=total?"none":"block"
+}
+function buildCards(){
+    var grid=document.getElementById("appGrid");
+    var html="";
+    Object.keys(mainTools).forEach(function(cat){
+        var mc=mainTools[cat]||[],nc=newTools[cat]||[];
+        if(mc.length===0&&nc.length===0)return;
+        html+='<section class="category" data-category="'+cat+'" data-tab="'+cat+'">';
+        html+='<div class="category-header"><h2 class="category-title"><i class="fa '+(mc[0]?.icon||"fa-cube")+'"></i> '+cat+'</h2></div>';
+        html+='<div class="grid">';
+        mc.forEach(function(t){
+            html+='<div class="card" data-link="'+t.link+'" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';
+            html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';
+            html+='<span class="card-name">'+t.name+'</span>';
+            html+='<div class="card-spacer"></div>';
+            html+='</div>';
+        });
+        nc.forEach(function(t){
+            html+='<div class="card" data-name="'+t.name+'" title="'+t.desc+'" onclick="cardClickHandler(event)">';
+            html+='<div class="card-icon"><i class="fa '+t.icon+'"></i></div>';
+            html+='<span class="card-name">'+t.name+'</span>';
+            html+='<span class="dev-badge-grid">در حال توسعه</span>';
+            html+='</div>';
+        });
+        html+='</div></section>';
+    });
+    grid.innerHTML=html;
+}
+function buildTabs(){
+    var c=document.getElementById("tabsContainer");
+    var html='<button class="tab-btn active" data-tab="all">همه</button>';
+    Object.keys(mainTools).forEach(function(k){
+        var count=(mainTools[k]?.length||0)+(newTools[k]?.length||0);
+        if(count>0){
+            html+='<button class="tab-btn" data-tab="'+k+'">'+k+'</button>';
+        }
+    });
+    c.innerHTML=html;
+    c.querySelectorAll(".tab-btn").forEach(function(b){
+        b.addEventListener("click",function(){
+            document.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});
+            this.classList.add("active");
+            var tab=this.dataset.tab;
+            document.querySelectorAll(".category").forEach(function(x){x.classList.toggle("hidden-cat",tab!=="all"&&x.dataset.tab!==tab)});
+            if(tab==='history'){updateHistoryTab()}
+            applyFilterAndSearch()
+        })
+    })
+}
 var toastTimer;function showToast(m){var t=document.getElementById("toast");if(!t)return;t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},3000)}
 function initBridge(){try{if(window.WebView?.isReady||window.jsBridge||window.webkit?.messageHandlers||window.android){return true}return false}catch(e){return false}}
 function openLinkWithBridge(u){try{if(window.WebView?.isReady){window.WebView.platform.openUrl(u);return true}if(window.jsBridge?.openUrl){window.jsBridge.openUrl(u);return true}if(window.webkit?.messageHandlers?.openUrl){window.webkit.messageHandlers.openUrl.postMessage({url:u});return true}if(window.android?.openUrl){window.android.openUrl(u);return true}return false}catch(e){return false}}
@@ -537,4 +651,4 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 </body>
-    </html>
+                </html>
