@@ -3,1780 +3,237 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SA-CU</title>
-
+<title>SA-UC</title>
 <link rel="stylesheet" href="fontawesome/css/all.min.css">
-
 <style>
-@font-face{
-      font-family:"VazirmatnLocal";
-      src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
-      font-weight:400;
-      font-style:normal;
-      font-display:swap;
-    }
-    @font-face{
-      font-family:"VazirmatnLocal";
-      src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");
-      font-weight:700;
-      font-style:normal;
-      font-display:swap;
-    }
-
-/* ===== ممنوعیت انتخاب و کپی متن ===== */
-body {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-/* استثنا برای فیلدهای ورودی و انتخاب */
-input, select, textarea, button, .historyItem, .chip {
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
-}
-
-/* ===== دکمه رفرش بالا سمت چپ ===== */
-.refresh-btn {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 999;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow);
-  transition: all .25s ease;
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,.06);
-}
-.refresh-btn:hover {
-  transform: rotate(60deg) scale(1.05);
-  border-color: var(--accent);
-  background: rgba(110,168,254,.15);
-}
-.refresh-btn:active {
-  transform: rotate(60deg) scale(0.92);
-}
-.refresh-btn i {
-  transition: transform .3s ease;
-}
-.refresh-btn:hover i {
-  transform: rotate(-60deg);
-}
-body.light .refresh-btn {
-  background: #ffffff;
-  border-color: rgba(0,0,0,.1);
-  color: #0b1220;
-}
-body.light .refresh-btn:hover {
-  border-color: var(--accent);
-  background: rgba(59,130,246,.08);
-}
-
-/* ===== پری‌لودر جدید با لوگوی SA-UC ===== */
-.preloader{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.85);
-backdrop-filter:blur(24px);
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-z-index:9999;
-transition:opacity .7s ease, visibility .7s ease;
-}
-
-.preloader-box{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:20px;
-}
-
-/* لوگوی پری‌لودر شبیه به لوگوی اصلی اما بزرگتر */
-.preloader-logo{
-position:relative;
-width:100px;
-height:100px;
-border-radius:24px;
-overflow:hidden;
-background:
-  radial-gradient(circle at 30% 20%, rgba(255,255,255,.12), transparent 40%),
-  radial-gradient(circle at 75% 88%, rgba(0,0,0,.50), transparent 45%),
-  linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
-box-shadow:
-  0 20px 40px rgba(0,0,0,.6),
-  0 8px 20px rgba(0,0,0,.4),
-  inset 0 1px 0 rgba(255,255,255,.10),
-  inset 0 -12px 18px rgba(0,0,0,.55),
-  inset 10px 0 16px rgba(0,0,0,.20),
-  inset -10px 0 16px rgba(0,0,0,.20);
-}
-
-.preloader-logo::before{
-content:"";
-position:absolute;
-inset:-8px;
-border-radius:30px;
-background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);
-filter:blur(18px);
-opacity:.6;
-animation:spin 6s linear infinite;
-}
-
-@keyframes spin{
-0%{transform:rotate(0)}
-100%{transform:rotate(360deg)}
-}
-
-/* نوشته SA در پری‌لودر */
-.preloader-sa{
-position:absolute;
-left:50%;
-top:50%;
-transform:translate(-50%,-44%);
-font-family:"Arial Black", Arial, sans-serif;
-font-size:52px;
-font-weight:900;
-letter-spacing:-8px;
-color:#289CFF;
-text-shadow:
-  0 7px 12px rgba(0,0,0,.5),
-  0 2px 4px rgba(0,0,0,.35),
-  0 0 20px rgba(40,156,255,.30),
-  0 0 40px rgba(40,156,255,.15),
-  0 -1px 3px rgba(255,255,255,.08);
-}
-
-/* برچسب UC در پری‌لودر */
-.preloader-badge{
-position:absolute;
-top:-4px;
-right:12px;
-padding:5px 12px;
-font-size:15px;
-font-weight:900;
-border-radius:0 0 14px 14px;
-color:#289CFF;
-font-family:"Arial Black", Arial, sans-serif;
-background:
-  linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
-border:1px solid rgba(255,255,255,.06);
-box-shadow:
-  0 8px 18px rgba(0,0,0,.50),
-  inset 0 -6px 9px rgba(0,0,0,.55),
-  inset 0 4px 6px rgba(255,255,255,.07),
-  0 3px 10px rgba(0,0,0,.35);
-text-shadow:
-  0 2px 4px rgba(0,0,0,.35),
-  0 0 10px rgba(40,156,255,.18);
-}
-
-.preloader .loader-text{
-color:rgba(255,255,255,.7);
-font-size:15px;
-letter-spacing:2px;
-animation:pulseText 1.6s infinite;
-margin-top:8px;
-}
-@keyframes pulseText{
-0%,100%{opacity:.4; transform:scale(0.98);}
-50%{opacity:1; transform:scale(1);}
-}
-
-.preloader .loader-sub{
-color:rgba(255,255,255,.35);
-font-size:12px;
-margin-top:2px;
-letter-spacing:1px;
-}
-
-.preloader.hide{
-opacity:0;
-visibility:hidden;
-pointer-events:none;
-}
-
-
-:root{
-  --bg:#0b1220;
-  --card:#111a2e;
-  --text:#e8eefc;
-  --muted:#a9b6d6;
-  --accent:#6ea8fe;
-  --accent2:#8b5cf6;
-  --border: rgba(255,255,255,.08);
-  --shadow: 0 18px 60px rgba(0,0,0,.35);
-  --danger:#ff5c7a;
-  --ok:#2dd4bf;
-}
-
-/* تم روشن */
-body.light{
-  --bg:#e7ecff;
-  --card:#ffffff;
-  --text:#111827;
-  --muted:#6b7280;
-  --accent:#4f8bff;
-  --accent2:#7c3aed;
-  --border: rgba(15,23,42,.08);
-  --shadow: 0 18px 40px rgba(15,23,42,.10);
-}
-
-/* ریست و پایه */
+@font-face{font-family:"VazirmatnLocal";src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"VazirmatnLocal";src:url("fonts/Vazirmatn-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+body{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+input,select,textarea,button,.historyItem,.chip{user-select:text!important;-webkit-user-select:text!important;-moz-user-select:text!important;-ms-user-select:text!important}
+.refresh-btn{position:fixed;top:16px;left:16px;z-index:999;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all .25s ease;backdrop-filter:blur(12px);background:rgba(255,255,255,.06)}
+.refresh-btn:hover{transform:rotate(60deg) scale(1.05);border-color:var(--accent);background:rgba(110,168,254,.15)}
+.refresh-btn:active{transform:rotate(60deg) scale(0.92)}
+.refresh-btn i{transition:transform .3s ease}
+.refresh-btn:hover i{transform:rotate(-60deg)}
+body.light .refresh-btn{background:#fff;border-color:rgba(0,0,0,.1);color:#0b1220}
+body.light .refresh-btn:hover{border-color:var(--accent);background:rgba(59,130,246,.08)}
+.preloader{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(24px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .7s ease,visibility .7s ease}
+.preloader-box{display:flex;flex-direction:column;align-items:center;gap:20px}
+.preloader-logo{position:relative;width:100px;height:100px;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.12),transparent 40%),radial-gradient(circle at 75% 88%,rgba(0,0,0,.50),transparent 45%),linear-gradient(185deg,#232e40,#1b2535,#121c2a);box-shadow:0 20px 40px rgba(0,0,0,.6),0 8px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.10),inset 0 -12px 18px rgba(0,0,0,.55),inset 10px 0 16px rgba(0,0,0,.20),inset -10px 0 16px rgba(0,0,0,.20)}
+.preloader-logo::before{content:"";position:absolute;inset:-8px;border-radius:30px;background:conic-gradient(#6366f1,#06b6d4,#22c55e,#6366f1);filter:blur(18px);opacity:.6;animation:spin 6s linear infinite}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.preloader-sa{position:absolute;left:50%;top:50%;transform:translate(-50%,-44%);font-family:"Arial Black",Arial,sans-serif;font-size:52px;font-weight:900;letter-spacing:-8px;color:#289CFF;text-shadow:0 7px 12px rgba(0,0,0,.5),0 2px 4px rgba(0,0,0,.35),0 0 20px rgba(40,156,255,.30),0 0 40px rgba(40,156,255,.15),0 -1px 3px rgba(255,255,255,.08)}
+.preloader-badge{position:absolute;top:-4px;right:12px;padding:5px 12px;font-size:15px;font-weight:900;border-radius:0 0 14px 14px;color:#289CFF;font-family:"Arial Black",Arial,sans-serif;background:linear-gradient(180deg,rgba(40,52,72,.95),rgba(22,29,42,.98));border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 18px rgba(0,0,0,.50),inset 0 -6px 9px rgba(0,0,0,.55),inset 0 4px 6px rgba(255,255,255,.07),0 3px 10px rgba(0,0,0,.35);text-shadow:0 2px 4px rgba(0,0,0,.35),0 0 10px rgba(40,156,255,.18)}
+.preloader .loader-text{color:rgba(255,255,255,.7);font-size:15px;letter-spacing:2px;animation:pulseText 1.6s infinite;margin-top:8px}
+@keyframes pulseText{0%,100%{opacity:.4;transform:scale(0.98)}50%{opacity:1;transform:scale(1)}}
+.preloader .loader-sub{color:rgba(255,255,255,.35);font-size:12px;margin-top:2px;letter-spacing:1px}
+.preloader.hide{opacity:0;visibility:hidden;pointer-events:none}
+:root{--bg:#0b1220;--card:#111a2e;--text:#e8eefc;--muted:#a9b6d6;--accent:#6ea8fe;--accent2:#8b5cf6;--border:rgba(255,255,255,.08);--shadow:0 18px 60px rgba(0,0,0,.35);--danger:#ff5c7a;--ok:#2dd4bf}
+body.light{--bg:#e7ecff;--card:#ffffff;--text:#111827;--muted:#6b7280;--accent:#4f8bff;--accent2:#7c3aed;--border:rgba(15,23,42,.08);--shadow:0 18px 40px rgba(15,23,42,.10)}
 *{box-sizing:border-box}
-html, body {
-  margin:0;
-  padding:0;
-  min-height:100vh;
-}
-body{
-  font-family:"VazirmatnLocal", sans-serif;
-  background:
-    radial-gradient(1200px 600px at 20% 10%, rgba(110,168,254,.18), transparent 55%),
-    radial-gradient(1000px 500px at 80% 0%, rgba(139,92,246,.16), transparent 60%),
-    var(--bg);
-  color:var(--text);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  transition: background .35s ease, color .35s ease;
-}
-.container{
-  width:min(1000px, 100%);
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  flex-wrap: wrap;
-}
-.title{
-  display:flex;flex-direction:column;gap:6px;
-}
-.title h1{
-  margin:0;
-  font-size: clamp(20px, 3vw, 30px);
-  letter-spacing:-.02em;
-}
-.title p{
-  margin:0;
-  color:var(--muted);
-  line-height:1.6;
-  font-size:14px;
-}
-.badge{
-  padding:10px 14px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  border-radius:14px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-  color:var(--muted);
-  font-size:13px;
-  white-space:nowrap;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-/* دکمه تم */
-.theme-toggle{
-  width:32px;
-  height:32px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.10);
-  color:var(--text);
-  font-size:16px;
-  cursor:pointer;
-  transition:.2s ease;
-}
-body.light .theme-toggle{
-  background:rgba(255,255,255,.9);
-}
-.theme-toggle:active{
-  transform:translateY(1px) scale(.97);
-}
-
-.grid{
-  display:grid;
-  grid-template-columns: 1.1fr .9fr;
-  gap:16px;
-}
-@media (max-width: 900px){
-  .grid{grid-template-columns:1fr}
-}
-
-.card{
-  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  transition: background .35s ease, border-color .35s ease, box-shadow .35s ease;
-}
+html,body{margin:0;padding:0;min-height:100vh}
+body{font-family:"VazirmatnLocal",sans-serif;background:radial-gradient(1200px 600px at 20% 10%,rgba(110,168,254,.18),transparent 55%),radial-gradient(1000px 500px at 80% 0%,rgba(139,92,246,.16),transparent 60%),var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px;transition:background .35s ease,color .35s ease}
+.container{width:min(1000px,100%);display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.title{display:flex;flex-direction:column;gap:6px}
+.title h1{margin:0;font-size:clamp(20px,3vw,30px);letter-spacing:-.02em}
+.title p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}
+.badge{padding:10px 14px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);color:var(--muted);font-size:13px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.theme-toggle{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.10);color:var(--text);font-size:16px;cursor:pointer;transition:.2s ease}
+body.light .theme-toggle{background:rgba(255,255,255,.9)}
+.theme-toggle:active{transform:translateY(1px) scale(.97)}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;transition:background .35s ease,border-color .35s ease,box-shadow .35s ease}
 .card .inner{padding:18px}
-.card h2{
-  margin:0 0 10px 0;
-  font-size:16px;
-  color:var(--text);
-  display:flex;align-items:center;gap:10px;
-}
-.dot{
-  width:10px;height:10px;border-radius:50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 0 6px rgba(110,168,254,.12);
-}
-
-.row{
-  display:flex;
-  gap:12px;
-  align-items:center;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-.field{
-  flex:1;
-  min-width: 140px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-label{
-  color:var(--muted);
-  font-size:13px;
-}
-input[type="text"], input[type="number"], select{
-  width:100%;
-  padding:12px 12px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background: rgba(0,0,0,.18);
-  color:var(--text);
-  outline:none;
-  transition: .15s ease;
-}
-body.light input[type="text"],
-body.light input[type="number"],
-body.light select{
-  background: rgba(255,255,255,.9);
-}
+.card h2{margin:0 0 10px 0;font-size:16px;color:var(--text);display:flex;align-items:center;gap:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 6px rgba(110,168,254,.12)}
+.select-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px}
+.select-field label{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:5px}
+.select-trigger{padding:8px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.15);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;transition:.15s ease;min-height:38px}
+body.light .select-trigger{background:rgba(255,255,255,.9)}
+.select-trigger:hover{border-color:rgba(110,168,254,.4)}
+.select-trigger .arrow{font-size:11px;color:var(--muted)}
+.select-trigger .sel-label{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-select{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px}
+.floating-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(16px);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease;padding:20px}
+.floating-picker-overlay.show{opacity:1;visibility:visible}
+.floating-picker{background:var(--card);border:1px solid var(--border);border-radius:24px;max-width:440px;width:100%;max-height:75vh;box-shadow:0 40px 80px rgba(0,0,0,.6);transform:scale(.92) translateY(20px);transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .3s ease;opacity:0;overflow:hidden;display:flex;flex-direction:column}
+.floating-picker-overlay.show .floating-picker{transform:scale(1) translateY(0);opacity:1}
+.floating-picker-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.floating-picker-header h3{margin:0;font-size:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.floating-picker-header .close-picker{background:0;border:0;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:.15s}
+.floating-picker-header .close-picker:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.floating-picker-search{padding:8px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.floating-picker-search input{width:100%;padding:7px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.12);color:var(--text);outline:0;font-size:13px}
+body.light .floating-picker-search input{background:rgba(0,0,0,.04)}
+.floating-picker-search input::placeholder{color:var(--muted);opacity:.5}
+.floating-picker-list{overflow-y:auto;padding:4px 0;flex:1}
+.floating-picker-list::-webkit-scrollbar{width:4px}
+.floating-picker-list::-webkit-scrollbar-track{background:transparent}
+.floating-picker-list::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
+.floating-picker-item{padding:7px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.08s ease;font-size:13px;color:var(--text);border-bottom:1px solid transparent}
+.floating-picker-item:hover{background:rgba(110,168,254,.07)}
+.floating-picker-item.active{background:rgba(110,168,254,.12);border-right:3px solid var(--accent)}
+.floating-picker-item .item-label{flex:1}
+.floating-picker-item .item-sub{font-size:11px;color:var(--muted);opacity:.6}
+.floating-picker-empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.field{flex:1;min-width:140px;display:flex;flex-direction:column;gap:8px}
+label{color:var(--muted);font-size:13px}
+input[type="text"],input[type="number"]{width:100%;padding:9px 12px;border-radius:14px;border:1px solid var(--border);background:rgba(0,0,0,.18);color:var(--text);outline:0;transition:.15s ease;font-size:14px}
+body.light input[type="text"],body.light input[type="number"]{background:rgba(255,255,255,.9)}
 input::placeholder{color:rgba(233,238,252,.35)}
-input:focus, select:focus{
-  border-color: rgba(110,168,254,.55);
-  box-shadow: 0 0 0 4px rgba(110,168,254,.15);
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  margin-top:14px;
-  flex-wrap:wrap;
-}
-button{
-  cursor:pointer;
-  border:none;
-  padding:12px 14px;
-  border-radius:14px;
-  font-weight:700;
-  color:#071022;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 10px 24px rgba(110,168,254,.22);
-  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-}
-button:hover{
-  filter:brightness(1.05);
-}
-button:active{
-  transform: translateY(1px) scale(.98);
-  box-shadow: 0 4px 14px rgba(110,168,254,.28);
-}
-.ghost{
-  background: rgba(255,255,255,.04);
-  color:var(--text);
-  border:1px solid var(--border);
-  box-shadow:none;
-}
-body.light .ghost{
-  background: rgba(255,255,255,.9);
-}
-
-.resultBox{
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  height:100%;
-}
-.resultTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  flex-wrap:wrap;
-}
-.resultBig{
-  font-size: clamp(24px, 3vw, 36px);
-  letter-spacing:-.02em;
-  font-weight:900;
-  line-height:1.1;
-  transform:scale(.96) translateY(4px);
-  opacity:.0;
-  transition:transform .28s cubic-bezier(.16,1,.3,1),
-             opacity .24s ease;
-}
-.resultBig.show{
-  transform:scale(1) translateY(0);
-  opacity:1;
-}
-.resultMeta{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.7;
-  opacity:0;
-  transform:translateY(4px);
-  transition:transform .25s ease, opacity .2s ease;
-}
-.resultMeta.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.miniCards{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:12px;
-  margin-top:6px;
-}
-@media (max-width: 500px){
-  .miniCards{grid-template-columns:1fr}
-}
-.mini{
-  border-radius:16px;
-  border:1px solid var(--border);
-  padding:12px;
-  background: rgba(0,0,0,.12);
-  transition:background .3s ease, border-color .3s ease, transform .18s ease;
-}
-body.light .mini{
-  background: rgba(255,255,255,.9);
-}
-.mini .k{
-  font-size:12px;color:var(--muted);
-  margin-bottom:6px;
-}
-.mini .v{
-  font-weight:800;
-  color:var(--text);
-  display:flex;align-items:center;gap:8px;
-}
-.mini.active{
-  transform:translateY(-1px);
-  box-shadow:0 0 0 1px rgba(110,168,254,.18);
-}
-
-.pill{
-  font-size:12px;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  color:var(--muted);
-  background: rgba(255,255,255,.03);
-  transition:background .2s ease, color .2s ease, border-color .2s ease;
-}
-.error{
-  color: var(--danger);
-  font-size:13px;
-  display:none;
-  margin-top:8px;
-}
+input:focus{border-color:rgba(110,168,254,.55);box-shadow:0 0 0 4px rgba(110,168,254,.15)}
+.actions{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+button{cursor:pointer;border:0;padding:9px 14px;border-radius:14px;font-weight:700;color:#071022;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 24px rgba(110,168,254,.22);transition:transform .08s ease,filter .15s ease,box-shadow .15s ease;display:inline-flex;align-items:center;gap:8px;font-size:13px}
+button:hover{filter:brightness(1.05)}
+button:active{transform:translateY(1px) scale(.98);box-shadow:0 4px 14px rgba(110,168,254,.28)}
+.ghost{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--border);box-shadow:none}
+body.light .ghost{background:rgba(255,255,255,.9)}
+.resultBox{padding:18px;display:flex;flex-direction:column;gap:12px;height:100%}
+.resultTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.resultBig{font-size:clamp(24px,3vw,36px);letter-spacing:-.02em;font-weight:900;line-height:1.1;transform:scale(.96) translateY(4px);opacity:0;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .24s ease}
+.resultBig.show{transform:scale(1) translateY(0);opacity:1}
+.resultMeta{color:var(--muted);font-size:13px;line-height:1.7;opacity:0;transform:translateY(4px);transition:transform .25s ease,opacity .2s ease}
+.resultMeta.show{opacity:1;transform:translateY(0)}
+.miniCards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+@media (max-width:500px){.miniCards{grid-template-columns:1fr}}
+.mini{border-radius:16px;border:1px solid var(--border);padding:9px 12px;background:rgba(0,0,0,.12);transition:background .3s ease,border-color .3s ease,transform .18s ease}
+body.light .mini{background:rgba(255,255,255,.9)}
+.mini .k{font-size:11px;color:var(--muted);margin-bottom:4px}
+.mini .v{font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;font-size:13px}
+.mini.active{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(110,168,254,.18)}
+.pill{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.03);transition:background .2s ease,color .2s ease,border-color .2s ease}
+.error{color:var(--danger);font-size:13px;display:none;margin-top:8px}
 .show-error{display:block}
-footer{
-  margin-top:14px;
-  color:var(--muted);
-  font-size:12px;
-  text-align:center;
-}
-.swap{
-  display:flex;align-items:center;justify-content:center;
-  width:44px;height:44px;border-radius:14px;
-  border:1px solid var(--border);
-  background: rgba(255,255,255,.03);
-  color:var(--text);
-  font-size:18px;
-  user-select:none;
-  cursor:pointer;
-  transition:.15s ease;
-}
-.swap:hover{
-  background: rgba(255,255,255,.06);
-}
-.swap:active{
-  transform: translateY(1px) scale(.95);
-}
-.tag{
-  font-size:11px;
-  padding:4px 8px;
-  border-radius:999px;
-  background: rgba(255,255,255,.05);
-  color:var(--muted);
-}
-
-/* سِلِکت دسته‌بندی */
-.category-row{
-  margin-top:10px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-.category-row select{
-  min-width:150px;
-}
-
-/* برای حالت اسکرول روی موبایل */
-@media (max-width:600px){
-  body{
-    padding:16px;
-  }
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .title, .badge, .sa-logo-center {
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  .sa-logo-center {
-    margin-top: 10px;
-  }
-}
-
-/* باکس اصلی */
-.credit{
-position:fixed;
-bottom:18px;
-left:50%;
-transform:translateX(-50%) translateY(40px);
-padding:10px 22px;
-border-radius:999px;
-border:1px solid var(--border);
-background:rgba(255,255,255,.06);
-color:var(--muted);
-font-size:12px;
-backdrop-filter:blur(12px);
-cursor:pointer;
-overflow:hidden;
-transition:.45s ease;
-opacity:0;
-animation:creditReveal 1.2s ease forwards 0.3s;
-z-index:999;
-}
-
-/* فلش نور از پایین صفحه */
-.flash{
-position:fixed;
-bottom:-50px;
-left:50%;
-transform:translateX(-50%);
-width:180px;
-height:80px;
-background:radial-gradient(circle, rgba(255,255,255,.4), transparent 70%);
-filter:blur(18px);
-opacity:0;
-animation:flashUp 1.2s ease-out forwards;
-pointer-events:none;
-}
-
-@keyframes flashUp{
-0%{opacity:0; transform:translateX(-50%) translateY(80px);}
-60%{opacity:.9;}
-100%{opacity:0; transform:translateX(-50%) translateY(-6px);}
-}
-/* مرکز چین */
-.sa-logo-center{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:10px 0 20px 0;
-}
-
-/* بخش اصلی لوگو */
-.sa-logo{
-  width:80px;
-  height:80px;
-  position:relative;
-  border-radius:18px;
-  overflow:hidden;
-  user-select:none;
-
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 40%),
-    radial-gradient(circle at 75% 88%, rgba(0,0,0,.40), transparent 45%),
-    linear-gradient(185deg, rgb(35,46,64) 0%, rgb(27,37,53) 58%, rgb(18,28,42) 100%);
-
-  box-shadow:
-    0 14px 28px rgba(0,0,0,.55),
-    0 5px 12px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.10),
-    inset 0 -12px 18px rgba(0,0,0,.55),
-    inset 10px 0 16px rgba(0,0,0,.20),
-    inset -10px 0 16px rgba(0,0,0,.20);
-}
-
-.sa-logo::before{
-  content:"";
-  position:absolute;
-  inset:2px;
-  border-radius:16px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.04),
-    inset 0 0 18px rgba(255,255,255,.03);
-  pointer-events:none;
-}
-
-/* نوشته SA */
-.sa-text{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-42%);
-  font-family:"Arial Black", Arial, sans-serif;
-  font-size:46px;
-  font-weight:900;
-  letter-spacing:-7px;
-  color:#289CFF;
-
-  text-shadow:
-    0 7px 12px rgba(0,0,0,.44),
-    0 2px 4px rgba(0,0,0,.30),
-    0 0 14px rgba(40,156,255,.25),
-    0 0 28px rgba(40,156,255,.12),
-    0 -1px 3px rgba(255,255,255,.08);
-}
-
-/* برچسب CB */
-.sa-badge{
-  position:absolute;
-  top:-3px;
-  right:10px;
-  padding:4px 10px;
-  font-size:13px;
-  font-weight:900;
-  border-radius:0 0 12px 12px;
-
-  color:#289CFF;
-  font-family:"Arial Black", Arial, sans-serif;
-
-  background:
-    linear-gradient(180deg, rgba(40,52,72,.95) 0%, rgba(22,29,42,.98) 100%);
-  border:1px solid rgba(255,255,255,.06);
-
-  box-shadow:
-    0 8px 18px rgba(0,0,0,.50),
-    inset 0 -6px 9px rgba(0,0,0,.55),
-    inset 0 4px 6px rgba(255,255,255,.07),
-    0 3px 10px rgba(0,0,0,.35);
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.35),
-    0 0 10px rgba(40,156,255,.18);
-}
-.fade-out{
-opacity:0;
-transition:.4s ease;
-}
-
-/* دکمه‌های تغییر علامت */
-.sign-buttons {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.sign-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.05);
-  color: var(--text);
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: .15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-.sign-btn:hover {
-  background: rgba(255,255,255,.10);
-}
-.sign-btn:active {
-  transform: scale(.92);
-}
-body.light .sign-btn {
-  background: rgba(0,0,0,.05);
-}
-body.light .sign-btn:hover {
-  background: rgba(0,0,0,.10);
-}
-
-/* ===== مودال درباره ما و راهنما ===== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .35s ease, visibility .35s ease;
-  padding: 20px;
-}
-.modal-overlay.show {
-  opacity: 1;
-  visibility: visible;
-}
-.modal-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  max-width: 680px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 30px 28px;
-  box-shadow: var(--shadow);
-  transform: scale(.94) translateY(12px);
-  transition: transform .35s cubic-bezier(.16,1,.3,1), opacity .35s ease;
-  opacity: 0;
-  color: var(--text);
-}
-.modal-overlay.show .modal-box {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-}
-.modal-box h2 {
-  font-size: 22px;
-  margin-top: 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 16px;
-}
-.modal-box h2 i {
-  color: var(--accent);
-}
-.modal-box .close-modal {
-  background: rgba(255,255,255,.06);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 8px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: .2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 18px;
-}
-.modal-box .close-modal:hover {
-  background: rgba(255,255,255,.12);
-}
-.modal-box .content {
-  line-height: 1.9;
-  font-size: 14px;
-  color: var(--muted);
-}
-.modal-box .content strong {
-  color: var(--text);
-}
-.modal-box .content hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 20px 0;
-}
-.modal-box .content ul {
-  padding-right: 20px;
-}
-.modal-box .content ul li {
-  margin-bottom: 8px;
-}
-.modal-box .content .highlight {
-  background: rgba(110,168,254,.08);
-  padding: 12px 16px;
-  border-radius: 16px;
-  border-right: 3px solid var(--accent);
-  margin: 12px 0;
-}
-.modal-box .content a {
-  color: var(--accent);
-  text-decoration: none;
-}
-.modal-box .content a:hover {
-  text-decoration: underline;
-}
-.modal-box .footer-credit {
-  margin-top: 12px;
-  font-size: 13px;
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
-  text-align: center;
-}
-.modal-box .footer-credit i {
-  color: var(--accent2);
-}
-.header-buttons {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.header-buttons button {
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 8px 12px;
-  border-radius: 40px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: .2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.header-buttons button:hover {
-  background: rgba(255,255,255,.08);
-}
+footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+.swap{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);font-size:16px;user-select:none;cursor:pointer;transition:.15s ease;margin-bottom:2px}
+.swap:hover{background:rgba(255,255,255,.06)}
+.swap:active{transform:translateY(1px) scale(.95)}
+.tag{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--muted)}
+.category-row{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.category-row .select-field{min-width:150px;flex:1}
+@media (max-width:600px){body{padding:16px}header{flex-direction:column;align-items:flex-start}.title,.badge,.sa-logo-center{width:100%;justify-content:space-between;margin-bottom:10px}.sa-logo-center{margin-top:10px}}
+.sa-logo-center{width:100%;display:flex;justify-content:center;align-items:center;margin:10px 0 20px 0}
+.sa-logo{width:80px;height:80px;position:relative;border-radius:18px;overflow:hidden;user-select:none;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.10),transparent 40%),radial-gradient(circle at 75% 88%,rgba(0,0,0,.40),transparent 45%),linear-gradient(185deg,#232e40,#1b2535,#121c2a);box-shadow:0 14px 28px rgba(0,0,0,.55),0 5px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.10),inset 0 -12px 18px rgba(0,0,0,.55),inset 10px 0 16px rgba(0,0,0,.20),inset -10px 0 16px rgba(0,0,0,.20)}
+.sa-logo::before{content:"";position:absolute;inset:2px;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 0 18px rgba(255,255,255,.03);pointer-events:none}
+.sa-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-42%);font-family:"Arial Black",Arial,sans-serif;font-size:46px;font-weight:900;letter-spacing:-7px;color:#289CFF;text-shadow:0 7px 12px rgba(0,0,0,.44),0 2px 4px rgba(0,0,0,.30),0 0 14px rgba(40,156,255,.25),0 0 28px rgba(40,156,255,.12),0 -1px 3px rgba(255,255,255,.08)}
+.sa-badge{position:absolute;top:-3px;right:10px;padding:4px 10px;font-size:13px;font-weight:900;border-radius:0 0 12px 12px;color:#289CFF;font-family:"Arial Black",Arial,sans-serif;background:linear-gradient(180deg,rgba(40,52,72,.95),rgba(22,29,42,.98));border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 18px rgba(0,0,0,.50),inset 0 -6px 9px rgba(0,0,0,.55),inset 0 4px 6px rgba(255,255,255,.07),0 3px 10px rgba(0,0,0,.35);text-shadow:0 2px 4px rgba(0,0,0,.35),0 0 10px rgba(40,156,255,.18)}
+.sign-buttons{display:flex;gap:6px;align-items:center}
+.sign-btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);font-size:14px;font-weight:700;cursor:pointer;transition:.15s ease;display:flex;align-items:center;justify-content:center;padding:0}
+.sign-btn:hover{background:rgba(255,255,255,.10)}
+.sign-btn:active{transform:scale(.92)}
+body.light .sign-btn{background:rgba(0,0,0,.05)}
+body.light .sign-btn:hover{background:rgba(0,0,0,.10)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:10000;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease;padding:20px}
+.modal-overlay.show{opacity:1;visibility:visible}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:28px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;box-shadow:var(--shadow);transform:scale(.94) translateY(12px);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s ease;opacity:0;color:var(--text)}
+.modal-overlay.show .modal-box{transform:scale(1) translateY(0);opacity:1}
+.modal-box h2{font-size:22px;margin-top:0;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.modal-box h2 i{color:var(--accent)}
+.modal-box .close-modal{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:999px;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:8px;margin-top:18px}
+.modal-box .close-modal:hover{background:rgba(255,255,255,.12)}
+.modal-box .content{line-height:1.9;font-size:14px;color:var(--muted)}
+.modal-box .content strong{color:var(--text)}
+.modal-box .content hr{border:0;border-top:1px solid var(--border);margin:20px 0}
+.modal-box .content ul{padding-right:20px}
+.modal-box .content ul li{margin-bottom:8px}
+.modal-box .content .highlight{background:rgba(110,168,254,.08);padding:12px 16px;border-radius:16px;border-right:3px solid var(--accent);margin:12px 0}
+.modal-box .content a{color:var(--accent);text-decoration:none}
+.modal-box .content a:hover{text-decoration:underline}
 </style>
 </head>
-
-
 <body>
-<!-- ===== دکمه رفرش بالا سمت چپ ===== -->
-<button class="refresh-btn" onclick="location.reload()" title="رفرش صفحه">
-  <i class="fas fa-sync-alt"></i>
-</button>
-
-<div class="preloader" id="preloader">
-  <div class="preloader-box">
-    <div class="preloader-logo">
-      <div class="preloader-sa">SA</div>
-      <div class="preloader-badge">UC</div>
-    </div>
-    <div class="loader-text">✦ مبدل واحد هوشمند ✦</div>
-    <div class="loader-sub">SA-Unit Converter</div>
-  </div>
-</div>
+<button class="refresh-btn" onclick="location.reload()" title="رفرش"><i class="fas fa-sync-alt"></i></button>
+<div class="preloader" id="preloader"><div class="preloader-box"><div class="preloader-logo"><div class="preloader-sa">SA</div><div class="preloader-badge">UC</div></div><div class="loader-text">✦ مبدل واحد هوشمند ✦</div><div class="loader-sub">SA-Unit Converter</div></div></div>
 <div class="container">
-    
-  <header>
-    <div class="title">
-      <h1>SA-Unit Converter</h1>
-      <p>
-        تبدیل واحد هوشمند بین ده ها واحد و ۳۰+ دسته
-      </p>
-    </div>
-
-    <div class="sa-logo-center">
-      <div class="sa-logo">
-        <div class="sa-text">SA</div>
-        <div class="sa-badge">UC</div>
-      </div>
-    </div>
-
-    <div class="badge">
-      <span id="themeLabel">حالت تیره</span>
-      <div class="theme-toggle" id="themeToggle" title="تغییر تم"><i class="fas fa-moon"></i></div>
-    </div>
-
-    <div class="badge">
-      <i class="fas fa-user-astronaut"></i> صالح عمو
-    </div>
-  </header>
-
-  <div class="grid">
-    <!-- کارت ورودی‌ها -->
-    <div class="card">
-      <div class="inner">
-        <h2>
-          <span class="dot"></span>
-          تنظیمات تبدیل
-        </h2>
-
-        <div class="category-row">
-          <label for="categorySelect"><i class="fas fa-tags"></i> دسته واحد:</label>
-          <select id="categorySelect"></select>
-          <span class="tag"><i class="fas fa-layer-group"></i> ۳۰+ دسته</span>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label><i class="fas fa-edit"></i> مقدار</label>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <input id="valueInput" type="text" inputmode="decimal" placeholder="مثلا +3.5" style="flex:1;"/>
-            </div>
-          </div>
-           <div class="sign-buttons">
-                <button class="sign-btn" id="signPlus" title="مثبت"><i class="fas fa-plus"></i></button>
-                <button class="sign-btn" id="signMinus" title="منفی"><i class="fas fa-minus"></i></button>
-              </div>
-          <div class="field">
-            <label><i class="fas fa-arrow-right"></i> از واحد</label>
-            <select id="fromUnit"></select>
-          </div>
-
-          <div class="swap" id="swapBtn" title="جایگزینی واحدها"><i class="fas fa-exchange-alt"></i></div>
-
-          <div class="field">
-            <label><i class="fas fa-arrow-left"></i> به واحد</label>
-            <select id="toUnit"></select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="ghost" id="resetBtn"><i class="fas fa-undo-alt"></i> پاک کردن</button>
-          <button class="ghost" id="copyBtn"><i class="fas fa-copy"></i> کپی نتیجه</button>
-          <span class="tag"><i class="fas fa-sync-alt fa-fw"></i> خودکار</span>
-        </div>
-
-        <div id="errorBox" class="error"><i class="fas fa-exclamation-circle"></i> لطفاً مقدار معتبر وارد کنید.</div>
-      </div>
-    </div>
-
-    <!-- کارت نتیجه -->
-    <div class="card">
-      <div class="resultBox">
-        <div class="resultTop">
-          <div>
-            <div class="resultBig" id="resultValue">—</div>
-            <div class="resultMeta" id="resultMeta">
-              ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.
-            </div>
-          </div>
-          <div class="pill" id="statusPill">
-            <i class="fas fa-check-circle"></i> آماده
-          </div>
-        </div>
-
-        <div class="miniCards">
-          <div class="mini" id="miniInput">
-            <div class="k"><i class="fas fa-sign-in-alt"></i> مقدار ورودی</div>
-            <div class="v">
-              <span id="inputPreview">—</span>
-            </div>
-          </div>
-          <div class="mini" id="miniRatio">
-            <div class="k"><i class="fas fa-balance-scale"></i> نسبت تقریبی</div>
-            <div class="v">
-              <span id="ratioPreview">—</span>
-            </div>
-          </div>
-        </div>
-
-        <footer>
-            <i class="fas fa-bolt"></i> Powerd By Saleh Amoo
-        </footer>
-      </div>
-    </div>
-  </div>
-
-  <!-- دکمه‌های هدر (درباره ما و راهنما) -->
-  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:4px;">
-    <button class="ghost" id="aboutBtn"><i class="fas fa-info-circle"></i> درباره ما</button>
-    <button class="ghost" id="helpBtn"><i class="fas fa-question-circle"></i> راهنما</button>
-  </div>
+<header>
+<div class="title"><h1>SA-Unit Converter</h1><p>تبدیل واحد هوشمند بین ده‌ها واحد و ۴۰+ دسته</p></div>
+<div class="sa-logo-center"><div class="sa-logo"><div class="sa-text">SA</div><div class="sa-badge">UC</div></div></div>
+<div class="badge"><span id="themeLabel">حالت تیره</span><div class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></div></div>
+<div class="badge"><i class="fas fa-user-astronaut"></i> صالح عمو</div>
+</header>
+<div class="grid">
+<div class="card"><div class="inner">
+<h2><span class="dot"></span> تنظیمات تبدیل</h2>
+<div class="category-row">
+<label style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;"><i class="fas fa-tags"></i> دسته واحد:</label>
+<div class="select-field" id="categoryField"><div class="select-trigger" id="categoryTrigger"><span class="sel-label"><i class="fas fa-ruler"></i> طول</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></div></div>
+<span class="tag"><i class="fas fa-layer-group"></i> ۴۰+ دسته</span>
 </div>
-
-<!-- ===== مودال درباره ما ===== -->
-<div class="modal-overlay" id="aboutModal">
-  <div class="modal-box">
-    <h2><i class="fas fa-user-astronaut"></i> درباره ما</h2>
-    <div class="content">
-      <p><strong>توسعه‌دهنده:</strong> صالح عمو</p>
-      <p><strong>وب‌سایت:</strong> <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">amoo189.github.io/Saleh-Amoo</a></p>
-      <p><strong>ایمیل:</strong> <a href="mailto:salehamoo1389@gmail.com">salehamoo1389@gmail.com</a></p>
-      <hr>
-      <p>این مبدل واحد هوشمند با بیش از ۳۰ دسته و صدها واحد، توسط صالح عمو طراحی و توسعه یافته است. هدف ما ارائه ابزاری سریع، دقیق و زیبا برای تبدیل واحدهای مختلف در زمینه‌های علوم، مهندسی و زندگی روزمره است.</p>
-    </div>
-    <button class="close-modal" id="closeAbout"><i class="fas fa-times"></i> بستن</button>
-  </div>
+<div class="row-select">
+<div class="field" style="flex:1;min-width:100px;"><label><i class="fas fa-edit"></i> مقدار</label><div style="display:flex;gap:6px;align-items:center;"><input id="valueInput" type="text" inputmode="decimal" placeholder="مثلا 3.5" style="flex:1;"/></div></div>
+<div class="sign-buttons" style="margin-top:16px;"><button class="sign-btn" id="signPlus"><i class="fas fa-plus"></i></button><button class="sign-btn" id="signMinus"><i class="fas fa-minus"></i></button></div>
 </div>
-
-<!-- ===== مودال راهنما ===== -->
-<div class="modal-overlay" id="helpModal">
-  <div class="modal-box">
-    <h2><i class="fas fa-life-ring"></i> راهنمای استفاده</h2>
-    <div class="content">
-      <p><strong>🔹 نحوه استفاده:</strong></p>
-      <ul>
-        <li><i class="fas fa-tags"></i> <strong>دسته واحد:</strong> از منوی کشویی یکی از ۳۰+ دسته را انتخاب کنید.</li>
-        <li><i class="fas fa-edit"></i> <strong>مقدار:</strong> عدد مدنظر را در کادر مقدار وارد کنید. از دکمه‌های <i class="fas fa-plus"></i> و <i class="fas fa-minus"></i> برای تغییر علامت استفاده کنید.</li>
-        <li><i class="fas fa-arrow-right"></i> <strong>از واحد / به واحد:</strong> واحد مبدأ و مقصد را انتخاب کنید.</li>
-        <li><i class="fas fa-exchange-alt"></i> <strong>جابجایی:</strong> با کلیک روی دکمه‌ی ↔ واحدها را جابجا کنید.</li>
-        <li><i class="fas fa-sync-alt"></i> <strong>محاسبه خودکار:</strong> نتیجه به‌محض تایپ یا تغییر تنظیمات نمایش داده می‌شود.</li>
-        <li><i class="fas fa-copy"></i> <strong>کپی نتیجه:</strong> با کلیک روی دکمه کپی، نتیجه در کلیپ‌بورد ذخیره می‌شود.</li>
-        <li><i class="fas fa-undo-alt"></i> <strong>پاک کردن:</strong> تمام فیلدها را بازنشانی می‌کند.</li>
-      </ul>
-
-      <div class="highlight">
-        <p><i class="fas fa-moon"></i> <strong>تغییر تم:</strong> با کلیک روی دکمه‌ی ماه/خورشید در هدر، بین حالت تیره و روشن جابجا شوید.</p>
-      </div>
-
-      <hr>
-      <p><strong><i class="fas fa-wifi-slash"></i> راهنمای استفاده‌ی آفلاین</strong></p>
-      <div class="highlight">
-        <p>پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید، برای دفعات بعدی برای استفاده‌ی آفلاین میتوانید از روش زیر استفاده کنید:</p>
-        <ul>
-          <li><i class="fas fa-arrow-left"></i> برنامه را ببندید، سپس هنگام ورود شما با پیام اینترنت قطع مواجه میشوید، شما با دکمه‌ی برگشت موبایل خود میتوانید این صفحه را رد کنید و به برنامه وارد شوید.</li>
-          <li><i class="fas fa-redo"></i> اگر برای بار نخست این عمل را انجام دادید و تاثیری نداشت، دکمه‌ی تلاش مجدد را دوبار بزنید و با دکمه برگشت گوشی به صفحه اصلی بروید و با اطمینان از برنامه به صورت آفلاین استفاده کنید.</li>
-        </ul>
-      </div>
-      <p><i class="fas fa-check-circle" style="color:var(--ok);"></i> تمامی محاسبات به صورت محلی (Local) انجام می‌شود و نیازی به اینترنت پس از بارگذاری اولیه ندارد.</p>
-    </div>
-    <button class="close-modal" id="closeHelp"><i class="fas fa-times"></i> بستن</button>
-  </div>
+<div class="row-select">
+<div class="select-field" id="fromField"><label><i class="fas fa-arrow-right"></i> از واحد</label><div class="select-trigger" id="fromTrigger"><span class="sel-label">متر (m)</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></div></div>
+<div class="swap" id="swapBtn"><i class="fas fa-exchange-alt"></i></div>
+<div class="select-field" id="toField"><label><i class="fas fa-arrow-left"></i> به واحد</label><div class="select-trigger" id="toTrigger"><span class="sel-label">سانتی‌متر (cm)</span><span class="arrow"><i class="fas fa-chevron-down"></i></span></div></div>
 </div>
-
+<div class="actions"><button class="ghost" id="resetBtn"><i class="fas fa-undo-alt"></i> پاک کردن</button><button class="ghost" id="copyBtn"><i class="fas fa-copy"></i> کپی نتیجه</button><span class="tag"><i class="fas fa-sync-alt fa-fw"></i> خودکار</span></div>
+<div id="errorBox" class="error"><i class="fas fa-exclamation-circle"></i> لطفاً مقدار معتبر وارد کنید.</div>
+</div></div>
+<div class="card"><div class="resultBox">
+<div class="resultTop"><div><div class="resultBig" id="resultValue">—</div><div class="resultMeta" id="resultMeta">ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.</div></div><div class="pill" id="statusPill"><i class="fas fa-check-circle"></i> آماده</div></div>
+<div class="miniCards"><div class="mini" id="miniInput"><div class="k"><i class="fas fa-sign-in-alt"></i> مقدار ورودی</div><div class="v"><span id="inputPreview">—</span></div></div><div class="mini" id="miniRatio"><div class="k"><i class="fas fa-balance-scale"></i> نسبت تقریبی</div><div class="v"><span id="ratioPreview">—</span></div></div></div>
+<footer><i class="fas fa-bolt"></i> Powerd By Saleh Amoo</footer>
+</div></div>
+</div>
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px;"><button class="ghost" id="aboutBtn"><i class="fas fa-info-circle"></i> درباره ما</button><button class="ghost" id="helpBtn"><i class="fas fa-question-circle"></i> راهنما</button></div>
+</div>
+<div class="floating-picker-overlay" id="pickerOverlay"><div class="floating-picker"><div class="floating-picker-header"><h3 id="pickerTitle"><i class="fas fa-list"></i> انتخاب</h3><button class="close-picker" id="pickerClose"><i class="fas fa-times"></i></button></div><div class="floating-picker-search"><input type="text" id="pickerSearch" placeholder="جستجو..."></div><div class="floating-picker-list" id="pickerList"></div></div></div>
+<div class="modal-overlay" id="aboutModal"><div class="modal-box"><h2><i class="fas fa-user-astronaut"></i> درباره ما</h2><div class="content"><p><strong>توسعه‌دهنده:</strong> صالح عمو</p><p><strong>وب‌سایت:</strong> <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">amoo189.github.io/Saleh-Amoo</a></p><p><strong>ایمیل:</strong> <a href="mailto:salehamoo1389@gmail.com">salehamoo1389@gmail.com</a></p><hr><p>این مبدل واحد هوشمند با بیش از ۴۰ دسته و صدها واحد، توسط صالح عمو طراحی و توسعه یافته است.</p></div><button class="close-modal" id="closeAbout"><i class="fas fa-times"></i> بستن</button></div></div>
+<div class="modal-overlay" id="helpModal"><div class="modal-box"><h2><i class="fas fa-life-ring"></i> راهنمای استفاده</h2><div class="content"><p><strong>🔹 نحوه استفاده:</strong></p><ul><li><i class="fas fa-tags"></i> <strong>دسته واحد:</strong> کلیک کنید و از صفحه شناور انتخاب کنید.</li><li><i class="fas fa-edit"></i> <strong>مقدار:</strong> عدد مدنظر را وارد کنید.</li><li><i class="fas fa-arrow-right"></i> <strong>از واحد / به واحد:</strong> کلیک کنید و از صفحه شناور انتخاب کنید.</li><li><i class="fas fa-exchange-alt"></i> <strong>جابجایی:</strong> با کلیک روی دکمه ↔ واحدها را جابجا کنید.</li><li><i class="fas fa-sync-alt"></i> <strong>محاسبه خودکار:</strong> نتیجه به‌محض تایپ نمایش داده می‌شود.</li></ul><div class="highlight"><p><i class="fas fa-moon"></i> <strong>تغییر تم:</strong> با کلیک روی دکمه ماه/خورشید در هدر، بین حالت تیره و روشن جابجا شوید.</p></div></div><button class="close-modal" id="closeHelp"><i class="fas fa-times"></i> بستن</button></div></div>
 <script>
-// ===== جلوگیری از کپی با کلیک راست =====
-document.addEventListener('contextmenu', function(e) {
-  e.preventDefault();
-  return false;
-});
-
-// ===== جلوگیری از کپی با Ctrl+C / Cmd+C =====
-document.addEventListener('keydown', function(e) {
-  // Ctrl+C یا Cmd+C
-  if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-    // اگر هدف input یا textarea یا select نباشد، جلوگیری کن
-    const target = e.target;
-    if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.tagName !== 'SELECT') {
-      e.preventDefault();
-      return false;
-    }
-  }
-});
-
-// ===== کنترل مودال‌ها =====
-const aboutModal = document.getElementById('aboutModal');
-const helpModal = document.getElementById('helpModal');
-const aboutBtn = document.getElementById('aboutBtn');
-const helpBtn = document.getElementById('helpBtn');
-const closeAbout = document.getElementById('closeAbout');
-const closeHelp = document.getElementById('closeHelp');
-
-function openModal(modal) {
-  modal.classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal(modal) {
-  modal.classList.remove('show');
-  document.body.style.overflow = '';
-}
-aboutBtn.addEventListener('click', ()=>openModal(aboutModal));
-helpBtn.addEventListener('click', ()=>openModal(helpModal));
-closeAbout.addEventListener('click', ()=>closeModal(aboutModal));
-closeHelp.addEventListener('click', ()=>closeModal(helpModal));
-aboutModal.addEventListener('click', (e)=> { if(e.target===aboutModal) closeModal(aboutModal); });
-helpModal.addEventListener('click', (e)=> { if(e.target===helpModal) closeModal(helpModal); });
-
-// ===== پری‌لودر =====
-window.onload=()=>{
-  setTimeout(()=>{
-    document.getElementById('preloader').classList.add('hide');
-  },2000);
-}
-
-// المان‌ها
-const valueInput   = document.getElementById('valueInput');
-const fromUnitSel  = document.getElementById('fromUnit');
-const toUnitSel    = document.getElementById('toUnit');
-const resetBtn     = document.getElementById('resetBtn');
-const swapBtn      = document.getElementById('swapBtn');
-const categorySel  = document.getElementById('categorySelect');
-const copyBtn = document.getElementById('copyBtn');
-const errorBox     = document.getElementById('errorBox');
-const resultValue  = document.getElementById('resultValue');
-const resultMeta   = document.getElementById('resultMeta');
-const statusPill   = document.getElementById('statusPill');
-const inputPreview = document.getElementById('inputPreview');
-const ratioPreview = document.getElementById('ratioPreview');
-const miniInput    = document.getElementById('miniInput');
-const miniRatio    = document.getElementById('miniRatio');
-const signPlus     = document.getElementById('signPlus');
-const signMinus    = document.getElementById('signMinus');
-
-signPlus.addEventListener('click', ()=>{
-  let val = valueInput.value.trim();
-  if (val === '' || val === '-') { valueInput.value = ''; return; }
-  if (val.startsWith('-')) val = val.substring(1);
-  if (!val.startsWith('+')) val = '+' + val;
-  valueInput.value = val;
-  valueInput.dispatchEvent(new Event('input'));
-});
-signMinus.addEventListener('click', ()=>{
-  let val = valueInput.value.trim();
-  if (val === '' || val === '+') { valueInput.value = ''; return; }
-  if (val.startsWith('+')) val = val.substring(1);
-  if (!val.startsWith('-')) val = '-' + val;
-  valueInput.value = val;
-  valueInput.dispatchEvent(new Event('input'));
-});
-
-const categoriesAllowNegative = ['temperature', 'angle', 'charge', 'voltage', 'current'];
-
-const unitCategories = {
-  length: {
-    title: 'طول', baseLabel: 'متر', allowNegative: false,
-    units: {
-      nm:  { label:'نانومتر (nm)',   factor:1e-9 },
-      um:  { label:'میکرومتر (µm)', factor:1e-6 },
-      mm:  { label:'میلی‌متر (mm)', factor:1e-3 },
-      cm:  { label:'سانتی‌متر (cm)',factor:1e-2 },
-      dm:  { label:'دسی‌متر (dm)',  factor:0.1 },
-      m:   { label:'متر (m)',        factor:1    },
-      dam: { label:'دکامتر (dam)',  factor:10 },
-      hm:  { label:'هکتومتر (hm)',  factor:100 },
-      km:  { label:'کیلومتر (km)',  factor:1e3  },
-      in:  { label:'اینچ (inch)',    factor:0.0254 },
-      ft:  { label:'فوت (ft)',       factor:0.3048 },
-      yd:  { label:'یارد (yd)',      factor:0.9144 },
-      mi:  { label:'مایل (mile)',    factor:1609.34 },
-      nmi: { label:'مایل دریایی (nmi)', factor:1852 }
-    }
-  },
-  area: {
-    title:'مساحت', baseLabel:'متر مربع', allowNegative: false,
-    units:{
-      "mm2": {label:'میلی‌متر مربع (mm²)', factor:1e-6},
-      "cm2": {label:'سانتی‌متر مربع (cm²)',factor:1e-4},
-      "dm2": {label:'دسی‌متر مربع (dm²)', factor:0.01},
-      "m2":  {label:'متر مربع (m²)',       factor:1},
-      "dam2":{label:'دکامتر مربع (dam²)', factor:100},
-      "hm2": {label:'هکتومتر مربع (hm²)', factor:10000},
-      "km2": {label:'کیلومتر مربع (km²)',  factor:1e6},
-      "ft2": {label:'فوت مربع (ft²)',      factor:0.092903},
-      "yd2": {label:'یارد مربع (yd²)',     factor:0.836127},
-      "acre":{label:'آکر (acre)',          factor:4046.856},
-      "ha":  {label:'هکتار (ha)',          factor:10000}
-    }
-  },
-  volume:{
-    title:'حجم', baseLabel:'متر مکعب', allowNegative: false,
-    units:{
-      "ml":  {label:'میلی‌لیتر (mL)',  factor:1e-6},
-      "cl":  {label:'سانتی‌لیتر (cL)', factor:1e-5},
-      "dl":  {label:'دسی‌لیتر (dL)',   factor:1e-4},
-      "l":   {label:'لیتر (L)',        factor:1e-3},
-      "m3":  {label:'متر مکعب (m³)',   factor:1},
-      "cm3": {label:'سانتی‌متر مکعب (cm³)',factor:1e-6},
-      "dm3": {label:'دسی‌متر مکعب (dm³)', factor:0.001},
-      "ft3": {label:'فوت مکعب (ft³)',  factor:0.0283168},
-      "in3": {label:'اینچ مکعب (in³)', factor:1.6387e-5},
-      "gal": {label:'گالن (US gal)',   factor:0.00378541},
-      "qt":  {label:'کوارت (qt)',      factor:0.000946353}
-    }
-  },
-  mass:{
-    title:'جرم/وزن', baseLabel:'کیلوگرم', allowNegative: false,
-    units:{
-      "ug":  {label:'میکروگرم (µg)', factor:1e-9},
-      "mg":  {label:'میلی‌گرم (mg)', factor:1e-6},
-      "cg":  {label:'سانتی‌گرم (cg)', factor:1e-5},
-      "dg":  {label:'دسی‌گرم (dg)',  factor:1e-4},
-      "g":   {label:'گرم (g)',        factor:1e-3},
-      "dag": {label:'دکاگرم (dag)',  factor:0.01},
-      "hg":  {label:'هکتوگرم (hg)',  factor:0.1},
-      "kg":  {label:'کیلوگرم (kg)',  factor:1},
-      "t":   {label:'تن (t)',        factor:1000},
-      "lb":  {label:'پوند (lb)',     factor:0.453592},
-      "oz":  {label:'اونس (oz)',     factor:0.0283495},
-      "st":  {label:'استون (st)',    factor:6.35029}
-    }
-  },
-  time:{
-    title:'زمان', baseLabel:'ثانیه', allowNegative: false,
-    units:{
-      "ms":  {label:'میلی‌ثانیه (ms)', factor:1e-3},
-      "s":   {label:'ثانیه (s)',       factor:1},
-      "min": {label:'دقیقه (min)',     factor:60},
-      "h":   {label:'ساعت (h)',        factor:3600},
-      "day": {label:'روز',             factor:86400},
-      "week":{label:'هفته',            factor:604800},
-      "month":{label:'ماه (۳۰ روز)',   factor:2592000},
-      "year":{label:'سال (۳۶۵ روز)',   factor:31536000}
-    }
-  },
-  speed:{
-    title:'سرعت', baseLabel:'متر بر ثانیه', allowNegative: false,
-    units:{
-      "mps": {label:'متر بر ثانیه (m/s)', factor:1},
-      "kmh": {label:'کیلومتر بر ساعت (km/h)',factor:1/3.6},
-      "mph": {label:'مایل بر ساعت (mph)',factor:0.44704},
-      "kn":  {label:'گره دریایی (kn)', factor:0.514444},
-      "fts": {label:'فوت بر ثانیه (ft/s)', factor:0.3048}
-    }
-  },
-  temperature:{
-    title:'دما', baseLabel:'سلسیوس', allowNegative: true,
-    units:{
-      "C": {label:'درجه سلسیوس (°C)', custom:true},
-      "F": {label:'درجه فارنهایت (°F)', custom:true},
-      "K": {label:'کلوین (K)', custom:true}
-    }
-  },
-  pressure:{
-    title:'فشار', baseLabel:'پاسکال', allowNegative: false,
-    units:{
-      "Pa":   {label:'پاسکال (Pa)', factor:1},
-      "kPa":  {label:'کیلوپاسکال (kPa)', factor:1000},
-      "MPa":  {label:'مگاپاسکال (MPa)', factor:1e6},
-      "bar":  {label:'بار (bar)', factor:100000},
-      "mbar": {label:'میلی‌بار (mbar)', factor:100},
-      "atm":  {label:'اتمسفر (atm)', factor:101325},
-      "psi":  {label:'پوند بر اینچ مربع (psi)', factor:6894.76},
-      "Torr": {label:'تور (Torr)', factor:133.322}
-    }
-  },
-  energy:{
-    title:'انرژی', baseLabel:'ژول', allowNegative: false,
-    units:{
-      "J":    {label:'ژول (J)', factor:1},
-      "kJ":   {label:'کیلوژول (kJ)', factor:1000},
-      "MJ":   {label:'مگاژول (MJ)', factor:1e6},
-      "cal":  {label:'کالری (cal)', factor:4.184},
-      "kcal": {label:'کیلوکالری (kcal)', factor:4184},
-      "Wh":   {label:'وات‌ساعت (Wh)', factor:3600},
-      "kWh":  {label:'کیلووات‌ساعت (kWh)', factor:3.6e6},
-      "MWh":  {label:'مگاوات‌ساعت (MWh)', factor:3.6e9},
-      "eV":   {label:'الکترون‌ولت (eV)', factor:1.602176634e-19}
-    }
-  },
-  power:{
-    title:'توان', baseLabel:'وات', allowNegative: false,
-    units:{
-      "W":  {label:'وات (W)', factor:1},
-      "kW": {label:'کیلووات (kW)', factor:1000},
-      "MW": {label:'مگاوات (MW)', factor:1e6},
-      "hp": {label:'اسب بخار (hp)', factor:745.7},
-      "BTU/h": {label:'بی‌تی‌یو بر ساعت (BTU/h)', factor:0.293071}
-    }
-  },
-  data:{
-    title:'حجم داده', baseLabel:'بیت', allowNegative: false,
-    units:{
-      "bit":  {label:'بیت (bit)', factor:1},
-      "B":    {label:'بایت (B)', factor:8},
-      "KB":   {label:'کیلوبایت (KB)', factor:8*1024},
-      "MB":   {label:'مگابایت (MB)', factor:8*1024**2},
-      "GB":   {label:'گیگابایت (GB)', factor:8*1024**3},
-      "TB":   {label:'ترابایت (TB)', factor:8*1024**4},
-      "PB":   {label:'پتابایت (PB)', factor:8*1024**5},
-      "Kib":  {label:'کیبی‌بیت (Kibit)', factor:1024},
-      "MiB":  {label:'مبی‌بایت (MiB)', factor:8*1024**2}
-    }
-  },
-  frequency:{
-    title:'فرکانس', baseLabel:'هرتز', allowNegative: false,
-    units:{
-      "Hz":  {label:'هرتز (Hz)', factor:1},
-      "kHz": {label:'کیلوهرتز (kHz)', factor:1000},
-      "MHz": {label:'مگاهرتز (MHz)', factor:1e6},
-      "GHz": {label:'گیگاهرتز (GHz)', factor:1e9},
-      "THz": {label:'تراهرتز (THz)', factor:1e12}
-    }
-  },
-  angle:{
-    title:'زاویه', baseLabel:'درجه', allowNegative: true,
-    units:{
-      "deg": {label:'درجه (°)', factor:1},
-      "rad": {label:'رادیان (rad)', factor:180/Math.PI},
-      "grad":{label:'گراد (gon)', factor:0.9},
-      "arcmin":{label:'دقیقه قوسی (′)', factor:1/60},
-      "arcsec":{label:'ثانیه قوسی (″)', factor:1/3600}
-    }
-  },
-  force:{
-    title:'نیرو', baseLabel:'نیوتن', allowNegative: false,
-    units:{
-      "N":    {label:'نیوتن (N)', factor:1},
-      "kN":   {label:'کیلونیوتن (kN)', factor:1000},
-      "MN":   {label:'مگانیوتن (MN)', factor:1e6},
-      "kgf":  {label:'کیلوگرم-نیرو (kgf)', factor:9.80665},
-      "lbf":  {label:'پوند-نیرو (lbf)', factor:4.44822},
-      "dyn":  {label:'داین (dyn)', factor:1e-5}
-    }
-  },
-  torque:{
-    title:'گشتاور', baseLabel:'نیوتن متر', allowNegative: false,
-    units:{
-      "Nm":    {label:'نیوتن‌متر (N·m)', factor:1},
-      "kNm":   {label:'کیلونیوتن‌متر (kN·m)', factor:1000},
-      "MNm":   {label:'مگانیوتن‌متر (MN·m)', factor:1e6},
-      "lbf_ft":{label:'پوند-فوت (lbf·ft)', factor:1.35582},
-      "kgf_m": {label:'کیلوگرم-نیرو متر (kgf·m)', factor:9.80665}
-    }
-  },
-  density:{
-    title:'چگالی', baseLabel:'کیلوگرم بر متر مکعب', allowNegative: false,
-    units:{
-      "kg_m3": {label:'kg/m³', factor:1},
-      "g_cm3": {label:'g/cm³', factor:1000},
-      "lb_ft3":{label:'lb/ft³', factor:16.0185},
-      "lb_in3":{label:'lb/in³', factor:27679.9}
-    }
-  },
-  flow:{
-    title:'دبی حجمی', baseLabel:'متر مکعب بر ثانیه', allowNegative: false,
-    units:{
-      "m3_s":  {label:'m³/s', factor:1},
-      "L_s":   {label:'L/s', factor:1e-3},
-      "L_min": {label:'L/min', factor:1e-3/60},
-      "m3_h":  {label:'m³/h', factor:1/3600},
-      "ft3_s": {label:'ft³/s', factor:0.0283168},
-      "gal_min":{label:'gal/min', factor:6.30902e-5}
-    }
-  },
-  viscosity:{
-    title:'ویسکوزیته دینامیکی', baseLabel:'پاسکال-ثانیه', allowNegative: false,
-    units:{
-      "Pa_s": {label:'Pa·s', factor:1},
-      "mPa_s":{label:'mPa·s', factor:0.001},
-      "cP":   {label:'سانتی‌پواز (cP)', factor:0.001},
-      "P":    {label:'پواز (P)', factor:0.1}
-    }
-  },
-  charge:{
-    title:'بار الکتریکی', baseLabel:'کولن', allowNegative: true,
-    units:{
-      "C":  {label:'کولن (C)', factor:1},
-      "mC": {label:'میلی‌کولن (mC)', factor:1e-3},
-      "uC": {label:'میکروکولن (µC)', factor:1e-6},
-      "nC": {label:'نانوکولن (nC)', factor:1e-9},
-      "Ah": {label:'آمپر ساعت (Ah)', factor:3600},
-      "mAh":{label:'میلی‌آمپر ساعت (mAh)', factor:3.6}
-    }
-  },
-  voltage:{
-    title:'ولتاژ', baseLabel:'ولت', allowNegative: true,
-    units:{
-      "V":  {label:'ولت (V)', factor:1},
-      "kV": {label:'کیلوولت (kV)', factor:1000},
-      "mV": {label:'میلی‌ولت (mV)', factor:1e-3},
-      "uV": {label:'میکروولت (µV)', factor:1e-6}
-    }
-  },
-  current:{
-    title:'جریان الکتریکی', baseLabel:'آمپر', allowNegative: true,
-    units:{
-      "A":  {label:'آمپر (A)', factor:1},
-      "mA": {label:'میلی‌آمپر (mA)', factor:1e-3},
-      "uA": {label:'میکروآمپر (µA)', factor:1e-6},
-      "kA": {label:'کیلوآمپر (kA)', factor:1000}
-    }
-  },
-  resistance:{
-    title:'مقاومت الکتریکی', baseLabel:'اهم', allowNegative: false,
-    units:{
-      "ohm":  {label:'اهم (Ω)', factor:1},
-      "kOhm": {label:'کیلو‌اهم (kΩ)', factor:1000},
-      "MOhm": {label:'مگا‌اهم (MΩ)', factor:1e6}
-    }
-  },
-  capacitance:{
-    title:'ظرفیت خازنی', baseLabel:'فاراد', allowNegative: false,
-    units:{
-      "F":  {label:'فاراد (F)', factor:1},
-      "mF": {label:'میلی‌فاراد (mF)', factor:1e-3},
-      "uF": {label:'میکرو‌فاراد (µF)', factor:1e-6},
-      "nF": {label:'نانوفاراد (nF)', factor:1e-9},
-      "pF": {label:'پیکوفاراد (pF)', factor:1e-12}
-    }
-  },
-  inductance:{
-    title:'اندوکتانس', baseLabel:'هنری', allowNegative: false,
-    units:{
-      "H":  {label:'هنری (H)', factor:1},
-      "mH": {label:'میلی‌هنری (mH)', factor:1e-3},
-      "uH": {label:'میکروهنری (µH)', factor:1e-6},
-      "nH": {label:'نانوهنری (nH)', factor:1e-9}
-    }
-  },
-  illuminance:{
-    title:'روشنایی (تابندگی سطحی)', baseLabel:'لوکس', allowNegative: false,
-    units:{
-      "lx": {label:'لوکس (lx)', factor:1},
-      "fc": {label:'فوت-کندل (fc)', factor:10.7639}
-    }
-  },
-  radioactivity:{
-    title:'پرتوزایی', baseLabel:'بکرل', allowNegative: false,
-    units:{
-      "Bq":  {label:'بکرل (Bq)', factor:1},
-      "kBq": {label:'کیلوبکرل (kBq)', factor:1000},
-      "MBq": {label:'مگابکرل (MBq)', factor:1e6},
-      "GBq": {label:'گیگابکرل (GBq)', factor:1e9},
-      "Ci":  {label:'کوری (Ci)', factor:3.7e10},
-      "mCi": {label:'میلی‌کوری (mCi)', factor:3.7e7}
-    }
-  },
-  luminous_flux: {
-    title:'شار نوری', baseLabel:'لومن', allowNegative: false,
-    units:{
-      "lm": {label:'لومن (lm)', factor:1},
-      "cd_sr": {label:'کاندلا-استرادیان (cd·sr)', factor:1}
-    }
-  },
-  luminous_intensity: {
-    title:'شدت نور', baseLabel:'کاندلا', allowNegative: false,
-    units:{
-      "cd": {label:'کاندلا (cd)', factor:1},
-      "mcd": {label:'میلی‌کاندلا (mcd)', factor:0.001}
-    }
-  },
-  magnetic_flux: {
-    title:'شار مغناطیسی', baseLabel:'وبر', allowNegative: false,
-    units:{
-      "Wb": {label:'وبر (Wb)', factor:1},
-      "mWb": {label:'میلی‌وبر (mWb)', factor:0.001},
-      "uWb": {label:'میکرووبر (µWb)', factor:1e-6},
-      "Mx": {label:'مکسول (Mx)', factor:1e-8}
-    }
-  },
-  magnetic_flux_density: {
-    title:'چگالی شار مغناطیسی', baseLabel:'تسلا', allowNegative: false,
-    units:{
-      "T": {label:'تسلا (T)', factor:1},
-      "mT": {label:'میلی‌تسلا (mT)', factor:0.001},
-      "uT": {label:'میکروتسلا (µT)', factor:1e-6},
-      "G": {label:'گاوس (G)', factor:1e-4}
-    }
-  },
-  angle_solid: {
-    title:'زاویه فضایی', baseLabel:'استرادیان', allowNegative: false,
-    units:{
-      "sr": {label:'استرادیان (sr)', factor:1},
-      "deg2": {label:'درجه مربع (deg²)', factor:Math.PI**2/32400}
-    }
-  }
-};
-
-const categoryOrder = [
-  'length','area','volume','mass','time','speed','temperature','pressure',
-  'energy','power','data','frequency','angle','force','torque','density',
-  'flow','viscosity','charge','voltage','current','resistance',
-  'capacitance','inductance','illuminance','radioactivity',
-  'luminous_flux','luminous_intensity','magnetic_flux','magnetic_flux_density','angle_solid'
-];
-
-// کپی نتیجه
-copyBtn.onclick = ()=>{
-  const text = resultValue.textContent;
-  if (text && text !== '—') {
-    navigator.clipboard.writeText(text).then(()=>{
-      const oldText = statusPill.innerHTML;
-      statusPill.innerHTML = '<i class="fas fa-check-circle"></i> کپی شد!';
-      statusPill.style.color = 'var(--ok)';
-      setTimeout(()=>{
-        statusPill.innerHTML = oldText;
-        statusPill.style.color = '';
-      },1500);
-    });
-  }
-};
-
-function formatNumber(num){
-  if (!isFinite(num)) return 'نامعتبر';
-  const abs = Math.abs(num);
-  if (abs === 0) return '۰';
-  if (abs >= 1e9 || abs <= 1e-7) {
-    return num.toLocaleString('fa-IR', {
-      notation: 'scientific',
-      maximumFractionDigits: 3,
-      minimumExponentDigits: 2
-    }).replace(/e\+?(-?\d+)/, '×10^$1');
-  }
-  return num.toLocaleString('fa-IR', {
-    maximumFractionDigits: 4,
-    useGrouping: true
-  });
-}
-
-function vibrate(ms=15){
-  if (navigator.vibrate) navigator.vibrate(ms);
-}
-
-function populateCategories(){
-  categorySel.innerHTML = '';
-  categoryOrder.forEach(key=>{
-    if (!unitCategories[key]) return;
-    const opt=document.createElement('option');
-    opt.value=key;
-    opt.textContent=unitCategories[key].title;
-    categorySel.appendChild(opt);
-  });
-  categorySel.value='length';
-  populateUnitsForCategory('length');
-}
-
-function populateUnitsForCategory(catKey){
-  const cat = unitCategories[catKey];
-  if (!cat) return;
-  fromUnitSel.innerHTML='';
-  toUnitSel.innerHTML='';
-  let firstUnit = null;
-  let secondUnit = null;
-
-  Object.entries(cat.units).forEach(([value, info])=>{
-    const o1=document.createElement('option');
-    o1.value=value;
-    o1.textContent=info.label;
-    const o2=o1.cloneNode(true);
-    fromUnitSel.appendChild(o1);
-    toUnitSel.appendChild(o2);
-    if (firstUnit === null) firstUnit = value;
-    else if (secondUnit === null) secondUnit = value;
-  });
-
-  if (firstUnit) fromUnitSel.value = firstUnit;
-  if (secondUnit) toUnitSel.value = secondUnit;
-  else if (firstUnit) toUnitSel.value = firstUnit;
-}
-
-function convertTemperature(value, from, to){
-  let C;
-  if (from==='C') C = value;
-  else if (from==='F') C = (value - 32) * 5/9;
-  else if (from==='K') C = value - 273.15;
-  else return NaN;
-
-  let out;
-  if (to==='C') out = C;
-  else if (to==='F') out = C * 9/5 + 32;
-  else if (to==='K') out = C + 273.15;
-  else return NaN;
-
-  return out;
-}
-
-function convert(){
-  const raw = valueInput.value.trim();
-  const normalized = raw
-    .replace(',', '.')
-    .replace(/[^\d\.\-\+eE]/g, '');
-
-  const val = Number(normalized);
-
-  const catKey = categorySel.value;
-  const cat = unitCategories[catKey];
-
-  if (!raw || isNaN(val)){
-    showError('لطفاً عدد معتبری وارد کنید.');
-    return;
-  }
-
-  if (val < 0 && cat.allowNegative === false) {
-    showError(`برای دسته «${cat.title}»، مقدار منفی مجاز نیست.`);
-    return;
-  }
-
-  const from = fromUnitSel.value;
-  const to   = toUnitSel.value;
-
-  if (!cat || !cat.units[from] || !cat.units[to]){
-    showError('واحد انتخاب شده در این دسته پشتیبانی نمی‌شود.');
-    return;
-  }
-
-  let converted;
-  if (catKey === 'temperature' || cat.units[from].custom || cat.units[to].custom){
-    converted = convertTemperature(val, from, to);
-  } else {
-    const baseFrom = val * cat.units[from].factor;
-    converted = baseFrom / cat.units[to].factor;
-  }
-
-  if (!isFinite(converted)){
-    showError('خطا در محاسبه: نتیجه نامعتبر است.');
-    return;
-  }
-
-  const fromLabel = cat.units[from].label;
-  const toLabel   = cat.units[to].label;
-
-  resultValue.textContent = `${formatNumber(converted)} ${toLabel}`;
-  resultMeta.textContent  = `${formatNumber(val)} ${fromLabel} ≈ ${formatNumber(converted)} ${toLabel}`;
-  statusPill.innerHTML = '<i class="fas fa-check-circle"></i> تبدیل انجام شد';
-  statusPill.style.color = 'var(--ok)';
-
-  inputPreview.textContent = `${formatNumber(val)} ${fromLabel}`;
-
-  let ratioText = '—';
-  if (val !== 0) {
-    const ratio = converted / val;
-    if (isFinite(ratio)) {
-      ratioText = `۱ ${fromLabel} ≈ ${formatNumber(ratio)} ${toLabel}`;
-    }
-  }
-  ratioPreview.textContent = ratioText;
-
-  resultValue.classList.remove('show');
-  resultMeta.classList.remove('show');
-  miniInput.classList.add('active');
-  miniRatio.classList.add('active');
-  void resultValue.offsetWidth;
-
-  setTimeout(()=>{
-    resultValue.classList.add('show');
-    resultMeta.classList.add('show');
-  },10);
-
-  vibrate(12);
-}
-
-function showError(message){
-  errorBox.classList.add('show-error');
-  errorBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-  resultValue.textContent='—';
-  resultMeta.textContent='لطفاً ورودی و تنظیمات را بررسی کنید.';
-  statusPill.innerHTML = '<i class="fas fa-exclamation-triangle"></i> خطا';
-  statusPill.style.color = 'var(--danger)';
-  inputPreview.textContent='—';
-  ratioPreview.textContent='—';
-  resultValue.classList.remove('show');
-  resultMeta.classList.remove('show');
-  miniInput.classList.remove('active');
-  miniRatio.classList.remove('active');
-}
-
-function setStatus(text, color=''){
-  statusPill.innerHTML = text;
-  statusPill.style.color = color;
-}
-
-function resetAll(){
-  valueInput.value='';
-  errorBox.classList.remove('show-error');
-  resultValue.textContent='—';
-  resultMeta.textContent='ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.';
-  statusPill.innerHTML = '<i class="fas fa-check-circle"></i> آماده';
-  statusPill.style.color = '';
-  inputPreview.textContent='—';
-  ratioPreview.textContent='—';
-  resultValue.classList.remove('show');
-  resultMeta.classList.remove('show');
-  miniInput.classList.remove('active');
-  miniRatio.classList.remove('active');
-  vibrate(8);
-}
-
-function swapUnits(){
-  const from = fromUnitSel.value;
-  const to   = toUnitSel.value;
-  fromUnitSel.value = to;
-  toUnitSel.value   = from;
-  convert();
-  vibrate(10);
-}
-
-function applyTheme(theme){
-  const toggle = document.getElementById('themeToggle');
-  const label = document.getElementById('themeLabel');
-  if (theme === 'light'){
-    document.body.classList.add('light');
-    toggle.innerHTML = '<i class="fas fa-sun"></i>';
-    label.textContent='حالت روشن';
-  } else {
-    document.body.classList.remove('light');
-    toggle.innerHTML = '<i class="fas fa-moon"></i>';
-    label.textContent='حالت تیره';
-  }
-}
-
-function initTheme(){
-  const saved = localStorage.getItem('unitConverterTheme') || 'dark';
-  applyTheme(saved);
-}
-
-const themeToggle = document.getElementById('themeToggle');
-const themeLabel = document.getElementById('themeLabel');
-themeToggle.addEventListener('click', ()=>{
-  const isLight = document.body.classList.toggle('light');
-  const theme = isLight ? 'light' : 'dark';
-  localStorage.setItem('unitConverterTheme', theme);
-  applyTheme(theme);
-  vibrate(15);
-});
-
-resetBtn.addEventListener('click', resetAll);
-swapBtn.addEventListener('click', swapUnits);
-
-valueInput.addEventListener('input', ()=>{
-  const currentValue = valueInput.value;
-  const cleanedValue = currentValue
-    .replace(',', '.')
-    .replace(/[^0-9.\-+\eE]/g, '');
-
-  if (valueInput.value !== cleanedValue) {
-    valueInput.value = cleanedValue;
-  }
-
-  if (valueInput.value.trim() !== '') {
-    convert();
-  } else {
-    resetAll();
-  }
-});
-
-fromUnitSel.addEventListener('change', convert);
-toUnitSel.addEventListener('change', convert);
-categorySel.addEventListener('change', ()=>{
-  const catKey = categorySel.value;
-  populateUnitsForCategory(catKey);
-  if (valueInput.value.trim() !== '') {
-    convert();
-  } else {
-    resetAll();
-  }
-});
-
-window.addEventListener('DOMContentLoaded', ()=>{
-  populateCategories();
-  initTheme();
-});
+document.addEventListener('contextmenu',e=>{e.preventDefault()});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='c'){const t=e.target;if(t.tagName!=='INPUT'&&t.tagName!=='TEXTAREA'&&t.tagName!=='SELECT'){e.preventDefault()}}});
+const $=id=>document.getElementById(id), qs=(s,p=document)=>p.querySelector(s);
+const aboutModal=$('aboutModal'),helpModal=$('helpModal');
+$('aboutBtn').onclick=()=>{aboutModal.classList.add('show');document.body.style.overflow='hidden'};
+$('helpBtn').onclick=()=>{helpModal.classList.add('show');document.body.style.overflow='hidden'};
+$('closeAbout').onclick=()=>{aboutModal.classList.remove('show');document.body.style.overflow=''};
+$('closeHelp').onclick=()=>{helpModal.classList.remove('show');document.body.style.overflow=''};
+aboutModal.onclick=e=>{if(e.target===aboutModal){aboutModal.classList.remove('show');document.body.style.overflow=''}};
+helpModal.onclick=e=>{if(e.target===helpModal){helpModal.classList.remove('show');document.body.style.overflow=''}};
+window.onload=()=>setTimeout(()=>$('preloader').classList.add('hide'),1800);
+const categoriesAllowNegative=['temperature','angle','charge','voltage','current'];
+const unitCategories={length:{title:'طول',baseLabel:'متر',allowNegative:!1,units:{nm:{label:'نانومتر (nm)',factor:1e-9},um:{label:'میکرومتر (µm)',factor:1e-6},mm:{label:'میلی‌متر (mm)',factor:1e-3},cm:{label:'سانتی‌متر (cm)',factor:1e-2},dm:{label:'دسی‌متر (dm)',factor:.1},m:{label:'متر (m)',factor:1},dam:{label:'دکامتر (dam)',factor:10},hm:{label:'هکتومتر (hm)',factor:100},km:{label:'کیلومتر (km)',factor:1e3},in:{label:'اینچ (inch)',factor:.0254},ft:{label:'فوت (ft)',factor:.3048},yd:{label:'یارد (yd)',factor:.9144},mi:{label:'مایل (mile)',factor:1609.34},nmi:{label:'مایل دریایی (nmi)',factor:1852},au:{label:'واحد نجومی (au)',factor:149597870700},ly:{label:'سال نوری (ly)',factor:9460730472580800},pc:{label:'پارسک (pc)',factor:3.08567758e16}}},area:{title:'مساحت',baseLabel:'متر مربع',allowNegative:!1,units:{mm2:{label:'میلی‌متر مربع (mm²)',factor:1e-6},cm2:{label:'سانتی‌متر مربع (cm²)',factor:1e-4},dm2:{label:'دسی‌متر مربع (dm²)',factor:.01},m2:{label:'متر مربع (m²)',factor:1},dam2:{label:'دکامتر مربع (dam²)',factor:100},hm2:{label:'هکتومتر مربع (hm²)',factor:1e4},km2:{label:'کیلومتر مربع (km²)',factor:1e6},ft2:{label:'فوت مربع (ft²)',factor:.092903},yd2:{label:'یارد مربع (yd²)',factor:.836127},acre:{label:'آکر (acre)',factor:4046.856},ha:{label:'هکتار (ha)',factor:1e4}}},volume:{title:'حجم',baseLabel:'متر مکعب',allowNegative:!1,units:{ml:{label:'میلی‌لیتر (mL)',factor:1e-6},cl:{label:'سانتی‌لیتر (cL)',factor:1e-5},dl:{label:'دسی‌لیتر (dL)',factor:1e-4},l:{label:'لیتر (L)',factor:1e-3},m3:{label:'متر مکعب (m³)',factor:1},cm3:{label:'سانتی‌متر مکعب (cm³)',factor:1e-6},dm3:{label:'دسی‌متر مکعب (dm³)',factor:.001},ft3:{label:'فوت مکعب (ft³)',factor:.0283168},in3:{label:'اینچ مکعب (in³)',factor:1.6387e-5},gal:{label:'گالن (US gal)',factor:.00378541},qt:{label:'کوارت (qt)',factor:.000946353},barrel:{label:'بشکه (barrel)',factor:.158987}}},mass:{title:'جرم/وزن',baseLabel:'کیلوگرم',allowNegative:!1,units:{ug:{label:'میکروگرم (µg)',factor:1e-9},mg:{label:'میلی‌گرم (mg)',factor:1e-6},cg:{label:'سانتی‌گرم (cg)',factor:1e-5},dg:{label:'دسی‌گرم (dg)',factor:1e-4},g:{label:'گرم (g)',factor:1e-3},dag:{label:'دکاگرم (dag)',factor:.01},hg:{label:'هکتوگرم (hg)',factor:.1},kg:{label:'کیلوگرم (kg)',factor:1},t:{label:'تن (t)',factor:1e3},lb:{label:'پوند (lb)',factor:.453592},oz:{label:'اونس (oz)',factor:.0283495},st:{label:'استون (st)',factor:6.35029},slug:{label:'اسلاگ (slug)',factor:14.5939}}},time:{title:'زمان',baseLabel:'ثانیه',allowNegative:!1,units:{ms:{label:'میلی‌ثانیه (ms)',factor:1e-3},s:{label:'ثانیه (s)',factor:1},min:{label:'دقیقه (min)',factor:60},h:{label:'ساعت (h)',factor:3600},day:{label:'روز',factor:86400},week:{label:'هفته',factor:604800},month:{label:'ماه (۳۰ روز)',factor:2592000},year:{label:'سال (۳۶۵ روز)',factor:31536000},decade:{label:'دهه',factor:315360000},century:{label:'قرن',factor:3153600000},millennium:{label:'هزاره',factor:31536000000}}},speed:{title:'سرعت',baseLabel:'متر بر ثانیه',allowNegative:!1,units:{mps:{label:'متر بر ثانیه (m/s)',factor:1},kmh:{label:'کیلومتر بر ساعت (km/h)',factor:1/3.6},mph:{label:'مایل بر ساعت (mph)',factor:.44704},kn:{label:'گره دریایی (kn)',factor:.514444},fts:{label:'فوت بر ثانیه (ft/s)',factor:.3048},c:{label:'سرعت نور (c)',factor:299792458}}},temperature:{title:'دما',baseLabel:'سلسیوس',allowNegative:!0,units:{C:{label:'درجه سلسیوس (°C)',custom:!0},F:{label:'درجه فارنهایت (°F)',custom:!0},K:{label:'کلوین (K)',custom:!0}}},pressure:{title:'فشار',baseLabel:'پاسکال',allowNegative:!1,units:{Pa:{label:'پاسکال (Pa)',factor:1},kPa:{label:'کیلوپاسکال (kPa)',factor:1e3},MPa:{label:'مگاپاسکال (MPa)',factor:1e6},bar:{label:'بار (bar)',factor:1e5},mbar:{label:'میلی‌بار (mbar)',factor:100},atm:{label:'اتمسفر (atm)',factor:101325},psi:{label:'پوند بر اینچ مربع (psi)',factor:6894.76},Torr:{label:'تور (Torr)',factor:133.322},mmHg:{label:'میلی‌متر جیوه (mmHg)',factor:133.322}}},energy:{title:'انرژی',baseLabel:'ژول',allowNegative:!1,units:{J:{label:'ژول (J)',factor:1},kJ:{label:'کیلوژول (kJ)',factor:1e3},MJ:{label:'مگاژول (MJ)',factor:1e6},cal:{label:'کالری (cal)',factor:4.184},kcal:{label:'کیلوکالری (kcal)',factor:4184},Wh:{label:'وات‌ساعت (Wh)',factor:3600},kWh:{label:'کیلووات‌ساعت (kWh)',factor:3.6e6},MWh:{label:'مگاوات‌ساعت (MWh)',factor:3.6e9},eV:{label:'الکترون‌ولت (eV)',factor:1.602176634e-19},BTU:{label:'بی‌تی‌یو (BTU)',factor:1055.06}}},power:{title:'توان',baseLabel:'وات',allowNegative:!1,units:{W:{label:'وات (W)',factor:1},kW:{label:'کیلووات (kW)',factor:1e3},MW:{label:'مگاوات (MW)',factor:1e6},GW:{label:'گیگاوات (GW)',factor:1e9},hp:{label:'اسب بخار (hp)',factor:745.7},'BTU/h':{label:'بی‌تی‌یو بر ساعت (BTU/h)',factor:.293071}}},data:{title:'حجم داده',baseLabel:'بیت',allowNegative:!1,units:{bit:{label:'بیت (bit)',factor:1},B:{label:'بایت (B)',factor:8},KB:{label:'کیلوبایت (KB)',factor:8*1024},MB:{label:'مگابایت (MB)',factor:8*1024**2},GB:{label:'گیگابایت (GB)',factor:8*1024**3},TB:{label:'ترابایت (TB)',factor:8*1024**4},PB:{label:'پتابایت (PB)',factor:8*1024**5},Kib:{label:'کیبی‌بیت (Kibit)',factor:1024},MiB:{label:'مبی‌بایت (MiB)',factor:8*1024**2}}},frequency:{title:'فرکانس',baseLabel:'هرتز',allowNegative:!1,units:{Hz:{label:'هرتز (Hz)',factor:1},kHz:{label:'کیلوهرتز (kHz)',factor:1e3},MHz:{label:'مگاهرتز (MHz)',factor:1e6},GHz:{label:'گیگاهرتز (GHz)',factor:1e9},THz:{label:'تراهرتز (THz)',factor:1e12}}},angle:{title:'زاویه',baseLabel:'درجه',allowNegative:!0,units:{deg:{label:'درجه (°)',factor:1},rad:{label:'رادیان (rad)',factor:180/Math.PI},grad:{label:'گراد (gon)',factor:.9},arcmin:{label:'دقیقه قوسی (′)',factor:1/60},arcsec:{label:'ثانیه قوسی (″)',factor:1/3600},rev:{label:'دور (rev)',factor:360}}},force:{title:'نیرو',baseLabel:'نیوتن',allowNegative:!1,units:{N:{label:'نیوتن (N)',factor:1},kN:{label:'کیلونیوتن (kN)',factor:1e3},MN:{label:'مگانیوتن (MN)',factor:1e6},kgf:{label:'کیلوگرم-نیرو (kgf)',factor:9.80665},lbf:{label:'پوند-نیرو (lbf)',factor:4.44822},dyn:{label:'داین (dyn)',factor:1e-5}}},torque:{title:'گشتاور',baseLabel:'نیوتن متر',allowNegative:!1,units:{Nm:{label:'نیوتن‌متر (N·m)',factor:1},kNm:{label:'کیلونیوتن‌متر (kN·m)',factor:1e3},MNm:{label:'مگانیوتن‌متر (MN·m)',factor:1e6},lbf_ft:{label:'پوند-فوت (lbf·ft)',factor:1.35582},kgf_m:{label:'کیلوگرم-نیرو متر (kgf·m)',factor:9.80665}}},density:{title:'چگالی',baseLabel:'کیلوگرم بر متر مکعب',allowNegative:!1,units:{kg_m3:{label:'kg/m³',factor:1},g_cm3:{label:'g/cm³',factor:1e3},lb_ft3:{label:'lb/ft³',factor:16.0185},lb_in3:{label:'lb/in³',factor:27679.9}}},flow:{title:'دبی حجمی',baseLabel:'متر مکعب بر ثانیه',allowNegative:!1,units:{m3_s:{label:'m³/s',factor:1},L_s:{label:'L/s',factor:1e-3},L_min:{label:'L/min',factor:1e-3/60},m3_h:{label:'m³/h',factor:1/3600},ft3_s:{label:'ft³/s',factor:.0283168},gal_min:{label:'gal/min',factor:6.30902e-5}}},viscosity:{title:'ویسکوزیته دینامیکی',baseLabel:'پاسکال-ثانیه',allowNegative:!1,units:{Pa_s:{label:'Pa·s',factor:1},mPa_s:{label:'mPa·s',factor:.001},cP:{label:'سانتی‌پواز (cP)',factor:.001},P:{label:'پواز (P)',factor:.1}}},charge:{title:'بار الکتریکی',baseLabel:'کولن',allowNegative:!0,units:{C:{label:'کولن (C)',factor:1},mC:{label:'میلی‌کولن (mC)',factor:1e-3},uC:{label:'میکروکولن (µC)',factor:1e-6},nC:{label:'نانوکولن (nC)',factor:1e-9},Ah:{label:'آمپر ساعت (Ah)',factor:3600},mAh:{label:'میلی‌آمپر ساعت (mAh)',factor:3.6}}},voltage:{title:'ولتاژ',baseLabel:'ولت',allowNegative:!0,units:{V:{label:'ولت (V)',factor:1},kV:{label:'کیلوولت (kV)',factor:1e3},mV:{label:'میلی‌ولت (mV)',factor:1e-3},uV:{label:'میکروولت (µV)',factor:1e-6}}},current:{title:'جریان الکتریکی',baseLabel:'آمپر',allowNegative:!0,units:{A:{label:'آمپر (A)',factor:1},mA:{label:'میلی‌آمپر (mA)',factor:1e-3},uA:{label:'میکروآمپر (µA)',factor:1e-6},kA:{label:'کیلوآمپر (kA)',factor:1e3}}},resistance:{title:'مقاومت الکتریکی',baseLabel:'اهم',allowNegative:!1,units:{ohm:{label:'اهم (Ω)',factor:1},kOhm:{label:'کیلو‌اهم (kΩ)',factor:1e3},MOhm:{label:'مگا‌اهم (MΩ)',factor:1e6}}},capacitance:{title:'ظرفیت خازنی',baseLabel:'فاراد',allowNegative:!1,units:{F:{label:'فاراد (F)',factor:1},mF:{label:'میلی‌فاراد (mF)',factor:1e-3},uF:{label:'میکرو‌فاراد (µF)',factor:1e-6},nF:{label:'نانوفاراد (nF)',factor:1e-9},pF:{label:'پیکوفاراد (pF)',factor:1e-12}}},inductance:{title:'اندوکتانس',baseLabel:'هنری',allowNegative:!1,units:{H:{label:'هنری (H)',factor:1},mH:{label:'میلی‌هنری (mH)',factor:1e-3},uH:{label:'میکروهنری (µH)',factor:1e-6},nH:{label:'نانوهنری (nH)',factor:1e-9}}},illuminance:{title:'روشنایی (تابندگی سطحی)',baseLabel:'لوکس',allowNegative:!1,units:{lx:{label:'لوکس (lx)',factor:1},fc:{label:'فوت-کندل (fc)',factor:10.7639}}},radioactivity:{title:'پرتوزایی',baseLabel:'بکرل',allowNegative:!1,units:{Bq:{label:'بکرل (Bq)',factor:1},kBq:{label:'کیلوبکرل (kBq)',factor:1e3},MBq:{label:'مگابکرل (MBq)',factor:1e6},GBq:{label:'گیگابکرل (GBq)',factor:1e9},Ci:{label:'کوری (Ci)',factor:3.7e10},mCi:{label:'میلی‌کوری (mCi)',factor:3.7e7}}},luminous_flux:{title:'شار نوری',baseLabel:'لومن',allowNegative:!1,units:{lm:{label:'لومن (lm)',factor:1},cd_sr:{label:'کاندلا-استرادیان (cd·sr)',factor:1}}},luminous_intensity:{title:'شدت نور',baseLabel:'کاندلا',allowNegative:!1,units:{cd:{label:'کاندلا (cd)',factor:1},mcd:{label:'میلی‌کاندلا (mcd)',factor:.001}}},magnetic_flux:{title:'شار مغناطیسی',baseLabel:'وبر',allowNegative:!1,units:{Wb:{label:'وبر (Wb)',factor:1},mWb:{label:'میلی‌وبر (mWb)',factor:.001},uWb:{label:'میکرووبر (µWb)',factor:1e-6},Mx:{label:'مکسول (Mx)',factor:1e-8}}},magnetic_flux_density:{title:'چگالی شار مغناطیسی',baseLabel:'تسلا',allowNegative:!1,units:{T:{label:'تسلا (T)',factor:1},mT:{label:'میلی‌تسلا (mT)',factor:.001},uT:{label:'میکروتسلا (µT)',factor:1e-6},G:{label:'گاوس (G)',factor:1e-4}}},angle_solid:{title:'زاویه فضایی',baseLabel:'استرادیان',allowNegative:!1,units:{sr:{label:'استرادیان (sr)',factor:1},deg2:{label:'درجه مربع (deg²)',factor:Math.PI**2/32400}}},acceleration:{title:'شتاب',baseLabel:'متر بر مجذور ثانیه',allowNegative:!1,units:{m_s2:{label:'m/s²',factor:1},cm_s2:{label:'cm/s²',factor:.01},g:{label:'g (شتاب گرانش)',factor:9.80665},ft_s2:{label:'ft/s²',factor:.3048}}},mass_flow:{title:'دبی جرمی',baseLabel:'کیلوگرم بر ثانیه',allowNegative:!1,units:{kg_s:{label:'kg/s',factor:1},g_s:{label:'g/s',factor:.001},kg_h:{label:'kg/h',factor:1/3600},lb_s:{label:'lb/s',factor:.453592},lb_h:{label:'lb/h',factor:.453592/3600}}},stress:{title:'تنش',baseLabel:'پاسکال',allowNegative:!1,units:{Pa:{label:'پاسکال (Pa)',factor:1},kPa:{label:'کیلوپاسکال (kPa)',factor:1e3},MPa:{label:'مگاپاسکال (MPa)',factor:1e6},GPa:{label:'گیگاپاسکال (GPa)',factor:1e9},psi:{label:'psi',factor:6894.76}}},strain:{title:'کرنش',baseLabel:'بی‌بعد',allowNegative:!0,units:{m_m:{label:'m/m',factor:1},um_m:{label:'µm/m',factor:1e-6},in_in:{label:'in/in',factor:1},pc:{label:'% (درصد)',factor:.01},ppm:{label:'ppm',factor:1e-6}}},young_modulus:{title:'مدول یانگ',baseLabel:'پاسکال',allowNegative:!1,units:{Pa:{label:'پاسکال (Pa)',factor:1},kPa:{label:'کیلوپاسکال (kPa)',factor:1e3},MPa:{label:'مگاپاسکال (MPa)',factor:1e6},GPa:{label:'گیگاپاسکال (GPa)',factor:1e9},psi:{label:'psi',factor:6894.76}}},moment_inertia:{title:'گشتاور اینرسی',baseLabel:'کیلوگرم متر مربع',allowNegative:!1,units:{kg_m2:{label:'kg·m²',factor:1},g_cm2:{label:'g·cm²',factor:1e-7},lb_ft2:{label:'lb·ft²',factor:.0421401},slug_ft2:{label:'slug·ft²',factor:1.35582}}},angular_momentum:{title:'تکانه زاویه‌ای',baseLabel:'کیلوگرم متر مربع بر ثانیه',allowNegative:!1,units:{kg_m2_s:{label:'kg·m²/s',factor:1},g_cm2_s:{label:'g·cm²/s',factor:1e-7},lb_ft2_s:{label:'lb·ft²/s',factor:.0421401}}},thermal_conductivity:{title:'رسانایی گرمایی',baseLabel:'وات بر متر-کلوین',allowNegative:!1,units:{W_mK:{label:'W/(m·K)',factor:1},W_cmK:{label:'W/(cm·K)',factor:100},BTU_h_ft_F:{label:'BTU/(h·ft·°F)',factor:1.73073}}},specific_heat:{title:'ظرفیت گرمایی ویژه',baseLabel:'ژول بر کیلوگرم-کلوین',allowNegative:!1,units:{J_kgK:{label:'J/(kg·K)',factor:1},kJ_kgK:{label:'kJ/(kg·K)',factor:1e3},cal_gC:{label:'cal/(g·°C)',factor:4184},BTU_lbF:{label:'BTU/(lb·°F)',factor:4184}}},enthalpy:{title:'آنتالپی',baseLabel:'ژول بر کیلوگرم',allowNegative:!1,units:{J_kg:{label:'J/kg',factor:1},kJ_kg:{label:'kJ/kg',factor:1e3},cal_g:{label:'cal/g',factor:4184},BTU_lb:{label:'BTU/lb',factor:2326}}},entropy:{title:'آنتروپی',baseLabel:'ژول بر کیلوگرم-کلوین',allowNegative:!1,units:{J_kgK:{label:'J/(kg·K)',factor:1},kJ_kgK:{label:'kJ/(kg·K)',factor:1e3},cal_gC:{label:'cal/(g·°C)',factor:4184}}},absorbed_dose:{title:'دز جذبی',baseLabel:'گری',allowNegative:!1,units:{Gy:{label:'گری (Gy)',factor:1},mGy:{label:'میلی‌گری (mGy)',factor:.001},rad:{label:'راد (rad)',factor:.01}}},equivalent_dose:{title:'دز معادل',baseLabel:'زیورت',allowNegative:!1,units:{Sv:{label:'زیورت (Sv)',factor:1},mSv:{label:'میلی‌زیورت (mSv)',factor:.001},rem:{label:'رم (rem)',factor:.01}}},refractive_index:{title:'ضریب شکست',baseLabel:'بی‌بعد',allowNegative:!1,units:{n:{label:'n (بی‌بعد)',factor:1}}},speed_of_sound:{title:'سرعت صوت',baseLabel:'متر بر ثانیه',allowNegative:!1,units:{m_s:{label:'m/s',factor:1},km_h:{label:'km/h',factor:1/3.6},mph:{label:'mph',factor:.44704},ft_s:{label:'ft/s',factor:.3048},kn:{label:'گره (kn)',factor:.514444}}},current_density:{title:'چگالی جریان',baseLabel:'آمپر بر متر مربع',allowNegative:!1,units:{A_m2:{label:'A/m²',factor:1},A_cm2:{label:'A/cm²',factor:1e4},A_in2:{label:'A/in²',factor:1550}}},kinematic_viscosity:{title:'ویسکوزیته سینماتیکی',baseLabel:'متر مربع بر ثانیه',allowNegative:!1,units:{m2_s:{label:'m²/s',factor:1},cm2_s:{label:'cm²/s',factor:1e-4},st:{label:'استوکس (St)',factor:1e-4},cSt:{label:'سانتی‌استوکس (cSt)',factor:1e-6}}},permittivity:{title:'گذردهی الکتریکی',baseLabel:'فاراد بر متر',allowNegative:!1,units:{F_m:{label:'F/m',factor:1},pF_m:{label:'pF/m',factor:1e-12}}},permeability:{title:'تراوایی مغناطیسی',baseLabel:'هنری بر متر',allowNegative:!1,units:{H_m:{label:'H/m',factor:1},uH_m:{label:'µH/m',factor:1e-6}}},magnetic_field_intensity:{title:'شدت میدان مغناطیسی',baseLabel:'آمپر بر متر',allowNegative:!1,units:{A_m:{label:'A/m',factor:1},Oe:{label:'اورستد (Oe)',factor:79.5775}}},electrical_conductivity:{title:'رسانایی الکتریکی',baseLabel:'زیمنس بر متر',allowNegative:!1,units:{S_m:{label:'S/m',factor:1},mS_m:{label:'mS/m',factor:.001},uS_m:{label:'µS/m',factor:1e-6}}},wavenumber:{title:'عدد موج',baseLabel:'متر به توان -۱',allowNegative:!1,units:{"m-1":{label:'m⁻¹',factor:1},"cm-1":{label:'cm⁻¹',factor:100}}},wavelength:{title:'طول موج',baseLabel:'متر',allowNegative:!1,units:{m:{label:'متر (m)',factor:1},cm:{label:'سانتی‌متر (cm)',factor:.01},mm:{label:'میلی‌متر (mm)',factor:.001},um:{label:'میکرومتر (µm)',factor:1e-6},nm:{label:'نانومتر (nm)',factor:1e-9},A:{label:'آنگستروم (Å)',factor:1e-10}}},angular_frequency:{title:'فرکانس زاویه‌ای',baseLabel:'رادیان بر ثانیه',allowNegative:!1,units:{rad_s:{label:'rad/s',factor:1},deg_s:{label:'deg/s',factor:Math.PI/180}}},period:{title:'دوره تناوب',baseLabel:'ثانیه',allowNegative:!1,units:{s:{label:'ثانیه (s)',factor:1},ms:{label:'میلی‌ثانیه (ms)',factor:.001},us:{label:'میکروثانیه (µs)',factor:1e-6},ns:{label:'نانوثانیه (ns)',factor:1e-9}}}};
+const categoryOrder=['length','area','volume','mass','time','speed','temperature','pressure','energy','power','data','frequency','angle','force','torque','density','flow','viscosity','charge','voltage','current','resistance','capacitance','inductance','illuminance','radioactivity','luminous_flux','luminous_intensity','magnetic_flux','magnetic_flux_density','angle_solid','acceleration','mass_flow','stress','strain','young_modulus','moment_inertia','angular_momentum','thermal_conductivity','specific_heat','enthalpy','entropy','absorbed_dose','equivalent_dose','refractive_index','speed_of_sound','current_density','kinematic_viscosity','permittivity','permeability','magnetic_field_intensity','electrical_conductivity','wavenumber','wavelength','angular_frequency','period'];
+function fmt(n){if(!isFinite(n))return'نامعتبر';const a=Math.abs(n);if(a===0)return'۰';if(a>=1e9||a<=1e-7)return n.toLocaleString('fa-IR',{notation:'scientific',maximumFractionDigits:3,minimumExponentDigits:2}).replace(/e\+?(-?\d+)/,'×10^$1');return n.toLocaleString('fa-IR',{maximumFractionDigits:4,useGrouping:!0})}
+function vib(t=15){if(navigator.vibrate)navigator.vibrate(t)}
+const pickerOverlay=$('pickerOverlay'),pickerTitle=$('pickerTitle'),pickerSearch=$('pickerSearch'),pickerList=$('pickerList'),pickerClose=$('pickerClose');
+let pickerItems=[],pickerOnSelect=null,pickerCurrentKey='';
+function openPicker(title,items,currentValue,onSelect){pickerItems=items;pickerOnSelect=onSelect;pickerCurrentKey=currentValue||(items.length?items[0].value:'');pickerTitle.innerHTML=`<i class="fas fa-list"></i> ${title}`;pickerSearch.value='';renderPickerItems();pickerOverlay.classList.add('show');document.body.style.overflow='hidden'}
+function closePicker(){pickerOverlay.classList.remove('show');document.body.style.overflow=''}
+function renderPickerItems(){const q=pickerSearch.value.trim().toLowerCase(),filtered=pickerItems.filter(i=>(i.label||'').toLowerCase().includes(q)||(i.sub||'').toLowerCase().includes(q));if(!filtered.length){pickerList.innerHTML='<div class="floating-picker-empty">موردی یافت نشد</div>';return}pickerList.innerHTML='';filtered.forEach(i=>{const d=document.createElement('div');d.className='floating-picker-item'+(i.value===pickerCurrentKey?' active':'');d.innerHTML=`<span class="item-label">${i.label}</span>${i.sub?`<span class="item-sub">${i.sub}</span>`:''}`;d.onclick=()=>{if(pickerOnSelect)requestAnimationFrame(()=>pickerOnSelect(i.value));closePicker()};pickerList.appendChild(d)})}
+pickerSearch.oninput=renderPickerItems;pickerClose.onclick=closePicker;pickerOverlay.onclick=e=>{if(e.target===pickerOverlay)closePicker()};document.onkeydown=e=>{if(e.key==='Escape'&&pickerOverlay.classList.contains('show'))closePicker()};
+let currentCategory='length',currentFrom='m',currentTo='cm';
+function getCategoryItems(){return categoryOrder.map(k=>({value:k,label:unitCategories[k].title}))}
+function getUnitItems(catKey){const c=unitCategories[catKey];return c?Object.entries(c.units).map(([k,v])=>({value:k,label:v.label})):[]}
+function updTrigger(el,label){const s=el.querySelector('.sel-label');if(s)s.innerHTML=label}
+function populateUnits(catKey){const items=getUnitItems(catKey);if(!items.length)return;if(!items.some(i=>i.value===currentFrom))currentFrom=items[0].value;if(!items.some(i=>i.value===currentTo))currentTo=items.length>1?items[1].value:items[0].value;const fl=items.find(i=>i.value===currentFrom)?.label||items[0].label,tl=items.find(i=>i.value===currentTo)?.label||items[0].label;updTrigger($('fromTrigger'),fl);updTrigger($('toTrigger'),tl)}
+function populateCategory(){const items=getCategoryItems(),cl=items.find(i=>i.value===currentCategory)?.label||items[0].label;updTrigger($('categoryTrigger'),cl);populateUnits(currentCategory)}
+$('categoryTrigger').onclick=()=>{const items=getCategoryItems();openPicker('انتخاب دسته واحد',items,currentCategory,v=>{currentCategory=v;populateCategory();if(valueInput.value.trim())convert();else resetAll()})};
+$('fromTrigger').onclick=()=>{const items=getUnitItems(currentCategory);openPicker('انتخاب واحد مبدأ',items,currentFrom,v=>{currentFrom=v;populateUnits(currentCategory);if(valueInput.value.trim())convert()})};
+$('toTrigger').onclick=()=>{const items=getUnitItems(currentCategory);openPicker('انتخاب واحد مقصد',items,currentTo,v=>{currentTo=v;populateUnits(currentCategory);if(valueInput.value.trim())convert()})};
+const valueInput=$('valueInput'),resetBtn=$('resetBtn'),swapBtn=$('swapBtn'),copyBtn=$('copyBtn'),errorBox=$('errorBox'),resultValue=$('resultValue'),resultMeta=$('resultMeta'),statusPill=$('statusPill'),inputPreview=$('inputPreview'),ratioPreview=$('ratioPreview'),miniInput=$('miniInput'),miniRatio=$('miniRatio'),signPlus=$('signPlus'),signMinus=$('signMinus');
+let convertPending=!1;
+function convertTemp(v,f,t){let c;if(f==='C')c=v;else if(f==='F')c=(v-32)*5/9;else if(f==='K')c=v-273.15;else return NaN;let o;if(t==='C')o=c;else if(t==='F')o=c*9/5+32;else if(t==='K')o=c+273.15;else return NaN;return o}
+function doConvert(){const raw=valueInput.value.trim(),norm=raw.replace(',','.').replace(/[^\d\.\-\+eE]/g,''),val=Number(norm),cat=unitCategories[currentCategory];if(!raw||isNaN(val)){showErr('لطفاً عدد معتبری وارد کنید.');return}if(val<0&&cat.allowNegative===!1){showErr(`برای دسته «${cat.title}»، مقدار منفی مجاز نیست.`);return}const from=currentFrom,to=currentTo;if(!cat||!cat.units[from]||!cat.units[to]){showErr('واحد انتخاب شده در این دسته پشتیبانی نمی‌شود.');return}let converted;if(currentCategory==='temperature'||cat.units[from].custom||cat.units[to].custom){converted=convertTemp(val,from,to)}else{converted=val*cat.units[from].factor/cat.units[to].factor}if(!isFinite(converted)){showErr('خطا در محاسبه: نتیجه نامعتبر است.');return}const fl=cat.units[from].label,tl=cat.units[to].label;resultValue.textContent=`${fmt(converted)} ${tl}`;resultMeta.textContent=`${fmt(val)} ${fl} ≈ ${fmt(converted)} ${tl}`;statusPill.innerHTML='<i class="fas fa-check-circle"></i> تبدیل انجام شد';statusPill.style.color='var(--ok)';inputPreview.textContent=`${fmt(val)} ${fl}`;if(val!==0){const r=converted/val;if(isFinite(r))ratioPreview.textContent=`۱ ${fl} ≈ ${fmt(r)} ${tl}`;else ratioPreview.textContent='—'}else ratioPreview.textContent='—';resultValue.classList.remove('show');resultMeta.classList.remove('show');miniInput.classList.add('active');miniRatio.classList.add('active');void resultValue.offsetWidth;requestAnimationFrame(()=>{resultValue.classList.add('show');resultMeta.classList.add('show')});vib(10)}
+function convert(){if(convertPending)return;convertPending=!0;requestAnimationFrame(()=>{doConvert();convertPending=!1})}
+function showErr(msg){errorBox.classList.add('show-error');errorBox.innerHTML=`<i class="fas fa-exclamation-circle"></i> ${msg}`;resultValue.textContent='—';resultMeta.textContent='لطفاً ورودی و تنظیمات را بررسی کنید.';statusPill.innerHTML='<i class="fas fa-exclamation-triangle"></i> خطا';statusPill.style.color='var(--danger)';inputPreview.textContent='—';ratioPreview.textContent='—';resultValue.classList.remove('show');resultMeta.classList.remove('show');miniInput.classList.remove('active');miniRatio.classList.remove('active')}
+function resetAll(){valueInput.value='';errorBox.classList.remove('show-error');resultValue.textContent='—';resultMeta.textContent='ابتدا مقداری را وارد و دسته و واحدها را انتخاب کنید.';statusPill.innerHTML='<i class="fas fa-check-circle"></i> آماده';statusPill.style.color='';inputPreview.textContent='—';ratioPreview.textContent='—';resultValue.classList.remove('show');resultMeta.classList.remove('show');miniInput.classList.remove('active');miniRatio.classList.remove('active');vib(8)}
+function swapUnits(){const t=currentFrom;currentFrom=currentTo;currentTo=t;populateUnits(currentCategory);if(valueInput.value.trim())convert()}
+resetBtn.onclick=resetAll;swapBtn.onclick=swapUnits;
+copyBtn.onclick=()=>{const t=resultValue.textContent;if(t&&t!=='—'){navigator.clipboard.writeText(t).then(()=>{const o=statusPill.innerHTML;statusPill.innerHTML='<i class="fas fa-check-circle"></i> کپی شد!';statusPill.style.color='var(--ok)';setTimeout(()=>{statusPill.innerHTML=o;statusPill.style.color=''},1200)})}};
+let inputTimer=null;valueInput.oninput=()=>{let c=valueInput.value.replace(',','.').replace(/[^0-9.\-+\eE]/g,'');if(valueInput.value!==c)valueInput.value=c;if(inputTimer)clearTimeout(inputTimer);if(valueInput.value.trim()){inputTimer=setTimeout(convert,50)}else resetAll()};
+signPlus.onclick=()=>{let v=valueInput.value.trim();if(v===''||v==='-'){valueInput.value='';return}if(v.startsWith('-'))v=v.substring(1);if(!v.startsWith('+'))v='+'+v;valueInput.value=v;valueInput.dispatchEvent(new Event('input'))};
+signMinus.onclick=()=>{let v=valueInput.value.trim();if(v===''||v==='+'){valueInput.value='';return}if(v.startsWith('+'))v=v.substring(1);if(!v.startsWith('-'))v='-'+v;valueInput.value=v;valueInput.dispatchEvent(new Event('input'))};
+function applyTheme(theme){const t=$('themeToggle'),l=$('themeLabel');if(theme==='light'){document.body.classList.add('light');t.innerHTML='<i class="fas fa-sun"></i>';l.textContent='حالت روشن'}else{document.body.classList.remove('light');t.innerHTML='<i class="fas fa-moon"></i>';l.textContent='حالت تیره'}}
+function initTheme(){applyTheme(localStorage.getItem('unitConverterTheme')||'dark')}
+$('themeToggle').onclick=()=>{const isLight=document.body.classList.toggle('light');applyTheme(isLight?'light':'dark');localStorage.setItem('unitConverterTheme',isLight?'light':'dark');vib(12)};
+window.addEventListener('DOMContentLoaded',()=>{populateCategory();initTheme()});
 </script>
 </body>
       </html>
