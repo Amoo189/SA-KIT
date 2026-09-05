@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>دوز - SA APPS</title>
+  <title>دوز - SA APPS (ربات سطح‌بندی شده)</title>
+<link rel="stylesheet" href="fontawesome/css/all.min.css">
   <style>
     @font-face{
       font-family:"VazirmatnLocal";
@@ -21,6 +22,11 @@
       --border:rgba(255,255,255,.08);
       --glass:blur(14px);
       --shadow:0 18px 50px rgba(0,0,0,.45);
+      --win-color:#ef4444;
+      --draw-color:#22c55e;
+      --easy:#22c55e;
+      --medium:#f59e0b;
+      --hard:#ef4444;
     }
 
     body {
@@ -34,6 +40,21 @@
       color: var(--text);
       display: flex; align-items: center; justify-content: center;
       overflow-x: hidden;
+      transition: background 0.5s ease;
+    }
+
+    body.win {
+      background: #0b1220;
+      background-image: 
+        radial-gradient(circle at top left, rgba(239,68,68,.25), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(239,68,68,.15), transparent 34%);
+    }
+
+    body.draw {
+      background: #0b1220;
+      background-image: 
+        radial-gradient(circle at top left, rgba(34,197,94,.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34,197,94,.12), transparent 34%);
     }
 
     .container { width: min(450px, 90%); padding: 20px; }
@@ -48,14 +69,29 @@
       text-align: center;
     }
 
-    h1 { font-size: 24px; margin-bottom: 8px; }
-    p.status { color: var(--muted); font-size: 14px; margin-bottom: 24px; height: 20px; }
+    h1 { 
+      font-size: 24px; 
+      margin-bottom: 8px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    h1 i { color: var(--accent); }
+
+    p.status { 
+      color: var(--muted); 
+      font-size: 14px; 
+      margin-bottom: 16px; 
+      height: 20px; 
+      font-weight: bold;
+    }
 
     .game-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .cell {
@@ -64,55 +100,120 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: bold;
+      font-size: 42px;
       cursor: pointer;
       transition: all 0.25s ease;
+      color: var(--muted);
     }
 
     .cell:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
-    .cell.x { color: var(--accent); }
-    .cell.o { color: var(--accent2); }
+    
+    .cell.x i { color: var(--accent); }
+    .cell.o i { color: var(--accent2); }
+
+    .cell.win-cell {
+      background: rgba(239,68,68,0.25) !important;
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 20px rgba(239,68,68,0.3);
+      transform: scale(1.02);
+    }
+    .cell.win-cell i { color: #ef4444 !important; }
+
+    .cell.draw-cell {
+      background: rgba(34,197,94,0.15) !important;
+      border-color: #22c55e !important;
+    }
+    .cell.draw-cell i { color: #22c55e !important; }
 
     .controls {
-      display: flex; flex-direction: column; gap: 12px;
+      display: flex; flex-direction: column; gap: 10px;
     }
 
     .mode-switch {
       display: flex; background: rgba(255,255,255,0.05);
       border-radius: 14px; padding: 4px; border: 1px solid var(--border);
+      gap: 4px;
     }
 
     .mode-btn {
       flex: 1; padding: 10px; border: none; background: transparent;
       color: var(--muted); cursor: pointer; border-radius: 10px;
       font-family: inherit; transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
     }
 
     .mode-btn.active {
       background: var(--accent); color: #fff;
     }
+    .mode-btn i { font-size: 14px; }
+
+    /* سطح‌بندی ربات */
+    .difficulty-switch {
+      display: flex; background: rgba(255,255,255,0.05);
+      border-radius: 14px; padding: 4px; border: 1px solid var(--border);
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .diff-btn {
+      flex: 1; padding: 8px; border: none; background: transparent;
+      color: var(--muted); cursor: pointer; border-radius: 10px;
+      font-family: inherit; transition: 0.3s;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .diff-btn.active-easy { background: var(--easy); color: #fff; }
+    .diff-btn.active-medium { background: var(--medium); color: #fff; }
+    .diff-btn.active-hard { background: var(--hard); color: #fff; }
+
+    .diff-btn i { font-size: 12px; }
 
     .btn-reset {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white; border: none; padding: 14px; border-radius: 14px;
+      color: white; border: none; padding: 12px; border-radius: 14px;
       font-family: inherit; font-weight: bold; cursor: pointer;
       transition: transform 0.2s; box-shadow: 0 10px 20px rgba(110,168,254,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-reset:active { transform: scale(0.95); }
+    .btn-reset i { font-size: 16px; }
 
     .back-link {
-      display: inline-block; margin-top: 20px; color: var(--muted);
+      display: inline-block; margin-top: 16px; color: var(--muted);
       text-decoration: none; font-size: 13px;
     }
+    .back-link i { margin-left: 6px; }
+
+    .level-indicator {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .level-indicator i { font-size: 12px; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="panel">
-    <h1>بازی دوز</h1>
-    <p class="status" id="statusText">نوبت بازیکن X</p>
+    <h1><i class="fas fa-robot"></i> بازی دوز</h1>
+    <p class="status" id="statusText"><i class="fas fa-user"></i> نوبت بازیکن X</p>
 
     <div class="game-grid" id="board">
       <div class="cell" data-index="0"></div>
@@ -128,13 +229,25 @@
 
     <div class="controls">
       <div class="mode-switch">
-        <button class="mode-btn active" onclick="setMode('pvp', this)">دونفره</button>
-        <button class="mode-btn" onclick="setMode('pva', this)">با ربات</button>
+        <button class="mode-btn active" onclick="setMode('pvp', this)"><i class="fas fa-users"></i> دونفره</button>
+        <button class="mode-btn" onclick="setMode('pva', this)"><i class="fas fa-microchip"></i> با ربات</button>
       </div>
-      <button class="btn-reset" onclick="resetGame()">شروع مجدد</button>
+
+      <!-- سطح‌بندی ربات (فقط در حالت PvA فعال می‌شود) -->
+      <div class="difficulty-switch" id="difficultyContainer">
+        <button class="diff-btn" onclick="setDifficulty('easy', this)"><i class="fas fa-seedling"></i> آسان</button>
+        <button class="diff-btn active-medium" onclick="setDifficulty('medium', this)"><i class="fas fa-chart-line"></i> متوسط</button>
+        <button class="diff-btn" onclick="setDifficulty('hard', this)"><i class="fas fa-skull"></i> سخت</button>
+      </div>
+
+      <div class="level-indicator" id="levelIndicator">
+        <i class="fas fa-info-circle"></i> سطح: <span id="levelText">متوسط</span>
+      </div>
+
+      <button class="btn-reset" onclick="resetGame()"><i class="fas fa-undo"></i> شروع مجدد</button>
     </div>
 
-    <a href="index.html" class="back-link">← بازگشت به لانچر</a>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> بازگشت به لانچر</a>
   </div>
 </div>
 
@@ -142,16 +255,134 @@
   let board = ["", "", "", "", "", "", "", "", ""];
   let currentPlayer = "X";
   let gameActive = true;
-  let gameMode = "pvp"; // pvp or pva (Player vs AI)
+  let gameMode = "pvp";
+  let difficulty = "medium"; // easy, medium, hard
+  let winCells = [];
 
   const statusText = document.getElementById("statusText");
   const cells = document.querySelectorAll(".cell");
+  const body = document.body;
+  const diffBtns = document.querySelectorAll(".diff-btn");
+  const levelText = document.getElementById("levelText");
 
   const winningConditions = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // افقی
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // عمودی
-    [0, 4, 8], [2, 4, 6]             // قطری
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
   ];
+
+  // =============== الگوریتم Minimax با سطح‌بندی ===============
+  function minimax(board, depth, isMaximizing, difficulty) {
+    const score = evaluate(board);
+    if (score === 10) return score - depth;
+    if (score === -10) return score + depth;
+    if (isBoardFull(board)) return 0;
+
+    if (isMaximizing) {
+      let best = -Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === "") {
+          board[i] = "O";
+          let value = minimax(board, depth + 1, false, difficulty);
+          board[i] = "";
+          best = Math.max(best, value);
+        }
+      }
+      return best;
+    } else {
+      let best = Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === "") {
+          board[i] = "X";
+          let value = minimax(board, depth + 1, true, difficulty);
+          board[i] = "";
+          best = Math.min(best, value);
+        }
+      }
+      return best;
+    }
+  }
+
+  function evaluate(board) {
+    for (let i = 0; i < winningConditions.length; i++) {
+      const [a, b, c] = winningConditions[i];
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        if (board[a] === "O") return 10;
+        if (board[a] === "X") return -10;
+      }
+    }
+    return 0;
+  }
+
+  function isBoardFull(board) {
+    return board.every(cell => cell !== "");
+  }
+
+  // حرکت‌های تصادفی برای سطح آسان
+  function getRandomMove(board) {
+    let emptyCells = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
+    if (emptyCells.length === 0) return -1;
+    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  }
+
+  // حرکت هوشمند برای سطح متوسط و سخت
+  function getBestMove(board, difficulty) {
+    // سطح آسان: حرکت تصادفی
+    if (difficulty === "easy") {
+      return getRandomMove(board);
+    }
+
+    let bestScore = -Infinity;
+    let bestMove = -1;
+
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === "") {
+        board[i] = "O";
+        let moveScore = minimax(board, 0, false, difficulty);
+        board[i] = "";
+        
+        // سطح سخت: اگر بتواند ببرد، حتماً آن حرکت را انتخاب کن
+        if (difficulty === "hard") {
+          // اولویت با حرکتی که باعث برد فوری می‌شود
+          if (moveScore > bestScore) {
+            bestScore = moveScore;
+            bestMove = i;
+          }
+        } else {
+          // سطح متوسط: گاهی اشتباه می‌کند (با احتمال کم)
+          let randomFactor = Math.random() < 0.15 ? -2 : 0; // 15% شانس اشتباه
+          if (moveScore + randomFactor > bestScore) {
+            bestScore = moveScore + randomFactor;
+            bestMove = i;
+          }
+        }
+      }
+    }
+    return bestMove;
+  }
+
+  // سطح سخت: ربات همیشه برنده می‌شود (با اولویت حرکات برنده)
+  function getHardMove(board) {
+    let bestScore = -Infinity;
+    let bestMove = -1;
+
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === "") {
+        board[i] = "O";
+        let moveScore = minimax(board, 0, false, "hard");
+        board[i] = "";
+        
+        // امتیاز بیشتر = حرکت بهتر
+        // اگر امتیاز 10 باشد یعنی برد فوری
+        if (moveScore > bestScore) {
+          bestScore = moveScore;
+          bestMove = i;
+        }
+      }
+    }
+    return bestMove;
+  }
+  // ===============================================
 
   function handleCellClick(e) {
     const clickedCell = e.target;
@@ -162,60 +393,130 @@
     makeMove(index);
 
     if (gameActive && gameMode === "pva" && currentPlayer === "O") {
-      setTimeout(aiMove, 500);
+      setTimeout(aiMove, 300);
     }
   }
 
   function makeMove(index) {
     board[index] = currentPlayer;
-    cells[index].textContent = currentPlayer;
+    // X => ضربدر (times), O => دایره توخالی (circle)
+    const icon = currentPlayer === "X" ? "fa-times" : "fa-circle";
+    cells[index].innerHTML = `<i class="fas ${icon}"></i>`;
     cells[index].classList.add(currentPlayer.toLowerCase());
-    
     checkResult();
   }
 
   function aiMove() {
     if (!gameActive) return;
     
-    // استراتژی ساده: انتخاب اولین خانه خالی (می‌توانید با Minimax هوشمندتر کنید)
-    let emptyCells = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
-    if (emptyCells.length > 0) {
-      const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      makeMove(randomIndex);
+    let bestIndex;
+    if (difficulty === "hard") {
+      bestIndex = getHardMove(board);
+    } else {
+      bestIndex = getBestMove(board, difficulty);
     }
+    
+    // اگر حرکتی پیدا نشد (بازی پر شده) یا خطا
+    if (bestIndex === -1) {
+      // سعی کن اولین خانه خالی را پیدا کن
+      let emptyIndex = board.findIndex(cell => cell === "");
+      if (emptyIndex !== -1) bestIndex = emptyIndex;
+      else return;
+    }
+    
+    makeMove(bestIndex);
   }
 
   function checkResult() {
     let roundWon = false;
+    let winner = "";
+    let winCombo = [];
+
     for (let i = 0; i < winningConditions.length; i++) {
       const [a, b, c] = winningConditions[i];
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
         roundWon = true;
+        winner = board[a];
+        winCombo = [a, b, c];
         break;
       }
     }
 
     if (roundWon) {
-      statusText.textContent = `بازیکن ${currentPlayer} برنده شد! 🎉`;
-      statusText.style.color = "var(--accent)";
+      clearHighlights();
+      
+      winCombo.forEach(idx => {
+        cells[idx].classList.add("win-cell");
+      });
+      
+      body.classList.remove("draw");
+      body.classList.add("win");
+
+      const winnerName = winner === "X" ? "بازیکن X" : "ربات (O)";
+      const winnerIcon = winner === "X" ? "fa-user" : "fa-robot";
+      statusText.innerHTML = `<i class="fas fa-trophy"></i> ${winnerName} برنده شد! 🎉`;
+      statusText.style.color = "var(--win-color)";
       gameActive = false;
       return;
     }
 
-    if (!board.includes("")) {
-      statusText.textContent = "مساوی شد! 🤝";
+    if (isBoardFull(board)) {
+      clearHighlights();
+      cells.forEach(cell => cell.classList.add("draw-cell"));
+      
+      body.classList.remove("win");
+      body.classList.add("draw");
+
+      statusText.innerHTML = `<i class="fas fa-handshake"></i> مساوی شد! 🤝`;
+      statusText.style.color = "var(--draw-color)";
       gameActive = false;
       return;
     }
 
     currentPlayer = currentPlayer === "X" ? "O" : "X";
-    statusText.textContent = `نوبت بازیکن ${currentPlayer}`;
+    const icon = currentPlayer === "X" ? "fa-user" : "fa-robot";
+    statusText.innerHTML = `<i class="fas ${icon}"></i> نوبت بازیکن ${currentPlayer}`;
+  }
+
+  function clearHighlights() {
+    cells.forEach(cell => {
+      cell.classList.remove("win-cell", "draw-cell");
+    });
   }
 
   function setMode(mode, btn) {
     gameMode = mode;
     document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+    
+    // نمایش/مخفی کردن سطح‌بندی ربات
+    const diffContainer = document.getElementById("difficultyContainer");
+    const levelIndicator = document.getElementById("levelIndicator");
+    if (mode === "pva") {
+      diffContainer.style.display = "flex";
+      levelIndicator.style.display = "flex";
+    } else {
+      diffContainer.style.display = "none";
+      levelIndicator.style.display = "none";
+    }
+    
+    resetGame();
+  }
+
+  function setDifficulty(level, btn) {
+    difficulty = level;
+    diffBtns.forEach(b => {
+      b.className = "diff-btn";
+    });
+    btn.classList.add(`active-${level}`);
+    
+    const levelNames = {
+      easy: "آسان 🟢",
+      medium: "متوسط 🟡",
+      hard: "سخت 🔴 (ربات همیشه برنده!)"
+    };
+    levelText.textContent = levelNames[level];
+    
     resetGame();
   }
 
@@ -223,16 +524,28 @@
     board = ["", "", "", "", "", "", "", "", ""];
     currentPlayer = "X";
     gameActive = true;
-    statusText.textContent = "نوبت بازیکن X";
+    winCells = [];
+    
+    body.classList.remove("win", "draw");
+    clearHighlights();
+    
+    statusText.innerHTML = `<i class="fas fa-user"></i> نوبت بازیکن X`;
     statusText.style.color = "var(--muted)";
+    
     cells.forEach(cell => {
-      cell.textContent = "";
+      cell.innerHTML = "";
       cell.classList.remove("x", "o");
     });
   }
+
+  // راه‌اندازی اولیه: مخفی کردن سطح‌بندی در حالت دونفره
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("difficultyContainer").style.display = "none";
+    document.getElementById("levelIndicator").style.display = "none";
+  });
 
   cells.forEach(cell => cell.addEventListener("click", handleCellClick));
 </script>
 
 </body>
-</html>
+    </html>
