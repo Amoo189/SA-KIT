@@ -4,8 +4,164 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SA Engineering Toolkit</title>
-
+ <link rel="stylesheet" href="fontawesome/css/all.min.css">
 <style>
+/* ===== پری‌لودر ===== */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0b1220;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#preloader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* کانتینر لودر */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+/* لوگوی متحرک */
+.loader-logo {
+  font-size: 48px;
+  color: #6ea8fe;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* حلقه‌های چرخان */
+.loader-rings {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.loader-rings .ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  animation: spin 2s linear infinite;
+}
+
+.loader-rings .ring:nth-child(1) {
+  border-top-color: #6ea8fe;
+  animation-duration: 1.2s;
+}
+
+.loader-rings .ring:nth-child(2) {
+  border-right-color: #8b5cf6;
+  animation-duration: 1.8s;
+  animation-direction: reverse;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+}
+
+.loader-rings .ring:nth-child(3) {
+  border-bottom-color: #22c55e;
+  animation-duration: 2.4s;
+  width: 60%;
+  height: 60%;
+  top: 20%;
+  left: 20%;
+}
+
+.loader-rings .ring:nth-child(4) {
+  border-left-color: #ff6b6b;
+  animation-duration: 3s;
+  width: 40%;
+  height: 40%;
+  top: 30%;
+  left: 30%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* دایره‌های نقاط */
+.loader-dots {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.loader-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #6ea8fe;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+.loader-dots .dot:nth-child(1) { animation-delay: 0s; }
+.loader-dots .dot:nth-child(2) { animation-delay: 0.2s; }
+.loader-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+.loader-dots .dot:nth-child(4) { animation-delay: 0.6s; }
+.loader-dots .dot:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+
+/* متن لودر */
+.loader-text {
+  color: #a9b6d6;
+  font-size: 14px;
+  letter-spacing: 2px;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* درصد بارگذاری */
+.loader-progress {
+  width: 200px;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.loader-progress .progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6ea8fe, #8b5cf6, #22c55e);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* ===== استایل اصلی ===== */
 @font-face{
       font-family:"VazirmatnLocal";
       src:url("fonts/Vazirmatn-Regular.woff2") format("woff2");
@@ -29,6 +185,13 @@
 --accent2:#8b5cf6;
 --border:rgba(255,255,255,.08);
 --shadow:0 18px 60px rgba(0,0,0,.35);
+--modal-bg:rgba(0,0,0,0.7);
+--error:#ff6b6b;
+--success:#22c55e;
+--num-bg:rgba(255,255,255,0.06);
+--op-bg:rgba(255,255,255,0.04);
+--func-bg:rgba(110,168,254,0.12);
+--equal-bg:#22c55e;
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -41,279 +204,713 @@ color:var(--text);
 display:flex;
 justify-content:center;
 padding:15px;
+min-height:100vh;
 }
 
-.container{width:100%; max-width:550px;}
+.container{
+width:100%; 
+max-width:620px;
+opacity: 0;
+animation: fadeInContent 0.8s ease forwards;
+animation-delay: 0.3s;
+}
+
+@keyframes fadeInContent {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 header{
 display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:12px;
+flex-wrap:wrap;
+gap:6px;
 }
 
-.title{font-size:18px; font-weight:800; color:var(--accent);}
+.title{font-size:20px; font-weight:800; color:var(--accent); display:flex; align-items:center; gap:8px;}
 
-.controls{display:flex; gap:6px;}
+.controls{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
 
 .control{
-padding:5px 10px;
+padding:6px 12px;
 border-radius:8px;
 border:1px solid var(--border);
 cursor:pointer;
 font-size:11px;
 color:var(--muted);
 background: rgba(255,255,255,0.02);
+transition: 0.2s;
 }
+.control:hover{background: rgba(255,255,255,0.08);}
+.control.active{background: rgba(110,168,254,0.15); color:var(--accent);}
+
+.refresh-btn, .modal-btn{
+background: var(--accent2);
+color: #071022;
+border: none;
+border-radius:8px;
+padding:6px 14px;
+font-size:12px;
+cursor:pointer;
+transition:0.2s;
+display:flex;
+align-items:center;
+gap:5px;
+}
+.refresh-btn:hover, .modal-btn:hover{opacity:0.8;}
+
+.modal-btn{background: var(--accent);}
 
 .card{
 background:var(--card);
 border:1px solid var(--border);
 border-radius:18px;
 box-shadow:var(--shadow);
-padding:15px;
-margin-bottom:12px;
+padding:18px;
+margin-bottom:14px;
 }
 
 .display{
 width:100%;
-height:65px;
-font-size:24px;
+height:70px;
+font-size:28px;
 border:none;
 outline:none;
 background:rgba(0,0,0,.3);
 color:var(--text);
 border-radius:12px;
-padding:12px;
-margin-bottom:12px;
+padding:12px 16px;
+margin-bottom:14px;
 direction:ltr;
-text-align:left;
+text-align:right;
+font-family: 'Courier New', monospace;
+letter-spacing:1px;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:6px;
+.calc-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.calc-row.func-row {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 button{
-padding:12px 2px;
-border-radius:10px;
+padding:16px 2px;
+border-radius:12px;
 border:none;
 font-weight:700;
 cursor:pointer;
-font-size:13px;
-background:linear-gradient(135deg,var(--accent),var(--accent2));
-color:#071022;
-}
-
-button.op{
-background:rgba(255,255,255,.07);
+font-size:16px;
+transition:0.15s;
 color:white;
+background:rgba(255,255,255,0.05);
 border:1px solid var(--border);
 }
+button:active{transform:scale(0.92);}
+
+button.num {
+  background: var(--num-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 22px;
+  font-weight:600;
+}
+button.num:hover { background: rgba(255,255,255,0.12); }
+
+button.op-main {
+  background: var(--op-bg);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 22px;
+  font-weight:700;
+}
+button.op-main:hover { background: rgba(255,255,255,0.08); }
+
+button.func {
+  background: var(--func-bg);
+  border: 1px solid rgba(110,168,254,0.15);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight:600;
+  padding:12px 2px;
+}
+button.func:hover { background: rgba(110,168,254,0.2); }
+
+button.clear {
+  background: rgba(255,107,107,0.12);
+  border: 1px solid rgba(255,107,107,0.15);
+  color: var(--error);
+  font-size:16px;
+}
+button.clear:hover { background: rgba(255,107,107,0.2); }
+
+button.equal {
+  background: var(--equal-bg);
+  border: none;
+  color: #071022;
+  font-size: 26px;
+  font-weight:800;
+}
+button.equal:hover { opacity:0.85; }
+
+button.back {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size:18px;
+}
+button.back:hover { background: rgba(255,255,255,0.08); }
+
+button.special {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size:16px;
+}
+button.special:hover { background: rgba(255,255,255,0.08); }
 
 .history{
-margin-top:12px;
-font-size:11px;
-max-height:100px;
+margin-top:14px;
+font-size:12px;
+max-height:110px;
 overflow-y:auto;
 color:var(--muted);
 border-top: 1px solid var(--border);
-padding-top:8px;
+padding-top:10px;
 }
 
-.history div{direction:ltr; cursor:pointer; margin-bottom:5px;}
+.history div{direction:ltr; cursor:pointer; margin-bottom:6px; padding:4px 8px; border-radius:5px;}
+.history div:hover{background:rgba(255,255,255,0.04);}
 
-/* ریسپانسیو بخش ضرایب */
 .quadRow{
 display:grid;
 grid-template-columns: repeat(3, 1fr);
-gap:8px;
-margin-bottom:10px;
+gap:10px;
+margin-bottom:12px;
 }
 
 .quadRow input{
 width:100%;
-height:40px;
-padding:8px;
+height:45px;
+padding:10px;
 border-radius:8px;
 border:1px solid var(--border);
 background:#0a1324;
 color:white;
 text-align:center;
-font-size:14px;
+font-size:15px;
 min-width: 0;
 }
 
 .eqInput{
 width:100%;
-padding:10px;
-margin-bottom:10px;
+padding:12px;
+margin-bottom:12px;
 border-radius:8px;
 border:1px solid var(--border);
 background:#0a1324;
 color:white;
-font-size:14px;
+font-size:15px;
 }
 
 .result{
 margin-top:12px;
-font-size:16px;
+font-size:18px;
 direction:ltr;
 white-space:pre-line;
-color: #22c55e;
+color: var(--success);
+}
+.result.error{color: var(--error);}
+
+/* مودال */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--modal-bg);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+  background: var(--card);
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: 24px;
+  padding: 25px 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* موبایل ریسپانسیو */
+.modal-box h3 {
+  color: var(--accent);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+}
+.modal-box h4 { color: var(--text); margin: 16px 0 8px; }
+.modal-box ul { padding-right: 20px; color: var(--muted); }
+.modal-box li { margin-bottom: 8px; list-style: none; }
+.modal-box li i { margin-left: 12px; color: var(--accent); width: 22px; }
+.modal-box p { color: var(--muted); line-height: 1.7; }
+
+.modal-close {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 30px;
+  padding: 8px 20px;
+  margin-top: 18px;
+  cursor: pointer;
+  font-size: 14px;
+  transition:0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-close:hover { background: rgba(255,255,255,0.12); }
+
+.about-section .email { direction:ltr; display:inline-block; color:var(--muted); }
+.about-section a { color:var(--accent2); text-decoration:none; font-weight:700; }
+.about-section a:hover { text-decoration:underline; }
+
+.modal-box::-webkit-scrollbar { width: 4px; }
+.modal-box::-webkit-scrollbar-track { background: transparent; }
+.modal-box::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+/* موبایل */
 @media (max-width:480px){
-    body{padding:10px;}
-    .grid{gap:4px;}
-    button{font-size:11px; padding:10px 0;}
-    .display{font-size:20px; height:55px;}
+    body{padding:8px;}
+    .calc-row{gap:6px;}
+    .calc-row.func-row{gap:6px;}
+    button{padding:14px 2px; font-size:14px;}
+    button.num{font-size:18px;}
+    button.op-main{font-size:18px;}
+    button.func{font-size:11px; padding:10px 2px;}
+    .display{font-size:22px; height:60px;}
     .title{font-size:15px;}
-    .quadRow input{height:35px; font-size:12px;}
+    .quadRow input{height:38px; font-size:13px;}
+    .controls .control{font-size:10px; padding:4px 8px;}
+    .modal-box{padding:18px 14px;}
+    .modal-box h3{font-size:16px;}
+    button.equal{font-size:22px;}
+    
+    /* پری‌لودر موبایل */
+    .loader-rings { width: 80px; height: 80px; }
+    .loader-logo { font-size: 36px; }
+    .loader-progress { width: 150px; }
 }
-
 </style>
 </head>
 
 <body>
 
+<!-- ===== پری‌لودر ===== -->
+<div id="preloader">
+  <div class="loader-container">
+    <!-- لوگو -->
+    <div class="loader-logo">
+      <i class="fas fa-calculator"></i>
+    </div>
+    
+    <!-- حلقه‌های چرخان -->
+    <div class="loader-rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+    
+    <!-- نقاط متحرک -->
+    <div class="loader-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    
+    <!-- متن -->
+    <div class="loader-text">SA Engineering Toolkit</div>
+    
+    <!-- نوار پیشرفت -->
+    <div class="loader-progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== محتوای اصلی ===== -->
 <div class="container">
 
 <header>
-<div class="title">SA Engineering Toolkit</div>
+<div class="title"><i class="fas fa-calculator"></i> SA Toolkit</div>
 <div class="controls">
+<button class="modal-btn" onclick="openModal('help')"><i class="fas fa-question-circle"></i> راهنما</button>
+<button class="modal-btn" onclick="openModal('about')"><i class="fas fa-user-astronaut"></i> درباره</button>
+<button class="refresh-btn" onclick="location.reload();"><i class="fas fa-sync-alt"></i></button>
 <div class="control" onclick="toggleAngle()" id="angleBtn">DEG</div>
-<div class="control" onclick="toggleMode()" id="modeBtn">NORM</div>
+<div class="control active" onclick="toggleMode()" id="modeBtn">NORM</div>
 <div class="control" onclick="toggleSymbolic()" id="symBtn">SYM ON</div>
 </div>
 </header>
 
+<!-- ماشین حساب -->
 <div class="card">
 <input id="display" class="display" value="0" readonly>
 
-<div class="grid">
-<button onclick="clearDisplay()">C</button>
-<button onclick="backspace()">⌫</button>
-<button onclick="factorial()">n!</button>
-<button onclick="press(')')" class="op">(</button>
-<button onclick="press('(')" class="op">)</button>
-<button onclick="press('/')" class="op">÷</button>
+<div class="calc-grid">
 
-<button onclick="press('7')">7</button>
-<button onclick="press('8')">8</button>
-<button onclick="press('9')">9</button>
-<button onclick="press('*')" class="op">×</button>
-<button onclick="press('sin(')" class="op">sin</button>
-<button onclick="press('cos(')" class="op">cos</button>
+  <div class="calc-row func-row">
+    <button class="func" onclick="press('sin(')">sin</button>
+    <button class="func" onclick="press('cos(')">cos</button>
+    <button class="func" onclick="press('tan(')">tan</button>
+    <button class="func" onclick="press('log(')">log</button>
+    <button class="func" onclick="press('ln(')">ln</button>
+  </div>
 
-<button onclick="press('4')">4</button>
-<button onclick="press('5')">5</button>
-<button onclick="press('6')">6</button>
-<button onclick="press('-')" class="op">−</button>
-<button onclick="press('tan(')" class="op">tan</button>
-<button onclick="press('log(')" class="op">log</button>
+  <div class="calc-row func-row">
+    <button class="func" onclick="press('sqrt(')">√</button>
+    <button class="func" onclick="factorial()">n!</button>
+    <button class="func" onclick="press('x^2')">x²</button>
+    <button class="func" onclick="press('x^3')">x³</button>
+    <button class="func" onclick="press('1/(')">¹/ₓ</button>
+  </div>
 
-<button onclick="press('1')">1</button>
-<button onclick="press('2')">2</button>
-<button onclick="press('3')">3</button>
-<button onclick="press('+')" class="op">+</button>
-<button onclick="press('ln(')" class="op">ln</button>
-<button onclick="press('sqrt(')" class="op">√</button>
+  <div class="calc-row">
+    <button class="clear" onclick="clearDisplay()">C</button>
+    <button class="back" onclick="backspace()"><i class="fas fa-delete-left"></i></button>
+    <button class="special" onclick="press('%')">%</button>
+    <button class="op-main" onclick="press('/')">÷</button>
+  </div>
 
-<button onclick="press('0')">0</button>
-<button onclick="press('.')">.</button>
-<button onclick="press('^')" class="op">^</button>
-<button onclick="press('pi')" class="op">π</button>
-<button onclick="press('e')" class="op">e</button>
-<button style="background:#22c55e" onclick="calculate()">=</button>
+  <div class="calc-row">
+    <button class="num" onclick="press('7')">7</button>
+    <button class="num" onclick="press('8')">8</button>
+    <button class="num" onclick="press('9')">9</button>
+    <button class="op-main" onclick="press('*')">×</button>
+  </div>
+
+  <div class="calc-row">
+    <button class="num" onclick="press('4')">4</button>
+    <button class="num" onclick="press('5')">5</button>
+    <button class="num" onclick="press('6')">6</button>
+    <button class="op-main" onclick="press('-')">−</button>
+  </div>
+
+  <div class="calc-row">
+    <button class="num" onclick="press('1')">1</button>
+    <button class="num" onclick="press('2')">2</button>
+    <button class="num" onclick="press('3')">3</button>
+    <button class="op-main" onclick="press('+')">+</button>
+  </div>
+
+  <div class="calc-row">
+    <button class="special" onclick="toggleSign()">±</button>
+    <button class="num" onclick="press('0')">0</button>
+    <button class="num" onclick="press('.')">.</button>
+    <button class="equal" onclick="calculate()">=</button>
+  </div>
+
 </div>
 
 <div class="history" id="history"></div>
 </div>
 
+<!-- حل معادله -->
 <div class="card">
-<h3 style="font-size:14px; margin-top:0;">حل معادله درجه ۲</h3>
-<input id="equation" class="eqInput" placeholder="x^2-5x+6=0">
-<p>یا</p>
+<h3 style="font-size:15px; margin-top:0;"><i class="fas fa-cube"></i> حل معادله</h3>
+<input id="equation" class="eqInput" placeholder="مثال: x^3-6x^2+11x-6=0 یا x^2-5x+6=0">
+<p style="margin:6px 0; font-size:13px; color:var(--muted);">یا ضرایب را وارد کنید (درجه ۲):</p>
 <div class="quadRow">
 <input id="qa" placeholder="a">
 <input id="qb" placeholder="b">
 <input id="qc" placeholder="c">
 </div>
-<button style="width:100%; background:var(--accent2); color:white;" onclick="solveQuadratic()">Solve</button>
+<button style="width:100%; background:var(--accent2); color:white; padding:14px; border-radius:12px; border:none; font-weight:700; font-size:16px; cursor:pointer;" onclick="solveEquation()"><i class="fas fa-check"></i> حل</button>
 <div id="quadResult" class="result"></div>
+</div>
+
+<!-- مودال‌ها -->
+<div id="helpModal" class="modal-overlay" onclick="if(event.target===this) closeModal('help')">
+  <div class="modal-box">
+    <h3><i class="fas fa-question-circle"></i> راهنمای کامل</h3>
+    
+    <h4><i class="fas fa-calculator"></i> ماشین حساب</h4>
+    <ul>
+      <li><i class="fas fa-circle"></i> <strong>توابع</strong>: sin, cos, tan, log, ln, √, n!, x², x³, ¹/ₓ</li>
+      <li><i class="fas fa-circle"></i> <strong>عملگرها</strong>: +, −, ×, ÷, %, ±</li>
+      <li><i class="fas fa-circle"></i> <strong>کنترل</strong>: C (پاک کردن)، ⌫ (بک‌اسپیس)</li>
+    </ul>
+    
+    <h4><i class="fas fa-sort-alpha-up"></i> تنظیمات نمایش</h4>
+    <ul>
+      <li><i class="fas fa-circle"></i> <strong>NORM</strong>: نمایش معمولی اعداد</li>
+      <li><i class="fas fa-circle"></i> <strong>FIX</strong>: نمایش با ۲ رقم اعشار</li>
+      <li><i class="fas fa-circle"></i> <strong>SCI</strong>: نمایش علمی (مثلاً 1.23×10³)</li>
+      <li><i class="fas fa-circle"></i> <strong>ENG</strong>: نمایش مهندسی با توان‌های ۳</li>
+    </ul>
+    
+    <h4><i class="fas fa-cube"></i> حل معادله</h4>
+    <ul>
+      <li><i class="fas fa-circle"></i> معادلات درجه ۲ و ۳</li>
+      <li><i class="fas fa-circle"></i> تشخیص خودکار ضرایب</li>
+      <li><i class="fas fa-circle"></i> نمایش ریشه‌های حقیقی و مختلط</li>
+    </ul>
+    
+    <h4><i class="fas fa-wifi"></i> استفاده آفلاین</h4>
+    <p>پس از اینکه حداقل یک بار برنامه را با اینترنت اجرا کردید:</p>
+    <ul>
+      <li><i class="fas fa-arrow-left"></i> برنامه را ببندید، سپس هنگام ورود با پیام اینترنت قطع مواجه میشوید، با دکمه برگشت گوشی این صفحه را رد کنید و وارد برنامه شوید.</li>
+      <li><i class="fas fa-redo"></i> اگر بار اول عمل نکرد، دکمه تلاش مجدد را دوبار بزنید و با دکمه برگشت به صفحه اصلی بروید.</li>
+    </ul>
+    
+    <div style="text-align:left;"><button class="modal-close" onclick="closeModal('help')"><i class="fas fa-times"></i> بستن</button></div>
+  </div>
+</div>
+
+<div id="aboutModal" class="modal-overlay" onclick="if(event.target===this) closeModal('about')">
+  <div class="modal-box about-section" style="text-align:center;">
+    <h3 style="justify-content:center;"><i class="fas fa-user-astronaut"></i> درباره ما</h3>
+    <p style="color:var(--muted); font-size:16px;">
+      توسعه‌دهنده: <strong style="color:var(--accent);">صالح عمو</strong>
+    </p>
+    <p style="font-size:15px;">
+      <i class="fas fa-globe"></i> سایت: <a href="https://amoo189.github.io/Saleh-Amoo" target="_blank">amoo189.github.io/Saleh-Amoo</a>
+    </p>
+    <p style="font-size:15px;">
+      <i class="fas fa-envelope"></i> ایمیل: <span class="email">Salehamoo1389@gmail.com</span>
+    </p>
+    <p style="font-size:13px; color:var(--muted); margin-top:12px;">SA Engineering Toolkit – ابزاری قدرتمند برای محاسبات مهندسی</p>
+    <div style="text-align:left;"><button class="modal-close" onclick="closeModal('about')"><i class="fas fa-times"></i> بستن</button></div>
+  </div>
 </div>
 
 </div>
 
 <script>
+// ===== پری‌لودر =====
+window.addEventListener('load', function() {
+  // شبیه‌سازی بارگذاری
+  let progress = 0;
+  const progressBar = document.getElementById('progressBar');
+  const preloader = document.getElementById('preloader');
+  
+  const interval = setInterval(function() {
+    progress += Math.random() * 15 + 5;
+    if (progress > 100) progress = 100;
+    progressBar.style.width = progress + '%';
+    
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(function() {
+        preloader.classList.add('hide');
+        // نمایش محتوا با انیمیشن
+        document.querySelector('.container').style.opacity = '1';
+      }, 400);
+    }
+  }, 150);
+  
+  // اگر صفحه سریع لود شد، حداکثر 3 ثانیه صبر کن
+  setTimeout(function() {
+    if (!preloader.classList.contains('hide')) {
+      progress = 100;
+      progressBar.style.width = '100%';
+      setTimeout(function() {
+        preloader.classList.add('hide');
+        document.querySelector('.container').style.opacity = '1';
+      }, 400);
+    }
+  }, 3000);
+});
+
+// ===== مدیریت خطاها =====
+class CalculatorError extends Error {
+  constructor(message, type = 'error') {
+    super(message);
+    this.type = type;
+    this.name = 'CalculatorError';
+  }
+}
+
+function showError(element, message) {
+  if (element) {
+    element.className = 'result error';
+    element.innerText = '❌ ' + message;
+  }
+  return message;
+}
+
+// ===== مودال =====
+function openModal(type) {
+  document.getElementById(type === 'help' ? 'helpModal' : 'aboutModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(type) {
+  document.getElementById(type === 'help' ? 'helpModal' : 'aboutModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ===== ماشین حساب =====
 const display=document.getElementById("display");
 const historyDiv=document.getElementById("history");
 
 let angleMode="DEG";
 let displayMode="NORM";
-let symbolic=true; // حالت سمبلیک به صورت پیش‌فرض فعال
+let symbolic=true;
+let fixDecimals = 2;
 
 function press(v){
-if(display.value==="0" && v !== '.') display.value=v;
-else display.value+=v;
+  try {
+    if(display.value==="0" && v !== '.' && v !== '(' && v !== ')' && v !== 'π' && v !== 'e') display.value=v;
+    else if(v === 'x^2') {
+      if(display.value !== "0") display.value = display.value + '^2';
+    }
+    else if(v === 'x^3') {
+      if(display.value !== "0") display.value = display.value + '^3';
+    }
+    else if(v === '1/(') {
+      if(display.value === "0") display.value = '1/(';
+      else display.value += '1/(';
+    }
+    else {
+      display.value += v;
+    }
+    display.style.color = 'var(--text)';
+  } catch(e) {
+    display.value = "Error";
+    display.style.color = 'var(--error)';
+  }
 }
 
-function clearDisplay(){display.value="0"}
+function clearDisplay(){display.value="0"; display.style.color = 'var(--text)';}
 
 function backspace(){
-display.value=display.value.slice(0,-1);
-if(display.value==="") display.value="0";
+  display.value=display.value.slice(0,-1);
+  if(display.value==="") display.value="0";
+  display.style.color = 'var(--text)';
+}
+
+function toggleSign(){
+  if(display.value === "0") return;
+  if(display.value.startsWith('-')) {
+    display.value = display.value.slice(1);
+  } else {
+    display.value = '-' + display.value;
+  }
 }
 
 function toggleAngle(){
-angleMode=angleMode==="DEG"?"RAD":"DEG";
-document.getElementById("angleBtn").innerText=angleMode;
+  angleMode=angleMode==="DEG"?"RAD":"DEG";
+  document.getElementById("angleBtn").innerText=angleMode;
 }
 
 function toggleMode(){
-const modes=["NORM","FIX","SCI","ENG"];
-let i=modes.indexOf(displayMode);
-displayMode=modes[(i+1)%modes.length];
-document.getElementById("modeBtn").innerText=displayMode;
+  const modes=["NORM","FIX","SCI","ENG"];
+  let i=modes.indexOf(displayMode);
+  displayMode=modes[(i+1)%modes.length];
+  document.getElementById("modeBtn").innerText=displayMode;
 }
 
 function toggleSymbolic(){
-symbolic=!symbolic;
-document.getElementById("symBtn").innerText=symbolic?"SYM ON":"SYM";
+  symbolic=!symbolic;
+  document.getElementById("symBtn").innerText=symbolic?"SYM ON":"SYM";
 }
 
 function toRad(x){return angleMode==="DEG"?x*Math.PI/180:x}
 
 function cleanNumber(x){
-return Math.abs(x) < 1e-12 ? 0 : x;
+  if(Math.abs(x) < 1e-12) return 0;
+  if(!isFinite(x)) return x;
+  return x;
 }
 
-// تابع تبدیل اعشار به کسر
+function formatNumber(num) {
+  if (typeof num !== 'number' || !isFinite(num)) return num?.toString() || 'NaN';
+  
+  if (displayMode === "NORM") {
+    if (Number.isInteger(num)) return num.toString();
+    if (Math.abs(num) > 1e15 || (Math.abs(num) < 1e-10 && num !== 0)) {
+      return num.toExponential(6);
+    }
+    return num.toString();
+  }
+  
+  if (displayMode === "FIX") {
+    return num.toFixed(fixDecimals);
+  }
+  
+  if (displayMode === "SCI") {
+    if (num === 0) return "0";
+    let exp = Math.floor(Math.log10(Math.abs(num)));
+    let mantissa = num / Math.pow(10, exp);
+    return mantissa.toFixed(4) + '×10^' + exp;
+  }
+  
+  if (displayMode === "ENG") {
+    if (num === 0) return "0";
+    let exp = Math.floor(Math.log10(Math.abs(num)));
+    let engExp = exp - (exp % 3);
+    if (Math.abs(num) < 1) {
+      if (exp % 3 === 0) engExp = exp;
+      else if (exp % 3 === -1) engExp = exp - 2;
+      else if (exp % 3 === -2) engExp = exp - 1;
+    }
+    let mantissa = num / Math.pow(10, engExp);
+    return mantissa.toFixed(4) + '×10^' + engExp;
+  }
+  
+  return num.toString();
+}
+
+// ===== بقیه توابع (همان‌طور که بود) =====
 function decimalToFraction(x){
-if(Number.isInteger(x)) return x.toString();
-if(Math.abs(x) < 1e-12) return "0";
-let tolerance=1e-10;
-let h1=1, h2=0, k1=0, k2=1;
-let b=Math.abs(x);
-do{
-let a=Math.floor(b);
-let aux=h1; h1=a*h1+h2; h2=aux;
-aux=k1; k1=a*k1+k2; k2=aux;
-if (b-a === 0) break;
-b=1/(b-a);
-}while(Math.abs(Math.abs(x)-h1/k1)>tolerance);
-let sign = x < 0 ? "-" : "";
-return sign + h1+"/"+k1;
+  if(Number.isInteger(x)) return x.toString();
+  if(Math.abs(x) < 1e-12) return "0";
+  let tolerance=1e-10;
+  let h1=1, h2=0, k1=0, k2=1;
+  let b=Math.abs(x);
+  let iterations = 0;
+  do{
+    let a=Math.floor(b);
+    let aux=h1; h1=a*h1+h2; h2=aux;
+    aux=k1; k1=a*k1+k2; k2=aux;
+    if (b-a === 0) break;
+    b=1/(b-a);
+    iterations++;
+  }while(Math.abs(Math.abs(x)-h1/k1)>tolerance && k1 < 10000 && iterations < 100);
+  let sign = x < 0 ? "-" : "";
+  if(k1 === 1) return sign + h1;
+  return sign + h1+"/"+k1;
 }
 
-// تشخیص رادیکال
 function detectRadical(val){
-let tolerance = 1e-10;
-let sqrtVals = [
+  let tolerance = 1e-10;
+  let sqrtVals = [
     {val: Math.sqrt(2), display: "√2"},
     {val: Math.sqrt(3), display: "√3"},
     {val: Math.sqrt(5), display: "√5"},
@@ -323,181 +920,297 @@ let sqrtVals = [
     {val: Math.sqrt(10), display: "√10"},
     {val: Math.sqrt(12), display: "2√3"},
     {val: Math.sqrt(18), display: "3√2"},
-    {val: Math.sqrt(20), display: "2√5"}
-];
-for(let item of sqrtVals){
+    {val: Math.sqrt(20), display: "2√5"},
+    {val: Math.sqrt(27), display: "3√3"},
+    {val: Math.sqrt(28), display: "2√7"},
+    {val: Math.sqrt(32), display: "4√2"},
+    {val: Math.sqrt(45), display: "3√5"},
+    {val: Math.sqrt(48), display: "4√3"},
+    {val: Math.sqrt(50), display: "5√2"},
+    {val: Math.sqrt(72), display: "6√2"},
+    {val: Math.sqrt(75), display: "5√3"},
+    {val: Math.sqrt(98), display: "7√2"}
+  ];
+  for(let item of sqrtVals){
     if(Math.abs(val - item.val) < tolerance) return item.display;
     if(Math.abs(val + item.val) < tolerance) return "-" + item.display;
-}
-return null;
+  }
+  return null;
 }
 
-// تشخیص مقادیر مثلثاتی معروف
 function symbolicTrig(func, val){
-if(angleMode !== "DEG") return null;
-let v = Math.round(val % 360);
-// تبدیل زاویه‌های منفی به مثبت
-if(v < 0) v += 360;
+  if(angleMode !== "DEG") return null;
+  let v = Math.round(val % 360);
+  if(v < 0) v += 360;
 
-let table = {
+  let table = {
     sin: {
-        0: "0", 30: "1/2", 45: "√2/2", 60: "√3/2", 
-        90: "1", 120: "√3/2", 135: "√2/2", 150: "1/2",
-        180: "0", 210: "-1/2", 225: "-√2/2", 240: "-√3/2",
-        270: "-1", 300: "-√3/2", 315: "-√2/2", 330: "-1/2",
-        360: "0"
+      0: "0", 30: "1/2", 45: "√2/2", 60: "√3/2", 
+      90: "1", 120: "√3/2", 135: "√2/2", 150: "1/2",
+      180: "0", 210: "-1/2", 225: "-√2/2", 240: "-√3/2",
+      270: "-1", 300: "-√3/2", 315: "-√2/2", 330: "-1/2",
+      360: "0"
     },
     cos: {
-        0: "1", 30: "√3/2", 45: "√2/2", 60: "1/2",
-        90: "0", 120: "-1/2", 135: "-√2/2", 150: "-√3/2",
-        180: "-1", 210: "-√3/2", 225: "-√2/2", 240: "-1/2",
-        270: "0", 300: "1/2", 315: "√2/2", 330: "√3/2",
-        360: "1"
+      0: "1", 30: "√3/2", 45: "√2/2", 60: "1/2",
+      90: "0", 120: "-1/2", 135: "-√2/2", 150: "-√3/2",
+      180: "-1", 210: "-√3/2", 225: "-√2/2", 240: "-1/2",
+      270: "0", 300: "1/2", 315: "√2/2", 330: "√3/2",
+      360: "1"
     },
     tan: {
-        0: "0", 30: "√3/3", 45: "1", 60: "√3",
-        90: "undefined", 120: "-√3", 135: "-1", 150: "-√3/3",
-        180: "0", 210: "√3/3", 225: "1", 240: "√3",
-        270: "undefined", 300: "-√3", 315: "-1", 330: "-√3/3",
-        360: "0"
+      0: "0", 30: "√3/3", 45: "1", 60: "√3",
+      90: "undefined", 120: "-√3", 135: "-1", 150: "-√3/3",
+      180: "0", 210: "√3/3", 225: "1", 240: "√3",
+      270: "undefined", 300: "-√3", 315: "-1", 330: "-√3/3",
+      360: "0"
     }
-};
+  };
 
-if(table[func] && table[func][v] !== undefined) {
+  if(table[func] && table[func][v] !== undefined) {
     return table[func][v];
-}
-return null;
+  }
+  return null;
 }
 
-// تشخیص کسرهای رادیکالی
 function detectFractionalRadical(val){
-let tolerance = 1e-10;
-let fractions = [
+  let tolerance = 1e-10;
+  let fractions = [
     {val: Math.sqrt(2)/2, display: "√2/2"},
     {val: Math.sqrt(3)/2, display: "√3/2"},
     {val: Math.sqrt(3)/3, display: "√3/3"},
     {val: -Math.sqrt(2)/2, display: "-√2/2"},
     {val: -Math.sqrt(3)/2, display: "-√3/2"},
-    {val: -Math.sqrt(3)/3, display: "-√3/3"}
-];
-for(let item of fractions){
+    {val: -Math.sqrt(3)/3, display: "-√3/3"},
+    {val: Math.sqrt(5)/2, display: "√5/2"},
+    {val: -Math.sqrt(5)/2, display: "-√5/2"},
+    {val: Math.sqrt(6)/2, display: "√6/2"},
+    {val: -Math.sqrt(6)/2, display: "-√6/2"}
+  ];
+  for(let item of fractions){
     if(Math.abs(val - item.val) < tolerance) return item.display;
-}
-return null;
+  }
+  return null;
 }
 
 function evaluate(expr){
-expr=expr.replace(/π|pi/g,"Math.PI").replace(/\be\b/g,"Math.E").replace(/\^/g,"**");
-const sin = (x) => cleanNumber(Math.sin(toRad(x)));
-const cos = (x) => cleanNumber(Math.cos(toRad(x)));
-const tan = (x) => cleanNumber(Math.tan(toRad(x)));
-const log = (x) => Math.log10(x);
-const ln = (x) => Math.log(x);
-const sqrt = (x) => Math.sqrt(x);
-
-return cleanNumber(Function("sin","cos","tan","log","ln","sqrt", "return "+expr)(sin,cos,tan,log,ln,sqrt));
+  expr = expr.replace(/(\d+)%/g, '($1/100)');
+  expr = expr.replace(/π|pi/g,"Math.PI").replace(/\be\b/g,"Math.E").replace(/\^/g,"**");
+  
+  const sin = (x) => cleanNumber(Math.sin(toRad(x)));
+  const cos = (x) => cleanNumber(Math.cos(toRad(x)));
+  const tan = (x) => {
+    let val = Math.tan(toRad(x));
+    if(Math.abs(val) > 1e15) return Infinity;
+    return cleanNumber(val);
+  };
+  const log = (x) => { if(x <= 0) throw new CalculatorError('لگاریتم باید مثبت باشد', 'math'); return Math.log10(x); };
+  const ln = (x) => { if(x <= 0) throw new CalculatorError('لگاریتم طبیعی باید مثبت باشد', 'math'); return Math.log(x); };
+  const sqrt = (x) => { if(x < 0) throw new CalculatorError('زیر رادیکال نباید منفی باشد', 'math'); return Math.sqrt(x); };
+  
+  try {
+    let result = Function("sin","cos","tan","log","ln","sqrt", "return "+expr)(sin,cos,tan,log,ln,sqrt);
+    return cleanNumber(result);
+  } catch(e) {
+    if(e instanceof CalculatorError) throw e;
+    throw new CalculatorError('خطا در محاسبه', 'syntax');
+  }
 }
 
 function calculate(){
-try{
-let exp=display.value;
-let match=exp.match(/(sin|cos|tan)\(([^)]+)\)/);
-
-// ابتدا بررسی حالت سمبلیک برای توابع مثلثاتی
-if(symbolic && match){
-let func=match[1];
-let val=evaluate(match[2]);
-let sym=symbolicTrig(func,val);
-if(sym){ 
-    display.value=sym; 
-    addHistory(exp,sym); 
-    return; 
-}
-}
-
-let res=evaluate(exp);
-
-if(symbolic){
+  try {
+    let exp = display.value;
+    if(exp === "0" || exp === "") return;
+    
+    let open = (exp.match(/\(/g) || []).length;
+    let close = (exp.match(/\)/g) || []).length;
+    while(close < open) {
+      exp += ")";
+      close++;
+    }
+    
+    let res = evaluate(exp);
+    if(isNaN(res) || !isFinite(res)) {
+      throw new CalculatorError('نتیجه معتبر نیست', 'math');
+    }
+    
     let finalRes = null;
     
-    // بررسی رادیکال
-    let radical = detectRadical(res);
-    if(radical) {
-        finalRes = radical;
-    }
-    
-    // بررسی کسرهای رادیکالی
-    if(!finalRes) {
+    if(symbolic){
+      let radical = detectRadical(res);
+      if(radical) finalRes = radical;
+      
+      if(!finalRes) {
         let fracRad = detectFractionalRadical(res);
         if(fracRad) finalRes = fracRad;
-    }
-    
-    // بررسی کسر معمولی
-    if(!finalRes && !Number.isInteger(res) && Math.abs(res) < 100) {
+      }
+      
+      if(!finalRes && !Number.isInteger(res) && Math.abs(res) < 100 && Math.abs(res) > 0.0001) {
         let frac = decimalToFraction(res);
-        // اطمینان از اینکه کسر ساده‌تر از اعشار است
         let fracParts = frac.split('/');
         if(fracParts.length === 2 && fracParts[1] !== "1") {
-            finalRes = frac;
+          finalRes = frac;
         }
+      }
     }
     
-    display.value = finalRes || res.toString();
-} else {
-    display.value = res.toString();
-}
-
-addHistory(exp, display.value);
-} catch(e){ 
-    display.value="Error"; 
-}
+    if(finalRes) {
+      display.value = finalRes;
+    } else {
+      display.value = formatNumber(res);
+    }
+    display.style.color = 'var(--text)';
+    
+    addHistory(exp, display.value);
+  } catch(e){ 
+    display.value = e.message || "Error";
+    display.style.color = 'var(--error)';
+  }
 }
 
 function factorial(){
-let n=parseInt(display.value);
-if(n<0)return;
-let r=1; for(let i=2;i<=n;i++)r*=i;
-display.value=r;
+  try {
+    let n = parseFloat(display.value);
+    if(isNaN(n) || n < 0 || !Number.isInteger(n)) {
+      throw new CalculatorError('فاکتوریل فقط برای اعداد صحیح مثبت', 'math');
+    }
+    if(n > 170) {
+      throw new CalculatorError('عدد خیلی بزرگ است (حداکثر 170)', 'math');
+    }
+    let r=1; 
+    for(let i=2;i<=n;i++) r*=i;
+    display.value = r;
+    display.style.color = 'var(--text)';
+  } catch(e) {
+    display.value = e.message || "Error";
+    display.style.color = 'var(--error)';
+  }
 }
 
 function addHistory(exp,res){
-let div=document.createElement("div");
-div.textContent=exp+" = "+res;
-div.onclick=()=>display.value=res;
-historyDiv.prepend(div);
+  let div=document.createElement("div");
+  div.textContent=exp+" = "+res;
+  div.onclick=()=>{
+    display.value = res;
+    display.style.color = 'var(--text)';
+  };
+  historyDiv.prepend(div);
+  if(historyDiv.children.length > 20) {
+    historyDiv.removeChild(historyDiv.lastChild);
+  }
 }
 
-function solveQuadratic(){
-let a=parseFloat(document.getElementById("qa").value);
-let b=parseFloat(document.getElementById("qb").value);
-let c=parseFloat(document.getElementById("qc").value);
-let eq=document.getElementById("equation").value;
-
-if(eq && (isNaN(a) || isNaN(b) || isNaN(c))){
-eq=eq.replace(/\s+/g,'').replace("=0","");
-let matchA=eq.match(/(-?\d*)x\^2/);
-a=matchA?(matchA[1]===""||matchA[1]==="+"?1:matchA[1]==="-"?-1:parseFloat(matchA[1])):0;
-let matchB=eq.match(/([+-]?\d*)x([^^]|$)/);
-b=matchB?(matchB[1]===""||matchB[1]==="+"?1:matchB[1]==="-"?-1:parseFloat(matchB[1])):0;
-let matchC=eq.replace(/(-?\d*)x\^2/,"").replace(/([+-]?\d*)x/,"").match(/[+-]?\d+/);
-c=matchC?parseFloat(matchC[0]):0;
+// ===== حل معادله =====
+function solvePolynomial(coefficients) {
+  let n = coefficients.length - 1;
+  if(n === 2) {
+    let [a, b, c] = coefficients;
+    if(a === 0) throw new CalculatorError('ضریب a نمی‌تواند صفر باشد', 'math');
+    let D = b*b - 4*a*c;
+    if(D > 0) {
+      let x1 = (-b + Math.sqrt(D))/(2*a);
+      let x2 = (-b - Math.sqrt(D))/(2*a);
+      return [`x₁ = ${formatNumber(x1)}`, `x₂ = ${formatNumber(x2)}`];
+    } else if(D === 0) {
+      return [`x = ${formatNumber(-b/(2*a))}`];
+    } else {
+      let real = formatNumber(-b/(2*a));
+      let imag = formatNumber(Math.sqrt(-D)/(2*a));
+      return [`x₁ = ${real} + ${imag}i`, `x₂ = ${real} - ${imag}i`];
+    }
+  } else if(n === 3) {
+    let [a, b, c, d] = coefficients;
+    if(a === 0) throw new CalculatorError('ضریب a نمی‌تواند صفر باشد', 'math');
+    
+    let p1 = (3*a*c - b*b)/(3*a*a);
+    let q1 = (2*b*b*b - 9*a*b*c + 27*a*a*d)/(27*a*a*a);
+    let discriminant = (q1/2)*(q1/2) + (p1/3)*(p1/3)*(p1/3);
+    
+    if(discriminant >= 0) {
+      let u = Math.cbrt(-q1/2 + Math.sqrt(discriminant));
+      let v = Math.cbrt(-q1/2 - Math.sqrt(discriminant));
+      let x1 = u + v - b/(3*a);
+      return [`x₁ = ${formatNumber(x1)}`];
+    } else {
+      let r = Math.sqrt((-p1/3)*(-p1/3)*(-p1/3));
+      let theta = Math.acos(-q1/(2*r));
+      let x1 = 2*Math.cbrt(r)*Math.cos(theta/3) - b/(3*a);
+      let x2 = 2*Math.cbrt(r)*Math.cos((theta + 2*Math.PI)/3) - b/(3*a);
+      let x3 = 2*Math.cbrt(r)*Math.cos((theta + 4*Math.PI)/3) - b/(3*a);
+      return [
+        `x₁ = ${formatNumber(x1)}`,
+        `x₂ = ${formatNumber(x2)}`, 
+        `x₃ = ${formatNumber(x3)}`
+      ];
+    }
+  } else {
+    throw new CalculatorError('فقط معادلات درجه ۲ و ۳', 'math');
+  }
 }
 
-let quadResult=document.getElementById("quadResult");
-if(isNaN(a) || a===0){ quadResult.innerText="Error: a cannot be 0"; return; }
-let D=b*b-4*a*c;
-if(D>0){
-let x1=((-b+Math.sqrt(D))/(2*a));
-let x2=((-b-Math.sqrt(D))/(2*a));
-quadResult.innerText=`x1 = ${x1.toFixed(4)}\nx2 = ${x2.toFixed(4)}`;
-} else if(D===0){
-quadResult.innerText=`x = ${(-b/(2*a)).toFixed(4)}`;
-} else {
-let real=(-b/(2*a)).toFixed(4);
-let imag=(Math.sqrt(-D)/(2*a)).toFixed(4);
-quadResult.innerText=`x1 = ${real} + ${imag}i\nx2 = ${real} - ${imag}i`;
-}
+function solveEquation() {
+  let quadResult = document.getElementById("quadResult");
+  try {
+    let a = parseFloat(document.getElementById("qa").value);
+    let b = parseFloat(document.getElementById("qb").value);
+    let c = parseFloat(document.getElementById("qc").value);
+    let eq = document.getElementById("equation").value.trim();
+
+    let coefficients = [];
+    
+    if(eq && (isNaN(a) || isNaN(b) || isNaN(c))) {
+      let cleanEq = eq.replace(/\s+/g, '').replace(/=0$/, '');
+      
+      let hasX3 = cleanEq.includes('x^3');
+      let hasX2 = cleanEq.includes('x^2');
+      
+      if(hasX3) {
+        let matchA = cleanEq.match(/(-?\d*)x\^3/);
+        let a3 = matchA ? (matchA[1] === '' || matchA[1] === '+' ? 1 : matchA[1] === '-' ? -1 : parseFloat(matchA[1])) : 0;
+        
+        let rest = cleanEq.replace(/(-?\d*)x\^3/, '');
+        let matchB = rest.match(/([+-]?\d*)x\^2/);
+        let a2 = matchB ? (matchB[1] === '' || matchB[1] === '+' ? 1 : matchB[1] === '-' ? -1 : parseFloat(matchB[1])) : 0;
+        
+        rest = rest.replace(/([+-]?\d*)x\^2/, '');
+        let matchC = rest.match(/([+-]?\d*)x(?!\^)/);
+        let a1 = matchC ? (matchC[1] === '' || matchC[1] === '+' ? 1 : matchC[1] === '-' ? -1 : parseFloat(matchC[1])) : 0;
+        
+        rest = rest.replace(/([+-]?\d*)x(?!\^)/, '');
+        let matchD = rest.match(/[+-]?\d+/);
+        let a0 = matchD ? parseFloat(matchD[0]) : 0;
+        
+        coefficients = [a3, a2, a1, a0];
+      } else if(hasX2) {
+        let matchA = cleanEq.match(/(-?\d*)x\^2/);
+        let a2 = matchA ? (matchA[1] === '' || matchA[1] === '+' ? 1 : matchA[1] === '-' ? -1 : parseFloat(matchA[1])) : 0;
+        
+        let rest = cleanEq.replace(/(-?\d*)x\^2/, '');
+        let matchB = rest.match(/([+-]?\d*)x(?!\^)/);
+        let a1 = matchB ? (matchB[1] === '' || matchB[1] === '+' ? 1 : matchB[1] === '-' ? -1 : parseFloat(matchB[1])) : 0;
+        
+        rest = rest.replace(/([+-]?\d*)x(?!\^)/, '');
+        let matchC = rest.match(/[+-]?\d+/);
+        let a0 = matchC ? parseFloat(matchC[0]) : 0;
+        
+        coefficients = [a2, a1, a0];
+      } else {
+        throw new CalculatorError('عبارت معادله نامعتبر است', 'syntax');
+      }
+    } else if(!isNaN(a) && !isNaN(b) && !isNaN(c)) {
+      coefficients = [a, b, c];
+    } else {
+      throw new CalculatorError('لطفاً معادله یا ضرایب را وارد کنید', 'syntax');
+    }
+    
+    let solutions = solvePolynomial(coefficients);
+    quadResult.className = 'result';
+    quadResult.innerText = solutions.join('\n');
+    
+  } catch(e) {
+    showError(quadResult, e.message);
+  }
 }
 </script>
 </body>
-</html>
+  </html>
